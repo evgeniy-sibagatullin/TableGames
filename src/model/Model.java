@@ -33,9 +33,8 @@ public interface Model {
      */
     void stopGame();
 
-    /**
-     * Performs check of clicked cell in defined coordinates
-     */
     void clickCell(int row, int column);
+
+    boolean checkWinConditions();
 
 }

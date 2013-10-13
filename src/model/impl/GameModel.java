@@ -78,4 +78,11 @@ public class GameModel implements Model {
         game.clickCell(row, column);
         notifyObservers();
     }
+
+    @Override
+    public boolean checkWinConditions() {
+        return game.checkWinConditions();
+    }
+
+
 }

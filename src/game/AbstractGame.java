@@ -53,4 +53,9 @@ public abstract class AbstractGame implements Game {
         this.score = score;
     }
 
+    @Override
+    public boolean checkWinConditions() {
+        return false;
+    }
+
 }

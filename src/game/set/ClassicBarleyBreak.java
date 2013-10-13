@@ -11,12 +11,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class
-        ClassicFifteenth extends AbstractGame implements Fiftheenth {
+        ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
 
     private static final int FIELD_SIZE = 4;
 
-    public ClassicFifteenth() {
-        setGameType(GameType.FIFTEENTH);
+    public ClassicBarleyBreak() {
+        setGameType(GameType.BARLEY_BREAK);
         setScore(0);
         initGameField();
     }
@@ -54,7 +54,6 @@ public class
         Direction moveDirection = moveDirection(row, column);
         if (moveDirection != Direction.NONE) {
             performMove(row, column, moveDirection);
-            checkWinConditions();
         }
     }
 
@@ -96,8 +95,17 @@ public class
         getGameField()[row][column].setBackgroundImage(null);
     }
 
-    private void checkWinConditions() {
-
+    public boolean checkWinConditions() {
+        for (int row = 0; row < FIELD_SIZE; row++) {
+            for (int column = 0; column < FIELD_SIZE; column++) {
+                int power = getGameField()[row][column].getPower();
+                if (row * FIELD_SIZE + column + 1 != power) {
+                    if ((row != FIELD_SIZE - 1 || column != FIELD_SIZE - 1))
+                        return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

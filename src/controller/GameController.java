@@ -49,6 +49,15 @@ public class GameController implements Controller, GameObserver {
     @Override
     public void clickCell(int row, int column) {
         model.clickCell(row, column);
+        checkWinConditions();
+    }
+
+    @Override
+    public void checkWinConditions() {
+        if (model.checkWinConditions()) {
+            view.showWinPopup();
+            model.restartGame();
+        }
     }
 
 }

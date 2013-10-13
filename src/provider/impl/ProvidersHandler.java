@@ -14,10 +14,10 @@ public class ProvidersHandler {
 
     private static final Map<GameType, Provider> providers = new HashMap<GameType, Provider>();
 
-    public static final GameType DEFAULT_GAMETYPE = GameType.FIFTEENTH;
+    public static final GameType DEFAULT_GAMETYPE = GameType.BARLEY_BREAK;
 
     public static void registerProviders() {
-        registerProvider(GameType.FIFTEENTH, new FifteenthProvider());
+        registerProvider(GameType.BARLEY_BREAK, new BarleyBreakProvider());
         registerProvider(GameType.CHESS, new ChessProvider());
         registerProvider(GameType.CORNERS, new CornersProvider());
     }

@@ -1,5 +1,5 @@
 package enums;
 
 public enum GameType {
-    FIFTEENTH, CHESS, CORNERS
+    BARLEY_BREAK, CHESS, CORNERS
 }

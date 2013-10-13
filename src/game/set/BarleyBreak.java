@@ -1,6 +1,6 @@
 package game.set;
 
-public interface Fiftheenth {
+public interface BarleyBreak {
 
     String COLOR_CELL = "img/SolidGreen.bmp";
 

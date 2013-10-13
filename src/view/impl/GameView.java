@@ -246,4 +246,15 @@ public class GameView implements View {
         deliverView();
     }
 
+    @Override
+    public void showWinPopup() {
+        MessageBox messageBox = new MessageBox(boardShell, SWT.ICON_INFORMATION);
+        messageBox.setMessage("Congratulations. You win!");
+        int rc = messageBox.open();
+
+        switch (rc) {
+            case SWT.OK:
+                break;
+        }
+    }
 }
