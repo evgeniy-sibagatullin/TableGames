@@ -17,7 +17,6 @@ public class ClassicChess extends AbstractGame implements Chess {
 
     public ClassicChess() {
         setGameType(GameType.CHESS);
-        setScore(0);
         initGameField();
         initPieces();
         addPiecesToGameField();

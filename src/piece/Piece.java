@@ -18,6 +18,4 @@ public interface Piece {
 
     String getImagePath();
 
-    void setActive(boolean isActive);
-
 }

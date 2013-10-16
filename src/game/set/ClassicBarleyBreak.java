@@ -17,7 +17,6 @@ public class
 
     public ClassicBarleyBreak() {
         setGameType(GameType.BARLEY_BREAK);
-        setScore(0);
         initGameField();
     }
 

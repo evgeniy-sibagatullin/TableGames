@@ -46,8 +46,7 @@ public class GameModel implements Model {
 
     @Override
     public void initializeModel() {
-        System.out.println("Hi, man!");
-        System.out.println("This game out of scope");
+        System.out.println("Hi, folks!");
         ProvidersHandler.registerProviders();
         gameObservers = new ArrayList<GameObserver>();
         startGame(ProvidersHandler.DEFAULT_GAMETYPE);

@@ -11,7 +11,6 @@ public abstract class AbstractGame implements Game {
     private GameType gameType;
     private ModelCell[][] gameField;
     private List<Piece> pieces;
-    private int score;
 
     @Override
     public GameType getGameType() {
@@ -41,16 +40,6 @@ public abstract class AbstractGame implements Game {
     @Override
     public void setPieces(List<Piece> pieces) {
         this.pieces = pieces;
-    }
-
-    @Override
-    public int getScore() {
-        return score;
-    }
-
-    @Override
-    public void setScore(int score) {
-        this.score = score;
     }
 
     @Override

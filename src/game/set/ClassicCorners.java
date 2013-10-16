@@ -13,7 +13,6 @@ public class ClassicCorners extends AbstractGame implements Corners {
 
     public ClassicCorners() {
         setGameType(GameType.CORNERS);
-        setScore(0);
         initGameField();
     }
 

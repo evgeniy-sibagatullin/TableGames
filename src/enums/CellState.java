@@ -1,5 +1,5 @@
 package enums;
 
 public enum CellState {
-    DEFAULT, FOCUSED, CHOOSE, ACCESS, CAPTURE
+    DEFAULT, FOCUSED, CHOOSE
 }

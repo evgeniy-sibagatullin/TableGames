@@ -22,10 +22,6 @@ public interface Game {
 
     void setPieces(List<Piece> pieces);
 
-    int getScore();
-
-    void setScore(int score);
-
     void clickCell(int row, int column);
 
     boolean checkWinConditions();

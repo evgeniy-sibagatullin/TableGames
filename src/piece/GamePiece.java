@@ -7,7 +7,6 @@ public abstract class GamePiece implements Piece {
     private int row;
     private int column;
     private Side side;
-    private boolean isActive;
 
     public GamePiece(int row, int column, Side side) {
         setRow(row);
@@ -46,10 +45,5 @@ public abstract class GamePiece implements Piece {
     }
 
     public abstract String getImagePath();
-
-    @Override
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
-    }
 
 }
