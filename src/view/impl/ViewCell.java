@@ -36,13 +36,22 @@ public class ViewCell extends Canvas {
     private int borderStyle = BORDER_STYLE_DEFAULT;
     private int borderWidth = BORDER_WIDTH_DEFAULT;
     private Color borderColor = COLOR_DEFAULT;
+    private CellState focusedCellState = CellState.DEFAULT;
 
     public ViewCell(Composite parent, int style) {
         super(parent, style);
         addListeners();
     }
 
-    protected void addListeners() {
+    public ModelCell getModelCell() {
+        return modelCell;
+    }
+
+    public void setModelCell(ModelCell modelCell) {
+        this.modelCell = modelCell;
+    }
+
+    public void addListeners() {
         addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent e) {
                 ViewCell.this.paintControl(e);
@@ -52,18 +61,17 @@ public class ViewCell extends Canvas {
         addListener(SWT.MouseEnter, new Listener() {
             @Override
             public void handleEvent(Event event) {
-                if (modelCell.getCellState() == CellState.DEFAULT) {
-                    modelCell.setCellState(CellState.FOCUSED);
-                    redraw();
-                }
+                focusedCellState = modelCell.getCellState();
+                modelCell.setCellState(CellState.FOCUSED);
+                redraw();
             }
         });
 
         addListener(SWT.MouseExit, new Listener() {
             @Override
             public void handleEvent(Event event) {
-                if (modelCell.getCellState() == CellState.FOCUSED) {
-                    modelCell.setCellState(CellState.DEFAULT);
+                if (modelCell.getCellState() != CellState.CHOOSE) {
+                    modelCell.setCellState(focusedCellState);
                     redraw();
                 }
             }
@@ -141,33 +149,9 @@ public class ViewCell extends Canvas {
     }
 
     private void setBorderSettings(int borderStyle, int borderWidth, Color borderColor) {
-        setBorderStyle(borderStyle);
-        setBorderWidth(borderWidth);
-        setBorderColor(borderColor);
-    }
-
-	/*
-     * public get/set
-	 */
-
-    public ModelCell getModelCell() {
-        return modelCell;
-    }
-
-    public void setModelCell(ModelCell modelCell) {
-        this.modelCell = modelCell;
-    }
-
-    public void setBorderWidth(int borderWidth) {
-        this.borderWidth = borderWidth;
-    }
-
-    public void setBorderStyle(int borderStyle) {
         this.borderStyle = borderStyle;
-    }
-
-    public void setBorderColor(Color color) {
-        this.borderColor = color;
+        this.borderWidth = borderWidth;
+        this.borderColor = borderColor;
     }
 
 }
