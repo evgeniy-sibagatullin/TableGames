@@ -14,6 +14,7 @@ import view.View;
 
 public class GameView implements View {
 
+    private static final String APPLICATION_TITLE_TEXT = "Table Games";
     private static final String SELECT_MENU_HEADER_TEXT = "Select Game";
     private static final String MANAGE_MENU_HEADER_TEXT = "Manage Game";
     private static final String CHESS_MENUITEM_TEXT = "Chess";
@@ -88,6 +89,7 @@ public class GameView implements View {
 
     private void constructBoardShell() {
         boardShell = new Shell(menuDisplay, SWT.SHELL_TRIM & (~SWT.RESIZE));
+        boardShell.setText(APPLICATION_TITLE_TEXT);
         boardShell.setMinimumSize(BOARD_SHELL_SIZE, BOARD_SHELL_SIZE);
         boardShell.setLocation(monitorCenterX - BOARD_SHELL_SIZE / 2,
                 monitorCenterY - BOARD_SHELL_SIZE / 2);
