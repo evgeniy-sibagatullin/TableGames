@@ -169,8 +169,11 @@ public class GameView implements View {
     private void updateGameField() {
         for (int row = 0; row < gameFieldSize; row++) {
             for (int column = 0; column < gameFieldSize; column++) {
-                viewGameField[row][column].setModelCell(modelGameField[row][column]);
-                viewGameField[row][column].redraw();
+                if (modelGameField[row][column].getChanged()) {
+                    viewGameField[row][column].setModelCell(modelGameField[row][column]);
+                    viewGameField[row][column].redraw();
+                    modelGameField[row][column].setChanged(false);
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ public class ModelCell {
     private String backgroundImage;
     private String pieceImage;
     private int power;
+    private boolean changed;
 
     public ModelCell(int row, int column, String color, String piece) {
         this(row, column, 0, color, piece, CellState.DEFAULT);
@@ -23,6 +24,7 @@ public class ModelCell {
         setBackgroundImage(color);
         setPieceImage(piece);
         setCellState(cellState);
+        setChanged(false);
     }
 
     public CellState getCellState() {
@@ -73,4 +75,11 @@ public class ModelCell {
         this.pieceImage = pieceImage;
     }
 
+    public boolean getChanged() {
+        return changed;
+    }
+
+    public void setChanged(boolean changed) {
+        this.changed = changed;
+    }
 }

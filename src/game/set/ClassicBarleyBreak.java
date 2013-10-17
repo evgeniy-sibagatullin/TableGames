@@ -90,8 +90,10 @@ public class
     private void swapCells(int row, int column, int swRow, int swColumn) {
         getGameField()[swRow][swColumn].setPower(getGameField()[row][column].getPower());
         getGameField()[swRow][swColumn].setBackgroundImage(COLOR_CELL);
+        getGameField()[swRow][swColumn].setChanged(true);
         getGameField()[row][column].setPower(0);
         getGameField()[row][column].setBackgroundImage(null);
+        getGameField()[row][column].setChanged(true);
     }
 
     public boolean checkWinConditions() {

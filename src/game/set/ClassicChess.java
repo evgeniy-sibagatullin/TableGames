@@ -66,5 +66,6 @@ public class ClassicChess extends AbstractGame implements Chess {
     @Override
     public void clickCell(int row, int column) {
         getGameField()[row][column].setCellState(CellState.CHOOSE);
+        getGameField()[row][column].setChanged(true);
     }
 }
