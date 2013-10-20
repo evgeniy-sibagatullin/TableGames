@@ -14,23 +14,24 @@ public class ViewCell extends Canvas {
 
     private static final int BORDER_STYLE_DEFAULT = SWT.LINE_SOLID;
     private static final int BORDER_WIDTH_DEFAULT = 5;
+    private static final Color COLOR_DEFAULT = new Color(Display.getCurrent(), 200, 200, 200);
+
+    private static final int BORDER_STYLE_ALLOWED = SWT.LINE_SOLID;
+    private static final int BORDER_WIDTH_ALLOWED = 5;
+    private static final Color COLOR_ALLOWED = new Color(Display.getCurrent(), 50, 250, 50);
 
     private static final int BORDER_STYLE_FOCUSED = SWT.LINE_DOT;
     private static final int BORDER_WIDTH_FOCUSED = 10;
+    private static final Color COLOR_FOCUSED = new Color(Display.getCurrent(), 50, 50, 250);
 
     private static final int BORDER_STYLE_CHOOSE = SWT.LINE_DASH;
     private static final int BORDER_WIDTH_CHOOSE = 5;
+    private static final Color COLOR_CHOOSE = new Color(Display.getCurrent(), 250, 50, 50);
 
     private static final Font POWER_DEFAULT_FONT = new Font(Display.getCurrent(), "Georgia", 20, SWT.BOLD);
 
     private static final int PIECE_IMAGE_PADDING = (BORDER_PADDING + BORDER_WIDTH_DEFAULT) * 2;
 
-    private static final Color COLOR_DEFAULT = new Color(Display.getCurrent(),
-            50, 250, 50);
-    private static final Color COLOR_FOCUSED = new Color(Display.getCurrent(),
-            50, 50, 250);
-    private static final Color COLOR_CHOOSE = new Color(Display.getCurrent(),
-            250, 50, 50);
 
     private ModelCell modelCell;
     private int borderStyle = BORDER_STYLE_DEFAULT;
@@ -118,10 +119,12 @@ public class ViewCell extends Canvas {
         if (modelCell != null && modelCell.getCellState() != null) {
             if (modelCell.getCellState() == CellState.DEFAULT) {
                 setBorderSettings(BORDER_STYLE_DEFAULT, BORDER_WIDTH_DEFAULT, COLOR_DEFAULT);
-            } else if (modelCell.getCellState() == CellState.CHOOSE) {
-                setBorderSettings(BORDER_STYLE_CHOOSE, BORDER_WIDTH_CHOOSE, COLOR_CHOOSE);
+            } else if (modelCell.getCellState() == CellState.ALLOWED) {
+                setBorderSettings(BORDER_STYLE_ALLOWED, BORDER_WIDTH_ALLOWED, COLOR_ALLOWED);
             } else if (modelCell.getCellState() == CellState.FOCUSED) {
                 setBorderSettings(BORDER_STYLE_FOCUSED, BORDER_WIDTH_FOCUSED, COLOR_FOCUSED);
+            } else if (modelCell.getCellState() == CellState.CHOOSE) {
+                setBorderSettings(BORDER_STYLE_CHOOSE, BORDER_WIDTH_CHOOSE, COLOR_CHOOSE);
             }
         }
 
@@ -131,7 +134,6 @@ public class ViewCell extends Canvas {
         if (borderWidth > 0) {
             Point point = this.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
             int arcLength = Math.max(5, (point.y / 10));
-            // border centered with padding
             gc.drawRoundRectangle(rectangle.x + BORDER_PADDING + borderWidth
                     / 2, rectangle.y + BORDER_PADDING + borderWidth / 2,
                     rectangle.width - BORDER_PADDING * 2 - borderWidth,

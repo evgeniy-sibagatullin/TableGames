@@ -39,8 +39,9 @@ public class
             }
         }
         gameField[FIELD_SIZE - 1][FIELD_SIZE - 1].setBackgroundImage(null);
-
+        gameField[FIELD_SIZE - 1][FIELD_SIZE - 1].setCellState(CellState.CHOOSE);
         setGameField(gameField);
+        updateNeighbourCellStates(FIELD_SIZE - 1, FIELD_SIZE - 1, CellState.ALLOWED);
     }
 
     @Override
@@ -91,10 +92,33 @@ public class
         getGameField()[swRow][swColumn].setPower(getGameField()[row][column].getPower());
         getGameField()[swRow][swColumn].setBackgroundImage(COLOR_CELL);
         getGameField()[swRow][swColumn].setChanged(true);
+        updateNeighbourCellStates(swRow, swColumn, CellState.DEFAULT);
         getGameField()[row][column].setPower(0);
         getGameField()[row][column].setBackgroundImage(null);
         getGameField()[row][column].setChanged(true);
+        updateNeighbourCellStates(row, column, CellState.ALLOWED);
+        getGameField()[row][column].setCellState(CellState.CHOOSE);
     }
+
+    private void updateNeighbourCellStates(int row, int column, CellState cellState) {
+        if (row > 0) {
+            getGameField()[row - 1][column].setCellState(cellState);
+            getGameField()[row - 1][column].setChanged(true);
+        }
+        if (row < FIELD_SIZE - 1) {
+            getGameField()[row + 1][column].setCellState(cellState);
+            getGameField()[row + 1][column].setChanged(true);
+        }
+        if (column > 0) {
+            getGameField()[row][column - 1].setCellState(cellState);
+            getGameField()[row][column - 1].setChanged(true);
+        }
+        if (column < FIELD_SIZE - 1) {
+            getGameField()[row][column + 1].setCellState(cellState);
+            getGameField()[row][column + 1].setChanged(true);
+        }
+    }
+
 
     public boolean checkWinConditions() {
         for (int row = 0; row < FIELD_SIZE; row++) {
