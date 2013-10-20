@@ -14,12 +14,16 @@ import java.util.List;
 public class ClassicChess extends AbstractGame implements Chess {
 
     private static final int FIELD_SIZE = 8;
+    private boolean isPieceSelected;
+    private int selectedPieceRow;
+    private int selectedPieceColumn;
 
     public ClassicChess() {
         setGameType(GameType.CHESS);
         initGameField();
         initPieces();
         addPiecesToGameField();
+        isPieceSelected = false;
     }
 
     private void initGameField() {
@@ -65,7 +69,20 @@ public class ClassicChess extends AbstractGame implements Chess {
 
     @Override
     public void clickCell(int row, int column) {
-        getGameField()[row][column].setCellState(CellState.CHOOSE);
-        getGameField()[row][column].setChanged(true);
+        if (isPieceSelected) {
+            if (null == getGameField()[row][column].getPieceImage()) {
+                getGameField()[selectedPieceRow][selectedPieceColumn].setCellState(CellState.DEFAULT);
+                getGameField()[selectedPieceRow][selectedPieceColumn].setChanged(true);
+                isPieceSelected = false;
+            }
+        } else {
+            if (null != getGameField()[row][column].getPieceImage()) {
+                getGameField()[row][column].setCellState(CellState.CHOOSE);
+                getGameField()[row][column].setChanged(true);
+                isPieceSelected = true;
+                selectedPieceRow = row;
+                selectedPieceColumn = column;
+            }
+        }
     }
 }
