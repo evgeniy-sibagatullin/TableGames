@@ -1,6 +1,7 @@
 package model.impl;
 
 import enums.CellState;
+import piece.Piece;
 
 public class ModelCell {
 
@@ -8,21 +9,21 @@ public class ModelCell {
     private int row;
     private int column;
     private String backgroundImage;
-    private String pieceImage;
     private int power;
     private boolean changed;
+    private Piece piece;
 
-    public ModelCell(int row, int column, String color, String piece) {
+    public ModelCell(int row, int column, String color, Piece piece) {
         this(row, column, 0, color, piece, CellState.DEFAULT);
     }
 
     public ModelCell(int row, int column, int power, String color,
-                     String piece, CellState cellState) {
+                     Piece piece, CellState cellState) {
         setRow(row);
         setColumn(column);
         setPower(power);
         setBackgroundImage(color);
-        setPieceImage(piece);
+        setPiece(piece);
         setCellState(cellState);
         setChanged(false);
     }
@@ -67,19 +68,19 @@ public class ModelCell {
         this.backgroundImage = backgroundImage;
     }
 
-    public String getPieceImage() {
-        return pieceImage;
-    }
-
-    public void setPieceImage(String pieceImage) {
-        this.pieceImage = pieceImage;
-    }
-
     public boolean getChanged() {
         return changed;
     }
 
     public void setChanged(boolean changed) {
         this.changed = changed;
+    }
+
+    public Piece getPiece() {
+        return piece;
+    }
+
+    public void setPiece(Piece piece) {
+        this.piece = piece;
     }
 }

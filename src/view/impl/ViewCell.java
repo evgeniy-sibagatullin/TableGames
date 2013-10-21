@@ -101,12 +101,12 @@ public class ViewCell extends Canvas {
     }
 
     private void drawPieceImage(GC gc, Rectangle rectangle) {
-        if (getModelCell().getPieceImage() == null) {
+        if (getModelCell().getPiece() == null) {
             return;
         }
         // image centered with padding
         Image pieceImage = new Image(Display.getCurrent(), getModelCell()
-                .getPieceImage());
+                .getPiece().getImagePath());
         Rectangle imgBounds = pieceImage.getBounds();
         gc.drawImage(pieceImage, 0, 0, imgBounds.width, imgBounds.height,
                 rectangle.x + PIECE_IMAGE_PADDING, rectangle.y
