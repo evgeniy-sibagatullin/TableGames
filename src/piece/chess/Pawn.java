@@ -1,10 +1,11 @@
-package piece;
+package piece.chess;
 
 import enums.Side;
+import piece.GamePiece;
 
-public class ChessPawn extends GamePiece {
+public class Pawn extends GamePiece {
 
-    public ChessPawn(int row, int column, Side side) {
+    public Pawn(int row, int column, Side side) {
         super(row, column, side);
     }
 
