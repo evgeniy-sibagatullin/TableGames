@@ -5,8 +5,8 @@ import enums.GameType;
 import enums.Side;
 import game.AbstractGame;
 import model.impl.ModelCell;
-import piece.ChessPawn;
 import piece.Piece;
+import piece.chess.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +34,7 @@ public class ClassicChess extends AbstractGame implements Chess {
             for (int column = 0; column < FIELD_SIZE; column++) {
                 String color = ((row + column) % 2 == 0) ? WHITE_CELL
                         : BLACK_CELL;
-                gameField[row][column] = new ModelCell(row, column, row
-                        + column, color, null, CellState.DEFAULT);
+                gameField[row][column] = new ModelCell(row, column, 0, color, null, CellState.DEFAULT);
             }
         }
 
@@ -44,10 +43,31 @@ public class ClassicChess extends AbstractGame implements Chess {
 
     private void initPieces() {
         List<Piece> pieces = new ArrayList<Piece>();
+
         for (int i = 0; i < FIELD_SIZE; i++) {
-            pieces.add(new ChessPawn(6, i, Side.WHITE));
-            pieces.add(new ChessPawn(1, i, Side.BLACK));
+            pieces.add(new Pawn(6, i, Side.WHITE));
+            pieces.add(new Pawn(1, i, Side.BLACK));
         }
+
+        pieces.add(new Rook(0, 0, Side.BLACK));
+        pieces.add(new Rook(0, 7, Side.BLACK));
+        pieces.add(new Rook(7, 0, Side.WHITE));
+        pieces.add(new Rook(7, 7, Side.WHITE));
+
+        pieces.add(new Knight(0, 1, Side.BLACK));
+        pieces.add(new Knight(0, 6, Side.BLACK));
+        pieces.add(new Knight(7, 1, Side.WHITE));
+        pieces.add(new Knight(7, 6, Side.WHITE));
+
+        pieces.add(new Bishop(0, 2, Side.BLACK));
+        pieces.add(new Bishop(0, 5, Side.BLACK));
+        pieces.add(new Bishop(7, 2, Side.WHITE));
+        pieces.add(new Bishop(7, 5, Side.WHITE));
+
+        pieces.add(new Queen(0, 3, Side.BLACK));
+        pieces.add(new Queen(7, 3, Side.WHITE));
+        pieces.add(new King(0, 4, Side.BLACK));
+        pieces.add(new King(7, 4, Side.WHITE));
 
         setPieces(pieces);
     }
