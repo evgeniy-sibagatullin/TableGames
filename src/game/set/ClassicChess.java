@@ -16,16 +16,15 @@ public class ClassicChess extends AbstractGame implements Chess {
     private static final int FIELD_SIZE = 8;
     private Side activeSide;
     private boolean isPieceSelected;
-    private int selectedPieceRow;
-    private int selectedPieceColumn;
 
     public ClassicChess() {
+        isPieceSelected = false;
+        activeSide = Side.WHITE;
         setGameType(GameType.CHESS);
         initGameField();
         initPieces();
         addPiecesToGameField();
-        isPieceSelected = false;
-        activeSide = Side.WHITE;
+        updateAllowedCells();
     }
 
     private void initGameField() {
@@ -91,21 +90,38 @@ public class ClassicChess extends AbstractGame implements Chess {
 
     @Override
     public void clickCell(int row, int column) {
-        if (isPieceSelected) {
-            if (null == getGameField()[row][column].getPiece()) {
-                getGameField()[selectedPieceRow][selectedPieceColumn].setCellState(CellState.DEFAULT);
-                getGameField()[selectedPieceRow][selectedPieceColumn].setChanged(true);
+        if (CellState.ALLOWED == getGameField()[row][column].getCellState()) {
+            if (isPieceSelected) {
                 isPieceSelected = false;
+                updateAllowedCells();
+            } else {
+                isPieceSelected = true;
+                activeSide = (activeSide == Side.WHITE) ? Side.BLACK : Side.WHITE;
+                updateAllowedCells();
+                getGameField()[row][column].setCellState(CellState.CHOOSE);
+                getGameField()[row][column].setChanged(true);
             }
-        } else {
-            if (null != getGameField()[row][column].getPiece()) {
-                if (activeSide == getGameField()[row][column].getPiece().getSide()) {
-                    getGameField()[row][column].setCellState(CellState.CHOOSE);
+        }
+    }
+
+    private void updateAllowedCells() {
+        for (int row = 0; row < FIELD_SIZE; row++) {
+            for (int column = 0; column < FIELD_SIZE; column++) {
+                CellState cellState;
+                if (isPieceSelected) {
+                    cellState = (getGameField()[row][column].getPiece() == null) ?
+                            CellState.ALLOWED :
+                            CellState.DEFAULT;
+                } else {
+                    cellState = (getGameField()[row][column].getPiece() == null) ?
+                            CellState.DEFAULT :
+                            (getGameField()[row][column].getPiece().getSide() == activeSide) ?
+                                    CellState.ALLOWED :
+                                    CellState.DEFAULT;
+                }
+                if (getGameField()[row][column].getCellState() != cellState) {
+                    getGameField()[row][column].setCellState(cellState);
                     getGameField()[row][column].setChanged(true);
-                    isPieceSelected = true;
-                    selectedPieceRow = row;
-                    selectedPieceColumn = column;
-                    activeSide = (activeSide == Side.WHITE) ? Side.BLACK : Side.WHITE;
                 }
             }
         }

@@ -62,16 +62,19 @@ public class ViewCell extends Canvas {
         addListener(SWT.MouseEnter, new Listener() {
             @Override
             public void handleEvent(Event event) {
-                focusedCellState = modelCell.getCellState();
-                modelCell.setCellState(CellState.FOCUSED);
-                redraw();
+                if (modelCell.getCellState() != CellState.ALLOWED) {
+                    focusedCellState = modelCell.getCellState();
+                    modelCell.setCellState(CellState.FOCUSED);
+                    redraw();
+                }
             }
         });
 
         addListener(SWT.MouseExit, new Listener() {
             @Override
             public void handleEvent(Event event) {
-                if (modelCell.getCellState() != CellState.CHOOSE) {
+                if (modelCell.getCellState() != CellState.CHOOSE &&
+                        modelCell.getCellState() != CellState.ALLOWED) {
                     modelCell.setCellState(focusedCellState);
                     redraw();
                 }
