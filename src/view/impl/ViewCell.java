@@ -37,7 +37,7 @@ public class ViewCell extends Canvas {
     private int borderStyle = BORDER_STYLE_DEFAULT;
     private int borderWidth = BORDER_WIDTH_DEFAULT;
     private Color borderColor = COLOR_DEFAULT;
-    private CellState focusedCellState = CellState.DEFAULT;
+    private boolean isMouseEnterEvent;
 
     public ViewCell(Composite parent, int style) {
         super(parent, style);
@@ -62,22 +62,15 @@ public class ViewCell extends Canvas {
         addListener(SWT.MouseEnter, new Listener() {
             @Override
             public void handleEvent(Event event) {
-                if (modelCell.getCellState() != CellState.ALLOWED) {
-                    focusedCellState = modelCell.getCellState();
-                    modelCell.setCellState(CellState.FOCUSED);
-                    redraw();
-                }
+                isMouseEnterEvent = true;
+                redraw();
             }
         });
 
         addListener(SWT.MouseExit, new Listener() {
             @Override
             public void handleEvent(Event event) {
-                if (modelCell.getCellState() != CellState.CHOOSE &&
-                        modelCell.getCellState() != CellState.ALLOWED) {
-                    modelCell.setCellState(focusedCellState);
-                    redraw();
-                }
+                redraw();
             }
         });
     }
@@ -119,7 +112,10 @@ public class ViewCell extends Canvas {
     }
 
     private void drawBorder(GC gc, Rectangle rectangle) {
-        if (modelCell != null && modelCell.getCellState() != null) {
+        if (isMouseEnterEvent) {
+            setBorderSettings(BORDER_STYLE_FOCUSED, BORDER_WIDTH_FOCUSED, COLOR_FOCUSED);
+            isMouseEnterEvent = false;
+        } else {
             if (modelCell.getCellState() == CellState.DEFAULT) {
                 setBorderSettings(BORDER_STYLE_DEFAULT, BORDER_WIDTH_DEFAULT, COLOR_DEFAULT);
             } else if (modelCell.getCellState() == CellState.ALLOWED) {
