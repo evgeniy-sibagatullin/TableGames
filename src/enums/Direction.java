@@ -1,7 +1,7 @@
 package enums;
 
 public enum Direction {
-    /*NORTHWEST*/ NORTH, /*NORTHEAST*/
+    NORTHWEST, NORTH, NORTHEAST,
     WEST, NONE, EAST,
-    /*SOUTHWEST*/ SOUTH, /*SOUTHEAST*/
+    SOUTHWEST, SOUTH, SOUTHEAST
 }
