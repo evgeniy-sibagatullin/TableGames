@@ -143,6 +143,12 @@ public class ClassicChess extends AbstractGame implements Chess {
             updateByPawnRules(cell);
         } else if (piece instanceof Bishop) {
             updateByBishopRules(cell);
+        } else if (piece instanceof Rook) {
+            updateByRookRules(cell);
+        } else if (piece instanceof Queen) {
+            updateByQueenRules(cell);
+        } else if (piece instanceof King) {
+            updateByKingRules(cell);
         }
     }
 
@@ -171,11 +177,11 @@ public class ClassicChess extends AbstractGame implements Chess {
                     setAllowedAndChanged(getGameField()[row][column]);
                 }
                 if (move == 0) {
-                    if (getGameField()[row][column + 1].getPiece() != null
+                    if (column < FIELD_SIZE - 1 && getGameField()[row][column + 1].getPiece() != null
                             && getGameField()[row][column + 1].getPiece().getSide() != activeSide) {
                         setAllowedAndChanged(getGameField()[row][column + 1]);
                     }
-                    if (getGameField()[row][column - 1].getPiece() != null
+                    if (column > 0 && getGameField()[row][column - 1].getPiece() != null
                             && getGameField()[row][column - 1].getPiece().getSide() != activeSide) {
                         setAllowedAndChanged(getGameField()[row][column - 1]);
                     }
@@ -187,6 +193,23 @@ public class ClassicChess extends AbstractGame implements Chess {
     private void updateByBishopRules(ModelCell cell) {
         Direction[] directions = new Direction[]{Direction.SOUTHEAST, Direction.SOUTHWEST, Direction.NORTHEAST, Direction.NORTHWEST};
         updateAllowedCellsToMove(cell, directions, FIELD_SIZE);
+    }
+
+    private void updateByRookRules(ModelCell cell) {
+        Direction[] directions = new Direction[]{Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST};
+        updateAllowedCellsToMove(cell, directions, FIELD_SIZE);
+    }
+
+    private void updateByQueenRules(ModelCell cell) {
+        Direction[] directions = new Direction[]{Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST,
+                Direction.SOUTHEAST, Direction.SOUTHWEST, Direction.NORTHEAST, Direction.NORTHWEST};
+        updateAllowedCellsToMove(cell, directions, FIELD_SIZE);
+    }
+
+    private void updateByKingRules(ModelCell cell) {
+        Direction[] directions = new Direction[]{Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST,
+                Direction.SOUTHEAST, Direction.SOUTHWEST, Direction.NORTHEAST, Direction.NORTHWEST};
+        updateAllowedCellsToMove(cell, directions, 1);
     }
 
     private void updateAllowedCellsToMove(ModelCell cell, Direction[] directions, int moveLength) {
