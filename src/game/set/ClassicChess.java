@@ -95,7 +95,7 @@ public class ClassicChess extends AbstractGame implements Chess {
     public void clickCell(int row, int column) {
         ModelCell cell = getGameField()[row][column];
         if (CellState.ALLOWED == cell.getCellState()) {
-            if (isPieceSelected && cell.getPiece() == null) {
+            if (cell.getPiece() == null || cell.getPiece().getSide() != activeSide) {
                 movePiece(row, column);
                 activeSide = (activeSide == Side.WHITE) ? Side.BLACK : Side.WHITE;
                 giveMoveToOtherSide();
@@ -140,16 +140,53 @@ public class ClassicChess extends AbstractGame implements Chess {
     private void updateAllowedCells(ModelCell cell) {
         Piece piece = cell.getPiece();
         if (piece instanceof Pawn) {
-            Direction direction = (piece.getSide() == Side.WHITE) ?
-                    Direction.NORTH :
-                    Direction.SOUTH;
-            int moveLength = 1;
-            if ((direction == Direction.NORTH && cell.getRow() == 6)
-                    || (direction == Direction.SOUTH && cell.getRow() == 1)) {
-                moveLength = 2;
-            }
-            updateAllowedCellsToMove(cell, new Direction[]{direction}, moveLength);
+            updateByPawnRules(cell);
+        } else if (piece instanceof Bishop) {
+            updateByBishopRules(cell);
         }
+    }
+
+    private void setAllowedAndChanged(ModelCell cell) {
+        cell.setCellState(CellState.ALLOWED);
+        cell.setChanged(true);
+    }
+
+    private void updateByPawnRules(ModelCell cell) {
+        Piece piece = cell.getPiece();
+        Direction moveDirection = (piece.getSide() == Side.WHITE) ?
+                Direction.NORTH :
+                Direction.SOUTH;
+        int moveLength = 1;
+        if ((moveDirection == Direction.NORTH && cell.getRow() == 6)
+                || (moveDirection == Direction.SOUTH && cell.getRow() == 1)) {
+            moveLength = 2;
+        }
+        int deltaY = defineDeltaY(moveDirection);
+        int row = cell.getRow();
+        int column = cell.getColumn();
+        for (int move = 0; move < moveLength; move++) {
+            row += deltaY;
+            if (row >= 0 && row < FIELD_SIZE && column >= 0 && column < FIELD_SIZE) {
+                if (getGameField()[row][column].getPiece() == null) {
+                    setAllowedAndChanged(getGameField()[row][column]);
+                }
+                if (move == 0) {
+                    if (getGameField()[row][column + 1].getPiece() != null
+                            && getGameField()[row][column + 1].getPiece().getSide() != activeSide) {
+                        setAllowedAndChanged(getGameField()[row][column + 1]);
+                    }
+                    if (getGameField()[row][column - 1].getPiece() != null
+                            && getGameField()[row][column - 1].getPiece().getSide() != activeSide) {
+                        setAllowedAndChanged(getGameField()[row][column - 1]);
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateByBishopRules(ModelCell cell) {
+        Direction[] directions = new Direction[]{Direction.SOUTHEAST, Direction.SOUTHWEST, Direction.NORTHEAST, Direction.NORTHWEST};
+        updateAllowedCellsToMove(cell, directions, FIELD_SIZE);
     }
 
     private void updateAllowedCellsToMove(ModelCell cell, Direction[] directions, int moveLength) {
@@ -162,11 +199,15 @@ public class ClassicChess extends AbstractGame implements Chess {
             for (int move = 0; move < moveLength; move++) {
                 row += deltaY;
                 column += deltaX;
-                if (row < FIELD_SIZE && column < FIELD_SIZE) {
+                if (row >= 0 && row < FIELD_SIZE && column >= 0 && column < FIELD_SIZE) {
                     if (getGameField()[row][column].getPiece() == null) {
                         getGameField()[row][column].setCellState(CellState.ALLOWED);
                         getGameField()[row][column].setChanged(true);
                     } else {
+                        if (getGameField()[row][column].getPiece().getSide() != cell.getPiece().getSide()) {
+                            getGameField()[row][column].setCellState(CellState.ALLOWED);
+                            getGameField()[row][column].setChanged(true);
+                        }
                         break;
                     }
                 }
