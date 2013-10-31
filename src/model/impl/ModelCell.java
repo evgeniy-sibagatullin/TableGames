@@ -25,7 +25,7 @@ public class ModelCell {
         setBackgroundImage(color);
         setPiece(piece);
         setCellState(cellState);
-        setChanged(false);
+        setChanged(true);
     }
 
     public CellState getCellState() {
