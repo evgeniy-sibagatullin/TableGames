@@ -20,6 +20,10 @@ public class ViewCell extends Canvas {
     private static final int BORDER_WIDTH_ALLOWED = 5;
     private static final Color COLOR_ALLOWED = new Color(Display.getCurrent(), 50, 250, 50);
 
+    private static final int BORDER_STYLE_ATTACKED = SWT.LINE_SOLID;
+    private static final int BORDER_WIDTH_ATTACKED = 5;
+    private static final Color COLOR_ATTACKED = new Color(Display.getCurrent(), 250, 50, 50);
+
     private static final int BORDER_STYLE_FOCUSED = SWT.LINE_DOT;
     private static final int BORDER_WIDTH_FOCUSED = 10;
     private static final Color COLOR_FOCUSED = new Color(Display.getCurrent(), 50, 50, 250);
@@ -120,6 +124,8 @@ public class ViewCell extends Canvas {
                 setBorderSettings(BORDER_STYLE_DEFAULT, BORDER_WIDTH_DEFAULT, COLOR_DEFAULT);
             } else if (modelCell.getCellState() == CellState.ALLOWED) {
                 setBorderSettings(BORDER_STYLE_ALLOWED, BORDER_WIDTH_ALLOWED, COLOR_ALLOWED);
+            } else if (modelCell.getCellState() == CellState.ATTACKED) {
+                setBorderSettings(BORDER_STYLE_ATTACKED, BORDER_WIDTH_ATTACKED, COLOR_ATTACKED);
             } else if (modelCell.getCellState() == CellState.FOCUSED) {
                 setBorderSettings(BORDER_STYLE_FOCUSED, BORDER_WIDTH_FOCUSED, COLOR_FOCUSED);
             } else if (modelCell.getCellState() == CellState.CHOOSE) {
