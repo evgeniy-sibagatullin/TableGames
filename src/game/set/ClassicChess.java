@@ -27,7 +27,7 @@ public class ClassicChess extends AbstractGame implements Chess {
         initGameField();
         initPieces();
         addPiecesToGameField();
-        giveMoveToOtherSide();
+        giveMoveToActiveSide();
     }
 
     private void initGameField() {
@@ -102,7 +102,7 @@ public class ClassicChess extends AbstractGame implements Chess {
             } else {
                 if (isPieceSelected) {
                     activeSide = (activeSide == Side.WHITE) ? Side.WHITE : Side.BLACK;
-                    giveMoveToOtherSide();
+                    giveMoveToActiveSide();
                 } else {
                     isPieceSelected = true;
                 }
@@ -115,24 +115,65 @@ public class ClassicChess extends AbstractGame implements Chess {
     }
 
     private void movePiece(int row, int column) {
+        updatePiecesOnMove(row, column);
         getGameField()[row][column].setPiece(selectedCell.getPiece());
+        getGameField()[row][column].setPower(selectedCell.getPower());
         selectedCell.setPiece(null);
+        selectedCell.setPower(0);
         activeSide = (activeSide == Side.WHITE) ? Side.BLACK : Side.WHITE;
-        giveMoveToOtherSide();
+        giveMoveToActiveSide();
         isPieceSelected = false;
     }
 
-    private void giveMoveToOtherSide() {
+    private void updatePiecesOnMove(int row, int column) {
+        for (Piece piece : getPieces()) {
+            if (piece.getRow() == selectedCell.getRow() && piece.getColumn() == selectedCell.getColumn()) {
+                piece.setRow(row);
+                piece.setColumn(column);
+            }
+        }
+    }
+
+    private void giveMoveToActiveSide() {
+        setPowerToCellsOfGameField();
+        setPiecesOfActiveSideAllowed();
+    }
+
+    private void setPowerToCellsOfGameField() {
+        for (Piece piece : getPieces()) {
+            if (piece.getSide() == activeSide) {
+                ModelCell cell = getGameField()[piece.getRow()][piece.getColumn()];
+                if (piece instanceof Pawn) {
+                    cell.setPower(6);
+                } else if (piece instanceof Knight) {
+                    cell.setPower(5);
+                } else if (piece instanceof Bishop) {
+                    cell.setPower(4);
+                } else if (piece instanceof Rook) {
+                    cell.setPower(3);
+                } else if (piece instanceof Queen) {
+                    cell.setPower(2);
+                } else if (piece instanceof King) {
+                    cell.setPower(1);
+                }
+                cell.setChanged(true);
+            }
+
+        }
+    }
+
+    private void setPiecesOfActiveSideAllowed() {
         for (int row = 0; row < FIELD_SIZE; row++) {
             for (int column = 0; column < FIELD_SIZE; column++) {
-                CellState cellState = (getGameField()[row][column].getPiece() == null) ?
+                ModelCell cell = getGameField()[row][column];
+                CellState cellState = (cell.getPiece() == null) ?
                         CellState.DEFAULT :
-                        (getGameField()[row][column].getPiece().getSide() == activeSide) ?
+                        (cell.getPiece().getSide() == activeSide) ?
                                 CellState.ALLOWED :
                                 CellState.DEFAULT;
-                if (getGameField()[row][column].getCellState() != cellState) {
-                    getGameField()[row][column].setCellState(cellState);
-                    getGameField()[row][column].setChanged(true);
+                if (cell.getCellState() != cellState) {
+                    cell.setCellState(cellState);
+                    cell.setChanged(true);
                 }
             }
         }
