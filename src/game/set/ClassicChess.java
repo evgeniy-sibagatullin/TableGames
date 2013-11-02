@@ -126,11 +126,17 @@ public class ClassicChess extends AbstractGame implements Chess {
     }
 
     private void updatePiecesOnMove(int row, int column) {
+        Piece pieceToBeRemoved = null;
         for (Piece piece : getPieces()) {
-            if (piece.getRow() == selectedCell.getRow() && piece.getColumn() == selectedCell.getColumn()) {
+            if (piece.getRow() == row && piece.getColumn() == column) {
+                pieceToBeRemoved = piece;
+            } else if (piece.getRow() == selectedCell.getRow() && piece.getColumn() == selectedCell.getColumn()) {
                 piece.setRow(row);
                 piece.setColumn(column);
             }
+        }
+        if (pieceToBeRemoved != null) {
+            getPieces().remove(pieceToBeRemoved);
         }
     }
 
@@ -156,7 +162,7 @@ public class ClassicChess extends AbstractGame implements Chess {
                 } else if (piece instanceof King) {
                     cell.setPower(1);
                 }
-                cell.setChanged(true);
+                // cell.setChanged(true);
             }
 
         }
