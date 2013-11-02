@@ -149,9 +149,9 @@ public class ViewCell extends Canvas {
     }
 
     private void drawPowerText(GC gc, Rectangle rectangle) {
-        if (modelCell != null && modelCell.getPower() > 0) {
+        if (modelCell != null && modelCell.getPower() != 0) {
             gc.setFont(POWER_DEFAULT_FONT);
-            gc.setForeground(new Color(Display.getCurrent(), 250, 250, 250));
+            gc.setForeground(new Color(Display.getCurrent(), 50, 50, 250));
             gc.drawText(Integer.toString(modelCell.getPower()), (rectangle.width - POWER_DEFAULT_FONT_SIZE) / 2,
                     (rectangle.height - POWER_DEFAULT_FONT_SIZE) / 2, SWT.DRAW_TRANSPARENT);
         }
