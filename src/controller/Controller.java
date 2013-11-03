@@ -34,4 +34,9 @@ public interface Controller {
      * Checks if win conditions satisfied
      */
     void checkWinConditions();
+
+    /**
+     * Sends signal to model, that view update complete
+     */
+    void viewUpdateComplete();
 }

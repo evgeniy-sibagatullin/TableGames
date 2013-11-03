@@ -60,4 +60,9 @@ public class GameController implements Controller, GameObserver {
         }
     }
 
+    @Override
+    public void viewUpdateComplete() {
+        model.viewUpdateComplete();
+    }
+
 }

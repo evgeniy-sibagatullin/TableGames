@@ -47,4 +47,7 @@ public abstract class AbstractGame implements Game {
         return false;
     }
 
+    @Override
+    public void viewUpdateComplete() {
+    }
 }

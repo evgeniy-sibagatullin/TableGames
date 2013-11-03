@@ -17,6 +17,7 @@ public class ClassicChess extends AbstractGame implements Chess {
 
     private static final int FIELD_SIZE = 8;
     private Side activeSide;
+    private Side humanPlayerSide;
     private boolean isPieceSelected;
     private ModelCell selectedCell;
 
@@ -30,6 +31,7 @@ public class ClassicChess extends AbstractGame implements Chess {
     public ClassicChess() {
         isPieceSelected = false;
         activeSide = Side.WHITE;
+        humanPlayerSide = Side.WHITE;
         setGameType(GameType.CHESS);
         initGameField();
         initPieces();
@@ -127,6 +129,18 @@ public class ClassicChess extends AbstractGame implements Chess {
                 selectedCell.setChanged(true);
             }
         }
+    }
+
+    @Override
+    public void viewUpdateComplete() {
+        if (activeSide != humanPlayerSide) {
+            performAIMove();
+        }
+    }
+
+    private void performAIMove() {
+        activeSide = (activeSide == Side.WHITE) ? Side.BLACK : Side.WHITE;
+        giveMoveToActiveSide();
     }
 
     private void movePiece(int row, int column) {

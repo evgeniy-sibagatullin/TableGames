@@ -178,6 +178,7 @@ public class GameView implements View {
                 }
             }
         }
+        controller.viewUpdateComplete();
     }
 
     private void deliverView() {

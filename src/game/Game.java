@@ -25,4 +25,6 @@ public interface Game {
     void clickCell(int row, int column);
 
     boolean checkWinConditions();
+
+    void viewUpdateComplete();
 }

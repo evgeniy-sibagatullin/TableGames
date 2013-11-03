@@ -83,5 +83,8 @@ public class GameModel implements Model {
         return game.checkWinConditions();
     }
 
-
+    @Override
+    public void viewUpdateComplete() {
+        game.viewUpdateComplete();
+    }
 }

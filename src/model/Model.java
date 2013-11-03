@@ -37,4 +37,5 @@ public interface Model {
 
     boolean checkWinConditions();
 
+    void viewUpdateComplete();
 }
