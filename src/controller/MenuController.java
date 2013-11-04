@@ -3,7 +3,7 @@ package controller;
 import enums.GameType;
 import model.Model;
 
-public interface Controller {
+public interface MenuController {
 
     /**
      * Initializes controller with defined model during application start.
@@ -24,19 +24,4 @@ public interface Controller {
      * Performs control of game reselect
      */
     void reselectGame();
-
-    /**
-     * Performs check of clicked cell in defined coordinates
-     */
-    void clickCell(int row, int column);
-
-    /**
-     * Checks if win conditions satisfied
-     */
-    void checkWinConditions();
-
-    /**
-     * Sends signal to model, that view update complete
-     */
-    void viewUpdateComplete();
 }

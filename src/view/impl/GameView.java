@@ -1,6 +1,7 @@
 package view.impl;
 
-import controller.Controller;
+import controller.FlowController;
+import controller.MenuController;
 import enums.GameType;
 import model.Model;
 import model.impl.ModelCell;
@@ -25,7 +26,8 @@ public class GameView implements View {
     private static final String MENUITEM_KEY_GAMETYPE = "gameName";
 
     private Model model;
-    private Controller controller;
+    private MenuController menuController;
+    private FlowController flowController;
 
     private Display menuDisplay;
     private int monitorCenterX;
@@ -42,9 +44,13 @@ public class GameView implements View {
     private ModelCell[][] modelGameField;
     private ViewCell[][] viewGameField;
 
-    public GameView(Controller controller, Model model) {
-        this.controller = controller;
+    public GameView(MenuController menuController, Model model) {
+        this.menuController = menuController;
         this.model = model;
+    }
+
+    public void setFlowController(FlowController flowController) {
+        this.flowController = flowController;
     }
 
     @Override
@@ -178,7 +184,7 @@ public class GameView implements View {
                 }
             }
         }
-        controller.viewUpdateComplete();
+        flowController.viewUpdateComplete();
     }
 
     private void deliverView() {
@@ -195,12 +201,12 @@ public class GameView implements View {
             GameType gameType = (GameType) (e.widget).getData(MENUITEM_KEY_GAMETYPE);
             // manage game menu entries
             if (buttonText.equals(RESTART_MENUITEM_TEXT)) {
-                controller.restartGame();
+                menuController.restartGame();
             } else if (buttonText.equals(ANOTHER_MENUITEM_TEXT)) {
-                controller.reselectGame();
+                menuController.reselectGame();
                 // select game menu entries
             } else {
-                controller.startGame(gameType);
+                menuController.startGame(gameType);
             }
         }
 
@@ -211,7 +217,7 @@ public class GameView implements View {
         @Override
         public void mouseUp(MouseEvent e) {
             ViewCell cell = (ViewCell) e.widget;
-            controller.clickCell(cell.getModelCell().getRow(), cell.getModelCell().getColumn());
+            flowController.clickCell(cell.getModelCell().getRow(), cell.getModelCell().getColumn());
         }
 
     };
@@ -241,14 +247,17 @@ public class GameView implements View {
     }
 
     public void constructGameField() {
-        modelGameField = model.getGame().getGameField();
-
         if (model.getGame().getGameType() != gameType) {
+            modelGameField = model.getGame().getGameField();
             renewGameField();
             gameType = model.getGame().getGameType();
-        } else {
-            updateGameField();
+            deliverView();
         }
+    }
+
+    public void updateAfterClick() {
+        modelGameField = model.getGame().getGameField();
+        updateGameField();
         deliverView();
     }
 

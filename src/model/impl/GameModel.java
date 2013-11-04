@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class GameModel implements Model {
 
-    private ArrayList<GameObserver> gameObservers;
+    private ArrayList<GameObserver> gameObservers = new ArrayList<GameObserver>();
     private Game game;
 
     @Override
@@ -48,7 +48,6 @@ public class GameModel implements Model {
     public void initializeModel() {
         System.out.println("Hi, folks!");
         ProvidersHandler.registerProviders();
-        gameObservers = new ArrayList<GameObserver>();
         startGame(ProvidersHandler.DEFAULT_GAMETYPE);
     }
 

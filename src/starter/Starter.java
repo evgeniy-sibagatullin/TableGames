@@ -1,7 +1,7 @@
 package starter;
 
-import controller.Controller;
-import controller.GameController;
+import controller.GameMenuController;
+import controller.MenuController;
 import model.GameObserver;
 import model.Model;
 import model.impl.GameModel;
@@ -13,14 +13,13 @@ public class Starter {
      */
     public static void main(String[] args) {
         Model model = new GameModel();
-        Controller controller = new GameController();
+        MenuController menuController = new GameMenuController();
         try {
-            controller.initializeController(model);
+            menuController.initializeController(model);
         } finally {
-            model.removeObserver((GameObserver) controller);
+            model.removeObserver((GameObserver) menuController);
             System.out.println("Game " + model.getGame().getGameType() + " finished.");
             System.out.println("See you!");
         }
     }
-
 }

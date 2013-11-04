@@ -6,7 +6,7 @@ import model.Model;
 import view.View;
 import view.impl.GameView;
 
-public class GameController implements Controller, GameObserver {
+public class GameMenuController implements MenuController, GameObserver {
 
     private Model model;
     private View view;
@@ -15,8 +15,11 @@ public class GameController implements Controller, GameObserver {
     public void initializeController(Model model) {
         this.model = model;
         model.initializeModel();
-        model.registerObserver(this);
         view = new GameView(this, model);
+        model.registerObserver(this);
+        GameFlowController flowController = new GameFlowController(model, view);
+        model.registerObserver(flowController);
+        view.setFlowController(flowController);
         view.initializeView();
     }
 
@@ -45,24 +48,4 @@ public class GameController implements Controller, GameObserver {
     public void update() {
         view.constructGameField();
     }
-
-    @Override
-    public void clickCell(int row, int column) {
-        model.clickCell(row, column);
-        checkWinConditions();
-    }
-
-    @Override
-    public void checkWinConditions() {
-        if (model.checkWinConditions()) {
-            view.showWinPopup();
-            model.restartGame();
-        }
-    }
-
-    @Override
-    public void viewUpdateComplete() {
-        model.viewUpdateComplete();
-    }
-
 }
