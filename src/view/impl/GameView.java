@@ -4,7 +4,7 @@ import controller.FlowController;
 import controller.MenuController;
 import enums.GameType;
 import model.Model;
-import model.impl.ModelCell;
+import model.ModelCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
@@ -199,12 +199,12 @@ public class GameView implements View {
         public void widgetSelected(SelectionEvent e) {
             String buttonText = ((MenuItem) e.widget).getText();
             GameType gameType = (GameType) (e.widget).getData(MENUITEM_KEY_GAMETYPE);
-            // manage game menu entries
+            // manage model.game menu entries
             if (buttonText.equals(RESTART_MENUITEM_TEXT)) {
                 menuController.restartGame();
             } else if (buttonText.equals(ANOTHER_MENUITEM_TEXT)) {
                 menuController.reselectGame();
-                // select game menu entries
+                // select model.game menu entries
             } else {
                 menuController.startGame(gameType);
             }

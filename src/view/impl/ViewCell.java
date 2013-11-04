@@ -1,7 +1,7 @@
 package view.impl;
 
 import enums.CellState;
-import model.impl.ModelCell;
+import model.ModelCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;

@@ -1,7 +1,7 @@
 package model;
 
 import enums.GameType;
-import game.Game;
+import model.game.Game;
 
 public interface Model {
 
@@ -19,17 +19,17 @@ public interface Model {
     void initializeModel();
 
     /**
-     * Starts new game defined by input parameter;
+     * Starts new model.game defined by input parameter;
      */
     void startGame(GameType gameType);
 
     /**
-     * Starts new one round of the same game.
+     * Starts new one round of the same model.game.
      */
     void restartGame();
 
     /**
-     * Stops current game
+     * Stops current model.game
      */
     void stopGame();
 
