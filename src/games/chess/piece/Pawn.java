@@ -1,9 +1,8 @@
 package games.chess.piece;
 
 import enums.Side;
-import model.piece.GamePiece;
 
-public class Pawn extends GamePiece {
+public class Pawn extends ChessPiece {
 
     public Pawn(int row, int column, Side side) {
         super(row, column, side);
@@ -14,6 +13,11 @@ public class Pawn extends GamePiece {
         return (getSide() == Side.WHITE) ?
                 "img/chess/Chess-PawnW.png" :
                 "img/chess/Chess-PawnB.png";
+    }
+
+    @Override
+    public int getPower() {
+        return 1;
     }
 
 }

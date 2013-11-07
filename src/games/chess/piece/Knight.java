@@ -1,9 +1,8 @@
 package games.chess.piece;
 
 import enums.Side;
-import model.piece.GamePiece;
 
-public class Knight extends GamePiece {
+public class Knight extends ChessPiece {
 
     public Knight(int row, int column, Side side) {
         super(row, column, side);
@@ -16,4 +15,8 @@ public class Knight extends GamePiece {
                 "img/chess/Chess-KnightB.png";
     }
 
+    @Override
+    public int getPower() {
+        return 2;
+    }
 }
