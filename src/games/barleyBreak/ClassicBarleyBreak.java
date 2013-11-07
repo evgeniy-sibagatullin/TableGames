@@ -39,9 +39,9 @@ public class
             }
         }
         gameField[FIELD_SIZE - 1][FIELD_SIZE - 1].setBackgroundImage(null);
-        gameField[FIELD_SIZE - 1][FIELD_SIZE - 1].setCellState(CellState.CHOOSE);
+        gameField[FIELD_SIZE - 1][FIELD_SIZE - 1].setCellState(CellState.SELECTED);
         setGameField(gameField);
-        updateNeighbourCellStates(FIELD_SIZE - 1, FIELD_SIZE - 1, CellState.ALLOWED);
+        updateNeighbourCellStates(FIELD_SIZE - 1, FIELD_SIZE - 1, CellState.ALLOWED_MOVE);
     }
 
     @Override
@@ -50,11 +50,14 @@ public class
     }
 
     @Override
-    public void clickCell(int row, int column) {
+    public boolean clickCell(int row, int column) {
+        boolean isMoveReal = false;
         Direction moveDirection = moveDirection(row, column);
         if (moveDirection != Direction.NONE) {
             performMove(row, column, moveDirection);
+            isMoveReal = true;
         }
+        return isMoveReal;
     }
 
     private Direction moveDirection(int row, int column) {
@@ -96,8 +99,8 @@ public class
         getGameField()[row][column].setPower(0);
         getGameField()[row][column].setBackgroundImage(null);
         getGameField()[row][column].setChanged(true);
-        updateNeighbourCellStates(row, column, CellState.ALLOWED);
-        getGameField()[row][column].setCellState(CellState.CHOOSE);
+        updateNeighbourCellStates(row, column, CellState.ALLOWED_MOVE);
+        getGameField()[row][column].setCellState(CellState.SELECTED);
     }
 
     private void updateNeighbourCellStates(int row, int column, CellState cellState) {

@@ -22,7 +22,7 @@ public interface Game {
 
     void setPieces(List<Piece> pieces);
 
-    void clickCell(int row, int column);
+    boolean clickCell(int row, int column);
 
     boolean checkWinConditions();
 
