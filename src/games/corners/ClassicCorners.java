@@ -43,7 +43,8 @@ public class ClassicCorners extends AbstractGame implements Corners {
     }
 
     @Override
-    public void clickCell(int row, int column) {
+    public boolean clickCell(int row, int column) {
+        return false;
     }
 
 }

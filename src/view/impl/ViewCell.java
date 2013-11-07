@@ -12,36 +12,11 @@ public class ViewCell extends Canvas {
 
     private static final int BORDER_PADDING = 5;
 
-    private static final int BORDER_STYLE_DEFAULT = SWT.LINE_SOLID;
-    private static final int BORDER_WIDTH_DEFAULT = 2;
-    private static final Color COLOR_DEFAULT = new Color(Display.getCurrent(), 200, 200, 200);
-
-    private static final int BORDER_STYLE_ALLOWED = SWT.LINE_DOT;
-    private static final int BORDER_WIDTH_ALLOWED = 10;
-    private static final Color COLOR_ALLOWED = new Color(Display.getCurrent(), 50, 250, 50);
-
-    private static final int BORDER_STYLE_ATTACKED = SWT.LINE_DOT;
-    private static final int BORDER_WIDTH_ATTACKED = 10;
-    private static final Color COLOR_ATTACKED = new Color(Display.getCurrent(), 250, 50, 50);
-
-    private static final int BORDER_STYLE_FOCUSED = SWT.LINE_DOT;
-    private static final int BORDER_WIDTH_FOCUSED = 10;
-    private static final Color COLOR_FOCUSED = new Color(Display.getCurrent(), 50, 50, 250);
-
-    private static final int BORDER_STYLE_CHOOSE = SWT.LINE_DASH;
-    private static final int BORDER_WIDTH_CHOOSE = 5;
-    private static final Color COLOR_CHOOSE = new Color(Display.getCurrent(), 50, 250, 250);
-
     private static final int POWER_DEFAULT_FONT_SIZE = 20;
     private static final Font POWER_DEFAULT_FONT = new Font(Display.getCurrent(), "Georgia", POWER_DEFAULT_FONT_SIZE, SWT.BOLD);
-
-    private static final int PIECE_IMAGE_PADDING = (BORDER_PADDING + BORDER_WIDTH_DEFAULT) * 2;
-
+    private static final int PIECE_IMAGE_PADDING = (BORDER_PADDING + 5) * 2;
 
     private ModelCell modelCell;
-    private int borderStyle = BORDER_STYLE_DEFAULT;
-    private int borderWidth = BORDER_WIDTH_DEFAULT;
-    private Color borderColor = COLOR_DEFAULT;
     private boolean isMouseEnterEvent;
 
     public ViewCell(Composite parent, int style) {
@@ -117,22 +92,16 @@ public class ViewCell extends Canvas {
     }
 
     private void drawBorder(GC gc, Rectangle rectangle) {
+        CellState cellState;
         if (isMouseEnterEvent) {
-            setBorderSettings(BORDER_STYLE_FOCUSED, BORDER_WIDTH_FOCUSED, COLOR_FOCUSED);
+            cellState = CellState.FOCUSED;
             isMouseEnterEvent = false;
         } else {
-            if (modelCell.getCellState() == CellState.DEFAULT) {
-                setBorderSettings(BORDER_STYLE_DEFAULT, BORDER_WIDTH_DEFAULT, COLOR_DEFAULT);
-            } else if (modelCell.getCellState() == CellState.ALLOWED) {
-                setBorderSettings(BORDER_STYLE_ALLOWED, BORDER_WIDTH_ALLOWED, COLOR_ALLOWED);
-            } else if (modelCell.getCellState() == CellState.ATTACKED) {
-                setBorderSettings(BORDER_STYLE_ATTACKED, BORDER_WIDTH_ATTACKED, COLOR_ATTACKED);
-            } else if (modelCell.getCellState() == CellState.FOCUSED) {
-                setBorderSettings(BORDER_STYLE_FOCUSED, BORDER_WIDTH_FOCUSED, COLOR_FOCUSED);
-            } else if (modelCell.getCellState() == CellState.CHOOSE) {
-                setBorderSettings(BORDER_STYLE_CHOOSE, BORDER_WIDTH_CHOOSE, COLOR_CHOOSE);
-            }
+            cellState = modelCell.getCellState();
         }
+        int borderStyle = cellState.getBorderStyle();
+        int borderWidth = cellState.getBorderWidth();
+        Color borderColor = cellState.getBorderColor();
 
         gc.setLineStyle(borderStyle);
         gc.setLineWidth(borderWidth);
@@ -151,16 +120,9 @@ public class ViewCell extends Canvas {
     private void drawPowerText(GC gc, Rectangle rectangle) {
         if (modelCell != null && modelCell.getPower() != 0) {
             gc.setFont(POWER_DEFAULT_FONT);
-            gc.setForeground(new Color(Display.getCurrent(), 50, 50, 250));
+            gc.setForeground(new Color(Display.getCurrent(), 0, 250, 0));
             gc.drawText(Integer.toString(modelCell.getPower()), (rectangle.width - POWER_DEFAULT_FONT_SIZE) / 2,
                     (rectangle.height - POWER_DEFAULT_FONT_SIZE) / 2, SWT.DRAW_TRANSPARENT);
         }
     }
-
-    private void setBorderSettings(int borderStyle, int borderWidth, Color borderColor) {
-        this.borderStyle = borderStyle;
-        this.borderWidth = borderWidth;
-        this.borderColor = borderColor;
-    }
-
 }

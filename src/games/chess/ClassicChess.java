@@ -18,25 +18,16 @@ public class ClassicChess extends AbstractGame implements Chess {
     private static final int FIELD_SIZE = 8;
     private Side activeSide;
     private Side humanPlayerSide;
-    private boolean isPieceSelected;
     private ModelCell selectedCell;
 
-    private static final int PAWN_POWER = 1;
-    private static final int KNIGHT_POWER = 2;
-    private static final int BISHOP_POWER = 3;
-    private static final int ROOK_POWER = 4;
-    private static final int QUEEN_POWER = 5;
-    private static final int KING_POWER = 6;
-
     public ClassicChess() {
-        isPieceSelected = false;
         activeSide = Side.WHITE;
         humanPlayerSide = Side.WHITE;
         setGameType(GameType.CHESS);
         initGameField();
         initPieces();
         addPiecesToGameField();
-        giveMoveToActiveSide();
+        updateFieldBeforeNewMove();
     }
 
     @Override
@@ -92,68 +83,26 @@ public class ClassicChess extends AbstractGame implements Chess {
         for (Piece piece : getPieces()) {
             ModelCell cell = getGameField()[piece.getRow()][piece.getColumn()];
             cell.setPiece(piece);
-            if (piece instanceof Pawn) {
-                cell.setPower(PAWN_POWER);
-            } else if (piece instanceof Knight) {
-                cell.setPower(KNIGHT_POWER);
-            } else if (piece instanceof Bishop) {
-                cell.setPower(BISHOP_POWER);
-            } else if (piece instanceof Rook) {
-                cell.setPower(ROOK_POWER);
-            } else if (piece instanceof Queen) {
-                cell.setPower(QUEEN_POWER);
-            } else if (piece instanceof King) {
-                cell.setPower(KING_POWER);
-            }
         }
     }
 
     @Override
-    public void clickCell(int row, int column) {
+    public boolean clickCell(int row, int column) {
+        boolean isMoveReal = true;
         ModelCell cell = getGameField()[row][column];
-        if (CellState.ATTACKED == cell.getCellState()) {
+        if (CellState.ATTACKED == cell.getCellState() || CellState.ALLOWED_MOVE == cell.getCellState()) {
             movePiece(row, column);
-        } else if (CellState.ALLOWED == cell.getCellState()) {
-            if (cell.getPiece() == null) {
-                movePiece(row, column);
-            } else {
-                if (isPieceSelected) {
-                    activeSide = (activeSide == Side.WHITE) ? Side.WHITE : Side.BLACK;
-                    giveMoveToActiveSide();
-                } else {
-                    isPieceSelected = true;
-                }
-                updateAllowedCells(cell);
-                selectedCell = getGameField()[row][column];
-                selectedCell.setCellState(CellState.CHOOSE);
-                selectedCell.setChanged(true);
-            }
+        } else if (CellState.ALLOWED_PIECE == cell.getCellState()) {
+            updateFieldBeforeNewMove();
+
+            updateAllowedCells(cell);
+            selectedCell = getGameField()[row][column];
+            selectedCell.setCellState(CellState.SELECTED);
+            selectedCell.setChanged(true);
+        } else {
+            isMoveReal = false;
         }
-    }
-
-    @Override
-    public void viewUpdateComplete() {
-        if (activeSide != humanPlayerSide) {
-            performAIMove();
-        }
-    }
-
-    private void performAIMove() {
-        for (Piece piece : getPieces()) {
-            if (piece.getSide() == activeSide) {
-                checkMoveQuality();
-            }
-        }
-        performMoveWithBestQuality();
-
-        activeSide = (activeSide == Side.WHITE) ? Side.BLACK : Side.WHITE;
-        giveMoveToActiveSide();
-    }
-
-    private void checkMoveQuality() {
-    }
-
-    private void performMoveWithBestQuality() {
+        return isMoveReal;
     }
 
     private void movePiece(int row, int column) {
@@ -163,8 +112,31 @@ public class ClassicChess extends AbstractGame implements Chess {
         selectedCell.setPiece(null);
         selectedCell.setPower(0);
         activeSide = (activeSide == Side.WHITE) ? Side.BLACK : Side.WHITE;
-        giveMoveToActiveSide();
-        isPieceSelected = false;
+        updateFieldBeforeNewMove();
+    }
+
+    @Override
+    public void viewUpdateComplete() {
+        if (activeSide != humanPlayerSide) {
+            performAIMove();
+        }
+
+
+    }
+
+    private void performAIMove() {
+        for (Piece piece : getPieces()) {
+            if (piece.getSide() == activeSide) {
+                checkMoveQuality();
+            }
+        }
+        performMoveWithBestQuality();
+    }
+
+    private void checkMoveQuality() {
+    }
+
+    private void performMoveWithBestQuality() {
     }
 
     private void updatePiecesOnMove(int row, int column) {
@@ -182,7 +154,7 @@ public class ClassicChess extends AbstractGame implements Chess {
         }
     }
 
-    private void giveMoveToActiveSide() {
+    private void updateFieldBeforeNewMove() {
         clearPowerFromEmptyCells();
         setPowerToCellsOfGameField();
         setPiecesOfActiveSideAllowed();
@@ -203,6 +175,7 @@ public class ClassicChess extends AbstractGame implements Chess {
     private void setPowerToCellsOfGameField() {
         for (Piece piece : getPieces()) {
             if (piece.getSide() != activeSide) {
+                getGameField()[piece.getRow()][piece.getColumn()].setPower(((ChessPiece) piece).getPower());
                 updateAllowedCells(getGameField()[piece.getRow()][piece.getColumn()]);
             }
         }
@@ -215,7 +188,7 @@ public class ClassicChess extends AbstractGame implements Chess {
                 CellState cellState = (cell.getPiece() == null) ?
                         CellState.DEFAULT :
                         (cell.getPiece().getSide() == activeSide) ?
-                                CellState.ALLOWED :
+                                CellState.ALLOWED_PIECE :
                                 CellState.DEFAULT;
                 if (cell.getCellState() != cellState) {
                     cell.setCellState(cellState);
@@ -265,7 +238,7 @@ public class ClassicChess extends AbstractGame implements Chess {
             row += deltaY;
             if (row >= 0 && row < FIELD_SIZE && column >= 0 && column < FIELD_SIZE) {
                 if (getGameField()[row][column].getPiece() == null) {
-                    setCellStatePowerAndStatusChanged(getGameField()[row][column], CellState.ALLOWED, getGameField()[row][column].getPower());
+                    setCellStatePowerAndStatusChanged(getGameField()[row][column], CellState.ALLOWED_MOVE, getGameField()[row][column].getPower());
                 }
                 if (move == 0) {
                     if (column < FIELD_SIZE - 1) {
@@ -286,7 +259,7 @@ public class ClassicChess extends AbstractGame implements Chess {
                 setCellStatePowerAndStatusChanged(cellToBeCaptured, CellState.ATTACKED, cellToBeCaptured.getPower());
             }
         } else {
-            setCellStatePowerAndStatusChanged(cellToBeCaptured, CellState.DEFAULT, PAWN_POWER);
+            setCellStatePowerAndStatusChanged(cellToBeCaptured, CellState.DEFAULT, 1);
         }
     }
 
@@ -297,9 +270,16 @@ public class ClassicChess extends AbstractGame implements Chess {
                 int column = cell.getColumn() + deltaX;
                 if (isValidPosition(row, column) && ((Math.abs(deltaX) + Math.abs(deltaY)) == 3)) {
                     ModelCell presentCell = getGameField()[row][column];
-                    int power = (presentCell.getPower() > cell.getPower()) ? cell.getPower() : presentCell.getPower();
+
+                    int power;
+                    if (presentCell.getPower() == 0) {
+                        power = cell.getPower();
+                    } else {
+                        power = (presentCell.getPower() > cell.getPower()) ? cell.getPower() : presentCell.getPower();
+                    }
+
                     if (presentCell.getPiece() == null) {
-                        setCellStatePowerAndStatusChanged(presentCell, CellState.ALLOWED, power);
+                        setCellStatePowerAndStatusChanged(presentCell, CellState.ALLOWED_MOVE, power);
                     } else if (presentCell.getPiece().getSide() != cell.getPiece().getSide()) {
                         setCellStatePowerAndStatusChanged(presentCell, CellState.ATTACKED, power);
                     }
@@ -342,9 +322,16 @@ public class ClassicChess extends AbstractGame implements Chess {
                 column += deltaX;
                 if (isValidPosition(row, column)) {
                     ModelCell presentCell = getGameField()[row][column];
-                    int power = (presentCell.getPower() > cell.getPower()) ? cell.getPower() : presentCell.getPower();
+
+                    int power;
+                    if (presentCell.getPower() == 0) {
+                        power = cell.getPower();
+                    } else {
+                        power = (presentCell.getPower() > cell.getPower()) ? ((ChessPiece) cell.getPiece()).getPower() : presentCell.getPower();
+                    }
+
                     if (presentCell.getPiece() == null) {
-                        setCellStatePowerAndStatusChanged(presentCell, CellState.ALLOWED, power);
+                        setCellStatePowerAndStatusChanged(presentCell, CellState.ALLOWED_MOVE, power);
                     } else {
                         if (presentCell.getPiece().getSide() != cell.getPiece().getSide()) {
                             setCellStatePowerAndStatusChanged(presentCell, CellState.ATTACKED, power);
