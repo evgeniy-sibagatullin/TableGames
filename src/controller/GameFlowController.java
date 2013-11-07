@@ -1,10 +1,9 @@
 package controller;
 
-import model.GameObserver;
 import model.Model;
 import view.View;
 
-public class GameFlowController implements FlowController, GameObserver {
+public class GameFlowController implements FlowController {
 
     private Model model;
     private View view;
@@ -16,14 +15,16 @@ public class GameFlowController implements FlowController, GameObserver {
 
     @Override
     public void clickCell(int row, int column) {
-        model.clickCell(row, column);
-        checkWinConditions();
+        if (model.clickCell(row, column)) {
+            checkWinConditions();
+            view.updateGameField();
+        }
     }
 
     @Override
     public void checkWinConditions() {
         if (model.checkWinConditions()) {
-            view.showWinPopup();
+            view.showMessage("Congratulations. You win!");
             model.restartGame();
         }
     }
@@ -31,10 +32,5 @@ public class GameFlowController implements FlowController, GameObserver {
     @Override
     public void viewUpdateComplete() {
         model.viewUpdateComplete();
-    }
-
-    @Override
-    public void update() {
-        view.updateAfterClick();
     }
 }

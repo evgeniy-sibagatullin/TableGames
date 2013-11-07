@@ -5,12 +5,6 @@ import model.game.Game;
 
 public interface Model {
 
-    void registerObserver(GameObserver gameObserver);
-
-    void removeObserver(GameObserver gameObserver);
-
-    void notifyObservers();
-
     Game getGame();
 
     /**
@@ -33,7 +27,7 @@ public interface Model {
      */
     void stopGame();
 
-    void clickCell(int row, int column);
+    boolean clickCell(int row, int column);
 
     boolean checkWinConditions();
 

@@ -1,7 +1,6 @@
 import controller.GameMenuController;
 import controller.MenuController;
 import model.GameModel;
-import model.GameObserver;
 import model.Model;
 
 public class Starter {
@@ -15,7 +14,6 @@ public class Starter {
         try {
             menuController.initializeController(model);
         } finally {
-            model.removeObserver((GameObserver) menuController);
             System.out.println("Game " + model.getGame().getGameType() + " finished.");
             System.out.println("See you!");
         }

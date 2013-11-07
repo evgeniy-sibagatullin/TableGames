@@ -1,12 +1,11 @@
 package controller;
 
 import enums.GameType;
-import model.GameObserver;
 import model.Model;
 import view.View;
 import view.impl.GameView;
 
-public class GameMenuController implements MenuController, GameObserver {
+public class GameMenuController implements MenuController {
 
     private Model model;
     private View view;
@@ -16,9 +15,7 @@ public class GameMenuController implements MenuController, GameObserver {
         this.model = model;
         model.initializeModel();
         view = new GameView(this, model);
-        model.registerObserver(this);
         GameFlowController flowController = new GameFlowController(model, view);
-        model.registerObserver(flowController);
         view.setFlowController(flowController);
         view.initializeView();
     }
@@ -28,6 +25,7 @@ public class GameMenuController implements MenuController, GameObserver {
         model.startGame(gameType);
         view.enableManageGameMenu();
         view.disableSelectGameMenu();
+        view.updateGameField();
     }
 
     @Override
@@ -35,6 +33,7 @@ public class GameMenuController implements MenuController, GameObserver {
         model.restartGame();
         view.enableManageGameMenu();
         view.disableSelectGameMenu();
+        view.updateGameField();
     }
 
     @Override
@@ -42,10 +41,6 @@ public class GameMenuController implements MenuController, GameObserver {
         model.stopGame();
         view.enableSelectGameMenu();
         view.disableManageGameMenu();
-    }
-
-    @Override
-    public void update() {
-        view.constructGameField();
+        view.updateGameField();
     }
 }

@@ -4,32 +4,9 @@ import enums.GameType;
 import model.game.Game;
 import model.provider.impl.ProvidersHandler;
 
-import java.util.ArrayList;
-
 public class GameModel implements Model {
 
-    private ArrayList<GameObserver> gameObservers = new ArrayList<GameObserver>();
     private Game game;
-
-    @Override
-    public void registerObserver(GameObserver gameObserver) {
-        gameObservers.add(gameObserver);
-    }
-
-    @Override
-    public void removeObserver(GameObserver gameObserver) {
-        int index = gameObservers.indexOf(gameObserver);
-        if (index >= 0) {
-            gameObservers.remove(index);
-        }
-    }
-
-    @Override
-    public void notifyObservers() {
-        for (GameObserver gameObserver : gameObservers) {
-            gameObserver.update();
-        }
-    }
 
     @Override
     public Game getGame() {
@@ -53,7 +30,6 @@ public class GameModel implements Model {
     public void startGame(GameType gameType) {
         System.out.println("Game " + gameType + " started.");
         setGame(ProvidersHandler.newInstance(gameType));
-        notifyObservers();
     }
 
     @Override
@@ -66,13 +42,11 @@ public class GameModel implements Model {
     public void stopGame() {
         System.out.println("Game " + game.getGameType() + " finished.");
         setGame(ProvidersHandler.newInstance());
-        notifyObservers();
     }
 
     @Override
-    public void clickCell(int row, int column) {
-        game.clickCell(row, column);
-        notifyObservers();
+    public boolean clickCell(int row, int column) {
+        return game.clickCell(row, column);
     }
 
     @Override
