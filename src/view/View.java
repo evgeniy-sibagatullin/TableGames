@@ -16,9 +16,7 @@ public interface View {
 
     void disableManageGameMenu();
 
-    void constructGameField();
+    void updateGameField();
 
-    void updateAfterClick();
-
-    void showWinPopup();
+    void showMessage(String message);
 }

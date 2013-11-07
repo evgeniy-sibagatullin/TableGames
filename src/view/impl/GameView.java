@@ -55,16 +55,15 @@ public class GameView implements View {
 
     @Override
     public void initializeView() {
-        menuDisplay = new Display();
+        menuDisplay = Display.getDefault();
         setMonitorCenter();
         constructGridData();
         constructBoardShell();
-        constructGameField();
 
         enableSelectGameMenu();
         disableManageGameMenu();
 
-        deliverView();
+        updateGameField();
 
         while (!boardShell.isDisposed()) {
             if (!menuDisplay.readAndDispatch()) {
@@ -144,7 +143,7 @@ public class GameView implements View {
         anotherMenuItem.setText(ANOTHER_MENUITEM_TEXT);
     }
 
-    private void renewGameField() {
+    private void disposeAndCreateNewGameField() {
         if (gameFieldComposite != null) {
             gameFieldComposite.dispose();
         }
@@ -174,7 +173,7 @@ public class GameView implements View {
         return viewCell;
     }
 
-    private void updateGameField() {
+    private void redrawChangedCellsOnGameField() {
         for (int row = 0; row < gameFieldSize; row++) {
             for (int column = 0; column < gameFieldSize; column++) {
                 if (modelGameField[row][column].getChanged()) {
@@ -223,7 +222,7 @@ public class GameView implements View {
     };
 
 	/*
-     * logic
+     * menu update logic
 	 */
 
     @Override
@@ -246,25 +245,24 @@ public class GameView implements View {
         manageGameMenuHeader.setEnabled(false);
     }
 
-    public void constructGameField() {
-        if (model.getGame().getGameType() != gameType) {
-            modelGameField = model.getGame().getGameField();
-            renewGameField();
-            gameType = model.getGame().getGameType();
-            deliverView();
-        }
-    }
+	/*
+     * game flow logic
+	 */
 
-    public void updateAfterClick() {
+    public void updateGameField() {
         modelGameField = model.getGame().getGameField();
-        updateGameField();
+        if (model.getGame().getGameType() != gameType) {
+            disposeAndCreateNewGameField();
+            gameType = model.getGame().getGameType();
+        }
+        redrawChangedCellsOnGameField();
         deliverView();
     }
 
     @Override
-    public void showWinPopup() {
+    public void showMessage(String message) {
         MessageBox messageBox = new MessageBox(boardShell, SWT.ICON_INFORMATION);
-        messageBox.setMessage("Congratulations. You win!");
+        messageBox.setMessage(message);
         int rc = messageBox.open();
 
         switch (rc) {
