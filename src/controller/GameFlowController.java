@@ -16,8 +16,8 @@ public class GameFlowController implements FlowController {
     @Override
     public void clickCell(int row, int column) {
         if (model.clickCell(row, column)) {
-            checkWinConditions();
             view.updateGameField();
+            checkWinConditions();
         }
     }
 
