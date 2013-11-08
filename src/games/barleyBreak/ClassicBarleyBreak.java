@@ -6,19 +6,40 @@ import model.ModelCell;
 import model.game.AbstractGame;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
-public class
-        ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
+public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
 
     private static final int FIELD_SIZE = 4;
     private ModelCell emptyCell = new ModelCell(FIELD_SIZE - 1, FIELD_SIZE - 1, 0,
             null, null, CellState.SELECTED);
 
+    private static final int PREPARATION_RANDOM_MOVES_NEEDED = 50;
+    private boolean isFieldPrepared = false;
+    private int preparationRandomMovesCount = 0;
+    private Random random = new Random();
+
     public ClassicBarleyBreak() {
         setGameType(GameType.BARLEY_BREAK);
         initGameField();
+        prepareField();
+    }
+
+    @Override
+    public int getFieldSize() {
+        return FIELD_SIZE;
+    }
+
+    @Override
+    public boolean clickCell(int row, int column) {
+        boolean isMoveReal = false;
+        ModelCell selectedCell = getGameField()[row][column];
+        if (selectedCell.getCellState() == CellState.ALLOWED_PIECE) {
+            swapCells(selectedCell);
+            isMoveReal = true;
+        }
+        return isMoveReal;
     }
 
     private void initGameField() {
@@ -26,7 +47,6 @@ public class
         for (int index = 0; index < FIELD_SIZE * FIELD_SIZE - 1; index++) {
             numbers.add(index + 1);
         }
-        Collections.shuffle(numbers);
         numbers.add(0);
 
         ModelCell[][] gameField = new ModelCell[FIELD_SIZE][FIELD_SIZE];
@@ -44,20 +64,32 @@ public class
         updateNeighbourCellStates(FIELD_SIZE - 1, FIELD_SIZE - 1, CellState.ALLOWED_PIECE);
     }
 
-    @Override
-    public int getFieldSize() {
-        return FIELD_SIZE;
+    private void prepareField() {
+        while (!isFieldPrepared) {
+            performRandomMove();
+            preparationRandomMovesCount++;
+            if (preparationRandomMovesCount > PREPARATION_RANDOM_MOVES_NEEDED) {
+                isFieldPrepared = true;
+            }
+        }
     }
 
-    @Override
-    public boolean clickCell(int row, int column) {
-        boolean isMoveReal = false;
-        ModelCell selectedCell = getGameField()[row][column];
-        if (selectedCell.getCellState() == CellState.ALLOWED_PIECE) {
-            swapCells(selectedCell);
-            isMoveReal = true;
+    private void performRandomMove() {
+        boolean moveHappened = false;
+        while (!moveHappened) {
+            int row = emptyCell.getRow();
+            int column = emptyCell.getColumn();
+            int delta = (random.nextDouble() > 0.5) ?
+                    -1 : 1;
+            if (preparationRandomMovesCount % 2 == 0) {
+                row += delta;
+            } else {
+                column += delta;
+            }
+            if (row > -1 && row < FIELD_SIZE && column > -1 && column < FIELD_SIZE) {
+                moveHappened = clickCell(row, column);
+            }
         }
-        return isMoveReal;
     }
 
     private void swapCells(ModelCell selectedCell) {
