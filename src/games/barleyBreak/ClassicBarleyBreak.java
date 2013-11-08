@@ -1,7 +1,6 @@
 package games.barleyBreak;
 
 import enums.CellState;
-import enums.Direction;
 import enums.GameType;
 import model.ModelCell;
 import model.game.AbstractGame;
@@ -14,6 +13,8 @@ public class
         ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
 
     private static final int FIELD_SIZE = 4;
+    private ModelCell emptyCell = new ModelCell(FIELD_SIZE - 1, FIELD_SIZE - 1, 0,
+            null, null, CellState.SELECTED);
 
     public ClassicBarleyBreak() {
         setGameType(GameType.BARLEY_BREAK);
@@ -38,10 +39,9 @@ public class
                         COLOR_CELL, null, CellState.DEFAULT);
             }
         }
-        gameField[FIELD_SIZE - 1][FIELD_SIZE - 1].setBackgroundImage(null);
-        gameField[FIELD_SIZE - 1][FIELD_SIZE - 1].setCellState(CellState.SELECTED);
+        gameField[FIELD_SIZE - 1][FIELD_SIZE - 1] = emptyCell;
         setGameField(gameField);
-        updateNeighbourCellStates(FIELD_SIZE - 1, FIELD_SIZE - 1, CellState.ALLOWED_MOVE);
+        updateNeighbourCellStates(FIELD_SIZE - 1, FIELD_SIZE - 1, CellState.ALLOWED_PIECE);
     }
 
     @Override
@@ -52,55 +52,28 @@ public class
     @Override
     public boolean clickCell(int row, int column) {
         boolean isMoveReal = false;
-        Direction moveDirection = moveDirection(row, column);
-        if (moveDirection != Direction.NONE) {
-            performMove(row, column, moveDirection);
+        ModelCell selectedCell = getGameField()[row][column];
+        if (selectedCell.getCellState() == CellState.ALLOWED_PIECE) {
+            swapCells(selectedCell);
             isMoveReal = true;
         }
         return isMoveReal;
     }
 
-    private Direction moveDirection(int row, int column) {
-        if (row > 0 && getGameField()[row - 1][column].getPower() == 0) {
-            return Direction.NORTH;
-        }
-        if (row < FIELD_SIZE - 1 && getGameField()[row + 1][column].getPower() == 0) {
-            return Direction.SOUTH;
-        }
-        if (column > 0 && getGameField()[row][column - 1].getPower() == 0) {
-            return Direction.WEST;
-        }
-        if (column < FIELD_SIZE - 1 && getGameField()[row][column + 1].getPower() == 0) {
-            return Direction.EAST;
-        }
-        return Direction.NONE;
-    }
+    private void swapCells(ModelCell selectedCell) {
+        getGameField()[emptyCell.getRow()][emptyCell.getColumn()] =
+                new ModelCell(emptyCell.getRow(), emptyCell.getColumn(), selectedCell.getPower(),
+                        COLOR_CELL, null, CellState.DEFAULT);
 
-    private void performMove(int row, int column, Direction direction) {
-        int swRow = row;
-        int swColumn = column;
-        if (direction == Direction.NORTH) {
-            swRow--;
-        } else if (direction == Direction.SOUTH) {
-            swRow++;
-        } else if (direction == Direction.EAST) {
-            swColumn++;
-        } else {
-            swColumn--;
-        }
-        swapCells(row, column, swRow, swColumn);
-    }
+        updateNeighbourCellStates(emptyCell.getRow(), emptyCell.getColumn(), CellState.DEFAULT);
+        updateNeighbourCellStates(selectedCell.getRow(), selectedCell.getColumn(), CellState.ALLOWED_PIECE);
 
-    private void swapCells(int row, int column, int swRow, int swColumn) {
-        getGameField()[swRow][swColumn].setPower(getGameField()[row][column].getPower());
-        getGameField()[swRow][swColumn].setBackgroundImage(COLOR_CELL);
-        getGameField()[swRow][swColumn].setChanged(true);
-        updateNeighbourCellStates(swRow, swColumn, CellState.DEFAULT);
-        getGameField()[row][column].setPower(0);
-        getGameField()[row][column].setBackgroundImage(null);
-        getGameField()[row][column].setChanged(true);
-        updateNeighbourCellStates(row, column, CellState.ALLOWED_MOVE);
-        getGameField()[row][column].setCellState(CellState.SELECTED);
+        emptyCell.setRow(selectedCell.getRow());
+        emptyCell.setColumn(selectedCell.getColumn());
+
+        getGameField()[selectedCell.getRow()][selectedCell.getColumn()] = emptyCell;
+        getGameField()[selectedCell.getRow()][selectedCell.getColumn()].setChanged(true);
+
     }
 
     private void updateNeighbourCellStates(int row, int column, CellState cellState) {
