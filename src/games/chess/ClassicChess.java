@@ -10,7 +10,6 @@ import model.game.AbstractGame;
 import model.piece.Piece;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ClassicChess extends AbstractGame implements Chess {
@@ -231,7 +230,7 @@ public class ClassicChess extends AbstractGame implements Chess {
                 || (moveDirection == Direction.SOUTH && cell.getRow() == 1)) {
             moveLength = 2;
         }
-        int deltaY = defineDeltaY(moveDirection);
+        int deltaY = moveDirection.getDeltaY();
         int row = cell.getRow();
         int column = cell.getColumn();
         for (int move = 0; move < moveLength; move++) {
@@ -312,8 +311,8 @@ public class ClassicChess extends AbstractGame implements Chess {
 
     private void updateAllowedCellsToMove(ModelCell cell, Direction[] directions, int moveLength) {
         for (Direction direction : directions) {
-            int deltaX = defineDeltaX(direction);
-            int deltaY = defineDeltaY(direction);
+            int deltaX = direction.getDeltaX();
+            int deltaY = direction.getDeltaY();
             int row = cell.getRow();
             int column = cell.getColumn();
 
@@ -347,27 +346,4 @@ public class ClassicChess extends AbstractGame implements Chess {
         return (row >= 0 && row < FIELD_SIZE && column >= 0 && column < FIELD_SIZE);
     }
 
-    private int defineDeltaX(Direction direction) {
-        Direction[] east = new Direction[]{Direction.NORTHEAST, Direction.EAST, Direction.SOUTHEAST};
-        Direction[] west = new Direction[]{Direction.NORTHWEST, Direction.WEST, Direction.SOUTHWEST};
-        int delta = 0;
-        if (Arrays.asList(east).contains(direction)) {
-            delta++;
-        } else if (Arrays.asList(west).contains(direction)) {
-            delta--;
-        }
-        return delta;
-    }
-
-    private int defineDeltaY(Direction direction) {
-        Direction[] south = new Direction[]{Direction.SOUTHWEST, Direction.SOUTH, Direction.SOUTHEAST};
-        Direction[] north = new Direction[]{Direction.NORTHWEST, Direction.NORTH, Direction.NORTHEAST};
-        int delta = 0;
-        if (Arrays.asList(south).contains(direction)) {
-            delta++;
-        } else if (Arrays.asList(north).contains(direction)) {
-            delta--;
-        }
-        return delta;
-    }
 }

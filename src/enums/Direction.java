@@ -1,7 +1,28 @@
 package enums;
 
 public enum Direction {
-    NORTHWEST, NORTH, NORTHEAST,
-    WEST, NONE, EAST,
-    SOUTHWEST, SOUTH, SOUTHEAST
+    NORTHWEST(-1, -1),
+    NORTH(-1, 0),
+    NORTHEAST(-1, 1),
+    WEST(0, -1),
+    EAST(0, 1),
+    SOUTHWEST(1, -1),
+    SOUTH(1, 0),
+    SOUTHEAST(1, 1);
+
+    int deltaY;
+    int deltaX;
+
+    private Direction(int deltaRow, int deltaColumn) {
+        this.deltaY = deltaRow;
+        this.deltaX = deltaColumn;
+    }
+
+    public int getDeltaY() {
+        return this.deltaY;
+    }
+
+    public int getDeltaX() {
+        return this.deltaX;
+    }
 }
