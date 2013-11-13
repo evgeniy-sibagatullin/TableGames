@@ -1,5 +1,5 @@
-import controller.GameMenuController;
-import controller.MenuController;
+import controller.Controller;
+import controller.GameController;
 import model.GameModel;
 import model.Model;
 
@@ -10,9 +10,9 @@ public class Starter {
      */
     public static void main(String[] args) {
         Model model = new GameModel();
-        MenuController menuController = new GameMenuController();
         try {
-            menuController.initializeController(model);
+            Controller menuController = new GameController(model);
+            menuController.toString();
         } finally {
             System.out.println("Game " + model.getGame().getGameType() + " finished.");
             System.out.println("See you!");

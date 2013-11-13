@@ -4,6 +4,7 @@ import enums.GameType;
 import games.barleyBreak.BarleyBreakProvider;
 import games.chess.ChessProvider;
 import games.corners.CornersProvider;
+import model.Model;
 import model.game.Game;
 import model.provider.Provider;
 
@@ -29,17 +30,17 @@ public class ProvidersHandler {
         providers.put(gametype, p);
     }
 
-    public static Game newInstance() {
-        return newInstance(DEFAULT_GAMETYPE);
+    public static Game newInstance(Model model) {
+        return newInstance(DEFAULT_GAMETYPE, model);
     }
 
-    public static Game newInstance(GameType gametype) {
+    public static Game newInstance(GameType gametype, Model model) {
 
         Provider p = providers.get(gametype);
         if (p == null)
             throw new IllegalArgumentException(
                     "No model.provider registered with name: " + gametype.toString());
-        return p.newGame();
+        return p.newGame(model);
     }
 
 }

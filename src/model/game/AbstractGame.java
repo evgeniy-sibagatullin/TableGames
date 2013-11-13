@@ -1,6 +1,7 @@
 package model.game;
 
 import enums.GameType;
+import model.Model;
 import model.ModelCell;
 import model.piece.Piece;
 
@@ -8,9 +9,14 @@ import java.util.List;
 
 public abstract class AbstractGame implements Game {
 
+    protected Model model;
     private GameType gameType;
     private ModelCell[][] gameField;
     private List<Piece> pieces;
+
+    public AbstractGame(Model model) {
+        this.model = model;
+    }
 
     @Override
     public GameType getGameType() {
@@ -45,9 +51,5 @@ public abstract class AbstractGame implements Game {
     @Override
     public boolean checkWinConditions() {
         return false;
-    }
-
-    @Override
-    public void viewUpdateComplete() {
     }
 }

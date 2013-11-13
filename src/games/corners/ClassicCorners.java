@@ -1,6 +1,7 @@
 package games.corners;
 
 import enums.GameType;
+import model.Model;
 import model.ModelCell;
 import model.game.AbstractGame;
 import model.piece.Piece;
@@ -11,7 +12,8 @@ public class ClassicCorners extends AbstractGame implements Corners {
 
     private static final int FIELD_SIZE = 10;
 
-    public ClassicCorners() {
+    public ClassicCorners(Model model) {
+        super(model);
         setGameType(GameType.CORNERS);
         initGameField();
     }
@@ -43,8 +45,8 @@ public class ClassicCorners extends AbstractGame implements Corners {
     }
 
     @Override
-    public boolean clickCell(int row, int column) {
-        return false;
+    public void clickCell(int row, int column) {
+
     }
 
 }

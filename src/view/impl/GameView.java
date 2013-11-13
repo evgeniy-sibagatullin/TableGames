@@ -1,7 +1,6 @@
 package view.impl;
 
-import controller.FlowController;
-import controller.MenuController;
+import controller.Controller;
 import enums.GameType;
 import model.Model;
 import model.ModelCell;
@@ -11,9 +10,10 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import view.GameObserver;
 import view.View;
 
-public class GameView implements View {
+public class GameView implements View, GameObserver {
 
     private static final String APPLICATION_TITLE_TEXT = "Table Games";
     private static final String SELECT_MENU_HEADER_TEXT = "Select Game";
@@ -26,8 +26,7 @@ public class GameView implements View {
     private static final String MENUITEM_KEY_GAMETYPE = "gameName";
 
     private Model model;
-    private MenuController menuController;
-    private FlowController flowController;
+    private Controller controller;
 
     private Display menuDisplay;
     private int monitorCenterX;
@@ -44,17 +43,11 @@ public class GameView implements View {
     private ModelCell[][] modelGameField;
     private ViewCell[][] viewGameField;
 
-    public GameView(MenuController menuController, Model model) {
-        this.menuController = menuController;
+    public GameView(Controller menuController, Model model) {
+        this.controller = menuController;
         this.model = model;
-    }
+        model.registerObserver(this);
 
-    public void setFlowController(FlowController flowController) {
-        this.flowController = flowController;
-    }
-
-    @Override
-    public void initializeView() {
         menuDisplay = Display.getDefault();
         setMonitorCenter();
         constructGridData();
@@ -62,14 +55,18 @@ public class GameView implements View {
 
         enableSelectGameMenu();
         disableManageGameMenu();
+    }
 
-        updateGameField();
+    @Override
+    public void initializeView() {
+        updateView();
 
         while (!boardShell.isDisposed()) {
             if (!menuDisplay.readAndDispatch()) {
                 menuDisplay.sleep();
             }
         }
+        model.removeObserver(this);
     }
 
 	/*
@@ -183,7 +180,6 @@ public class GameView implements View {
                 }
             }
         }
-        flowController.viewUpdateComplete();
     }
 
     private void deliverView() {
@@ -200,12 +196,12 @@ public class GameView implements View {
             GameType gameType = (GameType) (e.widget).getData(MENUITEM_KEY_GAMETYPE);
             // manage model.game menu entries
             if (buttonText.equals(RESTART_MENUITEM_TEXT)) {
-                menuController.restartGame();
+                controller.restartGame();
             } else if (buttonText.equals(ANOTHER_MENUITEM_TEXT)) {
-                menuController.reselectGame();
+                controller.reselectGame();
                 // select model.game menu entries
             } else {
-                menuController.startGame(gameType);
+                controller.startGame(gameType);
             }
         }
 
@@ -216,7 +212,7 @@ public class GameView implements View {
         @Override
         public void mouseUp(MouseEvent e) {
             ViewCell cell = (ViewCell) e.widget;
-            flowController.clickCell(cell.getModelCell().getRow(), cell.getModelCell().getColumn());
+            controller.clickCell(cell.getModelCell().getRow(), cell.getModelCell().getColumn());
         }
 
     };
@@ -249,16 +245,6 @@ public class GameView implements View {
      * game flow logic
 	 */
 
-    public void updateGameField() {
-        modelGameField = model.getGame().getGameField();
-        if (model.getGame().getGameType() != gameType) {
-            disposeAndCreateNewGameField();
-            gameType = model.getGame().getGameType();
-        }
-        redrawChangedCellsOnGameField();
-        deliverView();
-    }
-
     @Override
     public void showMessage(String message) {
         MessageBox messageBox = new MessageBox(boardShell, SWT.ICON_INFORMATION);
@@ -269,5 +255,16 @@ public class GameView implements View {
             case SWT.OK:
                 break;
         }
+    }
+
+    @Override
+    public void updateView() {
+        modelGameField = model.getGame().getGameField();
+        if (model.getGame().getGameType() != gameType) {
+            disposeAndCreateNewGameField();
+            gameType = model.getGame().getGameType();
+        }
+        redrawChangedCellsOnGameField();
+        deliverView();
     }
 }

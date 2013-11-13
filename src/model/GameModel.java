@@ -3,10 +3,15 @@ package model;
 import enums.GameType;
 import model.game.Game;
 import model.provider.impl.ProvidersHandler;
+import view.GameObserver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameModel implements Model {
 
     private Game game;
+    private List<GameObserver> gameObservers = new ArrayList<GameObserver>();
 
     @Override
     public Game getGame() {
@@ -29,7 +34,8 @@ public class GameModel implements Model {
     @Override
     public void startGame(GameType gameType) {
         System.out.println("Game " + gameType + " started.");
-        setGame(ProvidersHandler.newInstance(gameType));
+        setGame(ProvidersHandler.newInstance(gameType, this));
+        modelChangedEvent();
     }
 
     @Override
@@ -41,12 +47,13 @@ public class GameModel implements Model {
     @Override
     public void stopGame() {
         System.out.println("Game " + game.getGameType() + " finished.");
-        setGame(ProvidersHandler.newInstance());
+        setGame(ProvidersHandler.newInstance(this));
+        modelChangedEvent();
     }
 
     @Override
-    public boolean clickCell(int row, int column) {
-        return game.clickCell(row, column);
+    public void clickCell(int row, int column) {
+        game.clickCell(row, column);
     }
 
     @Override
@@ -55,7 +62,25 @@ public class GameModel implements Model {
     }
 
     @Override
-    public void viewUpdateComplete() {
-        game.viewUpdateComplete();
+    public void registerObserver(GameObserver gameObserver) {
+        gameObservers.add(gameObserver);
+    }
+
+    @Override
+    public void removeObserver(GameObserver gameObserver) {
+        if (gameObservers.contains(gameObserver)) {
+            gameObservers.remove(gameObserver);
+        }
+    }
+
+    @Override
+    public void modelChangedEvent() {
+        notifyGameObservers();
+    }
+
+    private void notifyGameObservers() {
+        for (GameObserver gameObserver : gameObservers) {
+            gameObserver.updateView();
+        }
     }
 }

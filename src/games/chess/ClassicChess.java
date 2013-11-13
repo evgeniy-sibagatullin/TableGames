@@ -5,6 +5,7 @@ import enums.Direction;
 import enums.GameType;
 import enums.Side;
 import games.chess.piece.*;
+import model.Model;
 import model.ModelCell;
 import model.game.AbstractGame;
 import model.piece.Piece;
@@ -16,12 +17,11 @@ public class ClassicChess extends AbstractGame implements Chess {
 
     private static final int FIELD_SIZE = 8;
     private Side activeSide;
-    private Side humanPlayerSide;
     private ModelCell selectedCell;
 
-    public ClassicChess() {
+    public ClassicChess(Model model) {
+        super(model);
         activeSide = Side.WHITE;
-        humanPlayerSide = Side.WHITE;
         setGameType(GameType.CHESS);
         initGameField();
         initPieces();
@@ -86,11 +86,11 @@ public class ClassicChess extends AbstractGame implements Chess {
     }
 
     @Override
-    public boolean clickCell(int row, int column) {
-        boolean isMoveReal = true;
+    public void clickCell(int row, int column) {
         ModelCell cell = getGameField()[row][column];
         if (CellState.ATTACKED == cell.getCellState() || CellState.ALLOWED_MOVE == cell.getCellState()) {
             movePiece(row, column);
+            model.modelChangedEvent();
         } else if (CellState.ALLOWED_PIECE == cell.getCellState()) {
             updateFieldBeforeNewMove();
 
@@ -98,10 +98,8 @@ public class ClassicChess extends AbstractGame implements Chess {
             selectedCell = getGameField()[row][column];
             selectedCell.setCellState(CellState.SELECTED);
             selectedCell.setChanged(true);
-        } else {
-            isMoveReal = false;
+            model.modelChangedEvent();
         }
-        return isMoveReal;
     }
 
     private void movePiece(int row, int column) {
@@ -112,30 +110,6 @@ public class ClassicChess extends AbstractGame implements Chess {
         selectedCell.setPower(0);
         activeSide = (activeSide == Side.WHITE) ? Side.BLACK : Side.WHITE;
         updateFieldBeforeNewMove();
-    }
-
-    @Override
-    public void viewUpdateComplete() {
-        if (activeSide != humanPlayerSide) {
-            performAIMove();
-        }
-
-
-    }
-
-    private void performAIMove() {
-        for (Piece piece : getPieces()) {
-            if (piece.getSide() == activeSide) {
-                checkMoveQuality();
-            }
-        }
-        performMoveWithBestQuality();
-    }
-
-    private void checkMoveQuality() {
-    }
-
-    private void performMoveWithBestQuality() {
     }
 
     private void updatePiecesOnMove(int row, int column) {

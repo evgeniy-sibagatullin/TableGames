@@ -2,6 +2,7 @@ package games.barleyBreak;
 
 import enums.CellState;
 import enums.GameType;
+import model.Model;
 import model.ModelCell;
 import model.game.AbstractGame;
 
@@ -20,10 +21,11 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
     private int preparationRandomMovesCount = 0;
     private Random random = new Random();
 
-    public ClassicBarleyBreak() {
+    public ClassicBarleyBreak(Model model) {
+        super(model);
         setGameType(GameType.BARLEY_BREAK);
         initGameField();
-        prepareField();
+//        prepareField();
     }
 
     @Override
@@ -32,14 +34,12 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
     }
 
     @Override
-    public boolean clickCell(int row, int column) {
-        boolean isMoveReal = false;
+    public void clickCell(int row, int column) {
         ModelCell selectedCell = getGameField()[row][column];
         if (selectedCell.getCellState() == CellState.ALLOWED_PIECE) {
             swapCells(selectedCell);
-            isMoveReal = true;
+            model.modelChangedEvent();
         }
-        return isMoveReal;
     }
 
     private void initGameField() {
@@ -81,13 +81,16 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
             int column = emptyCell.getColumn();
             int delta = (random.nextDouble() > 0.5) ?
                     -1 : 1;
+
             if (preparationRandomMovesCount % 2 == 0) {
                 row += delta;
             } else {
                 column += delta;
             }
+
             if (row > -1 && row < FIELD_SIZE && column > -1 && column < FIELD_SIZE) {
-                moveHappened = clickCell(row, column);
+                clickCell(row, column);
+                moveHappened = true;
             }
         }
     }

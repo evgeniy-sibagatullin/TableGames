@@ -5,18 +5,16 @@ import model.Model;
 import view.View;
 import view.impl.GameView;
 
-public class GameMenuController implements MenuController {
+public class GameController implements Controller {
 
     private Model model;
     private View view;
 
-    @Override
-    public void initializeController(Model model) {
+    public GameController(Model model) {
         this.model = model;
-        model.initializeModel();
         view = new GameView(this, model);
-        GameFlowController flowController = new GameFlowController(model, view);
-        view.setFlowController(flowController);
+
+        model.initializeModel();
         view.initializeView();
     }
 
@@ -25,7 +23,6 @@ public class GameMenuController implements MenuController {
         model.startGame(gameType);
         view.enableManageGameMenu();
         view.disableSelectGameMenu();
-        view.updateGameField();
     }
 
     @Override
@@ -33,7 +30,6 @@ public class GameMenuController implements MenuController {
         model.restartGame();
         view.enableManageGameMenu();
         view.disableSelectGameMenu();
-        view.updateGameField();
     }
 
     @Override
@@ -41,6 +37,18 @@ public class GameMenuController implements MenuController {
         model.stopGame();
         view.enableSelectGameMenu();
         view.disableManageGameMenu();
-        view.updateGameField();
+    }
+
+    @Override
+    public void clickCell(int row, int column) {
+        model.clickCell(row, column);
+        checkWinConditions();
+    }
+
+    private void checkWinConditions() {
+        if (model.checkWinConditions()) {
+            view.showMessage("Congratulations. You win!");
+            model.restartGame();
+        }
     }
 }
