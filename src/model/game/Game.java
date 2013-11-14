@@ -10,8 +10,6 @@ public interface Game {
 
     GameType getGameType();
 
-    void setGameType(GameType gameType);
-
     int getFieldSize();
 
     ModelCell[][] getGameField();

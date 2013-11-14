@@ -14,18 +14,14 @@ public abstract class AbstractGame implements Game {
     private ModelCell[][] gameField;
     private List<Piece> pieces;
 
-    public AbstractGame(Model model) {
+    public AbstractGame(Model model, GameType gameType) {
         this.model = model;
+        this.gameType = gameType;
     }
 
     @Override
     public GameType getGameType() {
         return gameType;
-    }
-
-    @Override
-    public void setGameType(GameType gameType) {
-        this.gameType = gameType;
     }
 
     @Override

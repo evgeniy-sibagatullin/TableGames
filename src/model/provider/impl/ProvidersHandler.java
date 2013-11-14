@@ -40,7 +40,7 @@ public class ProvidersHandler {
         if (p == null)
             throw new IllegalArgumentException(
                     "No model.provider registered with name: " + gametype.toString());
-        return p.newGame(model);
+        return p.newGame(model, gametype);
     }
 
 }

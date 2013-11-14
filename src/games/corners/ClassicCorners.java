@@ -12,9 +12,8 @@ public class ClassicCorners extends AbstractGame implements Corners {
 
     private static final int FIELD_SIZE = 10;
 
-    public ClassicCorners(Model model) {
-        super(model);
-        setGameType(GameType.CORNERS);
+    public ClassicCorners(Model model, GameType gameType) {
+        super(model, gameType);
         initGameField();
     }
 
@@ -26,7 +25,6 @@ public class ClassicCorners extends AbstractGame implements Corners {
                 gameField[row][column] = new ModelCell(row, column, color, null);
             }
         }
-
         setGameField(gameField);
     }
 
@@ -46,7 +44,6 @@ public class ClassicCorners extends AbstractGame implements Corners {
 
     @Override
     public void clickCell(int row, int column) {
-
     }
 
 }

@@ -21,9 +21,8 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
     private int preparationRandomMovesCount = 0;
     private Random random = new Random();
 
-    public ClassicBarleyBreak(Model model) {
-        super(model);
-        setGameType(GameType.BARLEY_BREAK);
+    public ClassicBarleyBreak(Model model, GameType gameType) {
+        super(model, gameType);
         initGameField();
 //        prepareField();
     }
