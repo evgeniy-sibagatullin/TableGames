@@ -24,7 +24,6 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
     public ClassicBarleyBreak(Model model, GameType gameType) {
         super(model, gameType);
         initGameField();
-//        prepareField();
     }
 
     @Override
@@ -37,7 +36,7 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
         ModelCell selectedCell = getGameField()[row][column];
         if (selectedCell.getCellState() == CellState.ALLOWED_PIECE) {
             swapCells(selectedCell);
-            model.modelChangedEvent();
+            model.setChanged(true);
         }
     }
 
@@ -63,13 +62,28 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
         updateNeighbourCellStates(FIELD_SIZE - 1, FIELD_SIZE - 1, CellState.ALLOWED_PIECE);
     }
 
-    private void prepareField() {
+    @Override
+    public void run() {
         while (!isFieldPrepared) {
+            delay(150);
             performRandomMove();
+
             preparationRandomMovesCount++;
             if (preparationRandomMovesCount > PREPARATION_RANDOM_MOVES_NEEDED) {
                 isFieldPrepared = true;
             }
+        }
+
+        while (isFieldPrepared) {
+            delay(5000);
+            performRandomMove();
+        }
+    }
+
+    private void delay(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ignored) {
         }
     }
 

@@ -6,7 +6,7 @@ import model.piece.Piece;
 
 import java.util.List;
 
-public interface Game {
+public interface Game extends Runnable {
 
     GameType getGameType();
 

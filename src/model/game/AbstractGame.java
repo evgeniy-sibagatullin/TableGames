@@ -48,4 +48,8 @@ public abstract class AbstractGame implements Game {
     public boolean checkWinConditions() {
         return false;
     }
+
+    @Override
+    public void run() {
+    }
 }

@@ -2,7 +2,6 @@ package model;
 
 import enums.GameType;
 import model.game.Game;
-import view.GameObserver;
 
 public interface Model {
 
@@ -30,11 +29,9 @@ public interface Model {
 
     void clickCell(int row, int column);
 
+    void setChanged(boolean changed);
+
+    boolean isChanged();
+
     boolean checkWinConditions();
-
-    void registerObserver(GameObserver gameObserver);
-
-    void removeObserver(GameObserver gameObserver);
-
-    void modelChangedEvent();
 }

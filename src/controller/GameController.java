@@ -2,6 +2,7 @@ package controller;
 
 import enums.GameType;
 import model.Model;
+import model.provider.impl.ProvidersHandler;
 import view.View;
 import view.impl.GameView;
 
@@ -12,24 +13,29 @@ public class GameController implements Controller {
 
     public GameController(Model model) {
         this.model = model;
-        view = new GameView(this, model);
-
         model.initializeModel();
+        view = new GameView(this, model);
+        startDefaultGame();
         view.initializeView();
     }
 
     @Override
+    public void startDefaultGame() {
+        view.enableSelectGameMenu();
+        view.disableManageGameMenu();
+        model.startGame(ProvidersHandler.DEFAULT_GAMETYPE);
+    }
+
+    @Override
     public void startGame(GameType gameType) {
-        model.startGame(gameType);
         view.enableManageGameMenu();
         view.disableSelectGameMenu();
+        model.startGame(gameType);
     }
 
     @Override
     public void restartGame() {
         model.restartGame();
-        view.enableManageGameMenu();
-        view.disableSelectGameMenu();
     }
 
     @Override

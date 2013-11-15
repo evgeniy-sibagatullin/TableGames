@@ -10,10 +10,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import view.GameObserver;
 import view.View;
 
-public class GameView implements View, GameObserver {
+public class GameView implements View {
 
     private static final String APPLICATION_TITLE_TEXT = "Table Games";
     private static final String SELECT_MENU_HEADER_TEXT = "Select Game";
@@ -46,7 +45,6 @@ public class GameView implements View, GameObserver {
     public GameView(Controller menuController, Model model) {
         this.controller = menuController;
         this.model = model;
-        model.registerObserver(this);
 
         menuDisplay = Display.getDefault();
         setMonitorCenter();
@@ -59,14 +57,31 @@ public class GameView implements View, GameObserver {
 
     @Override
     public void initializeView() {
-        updateView();
-
         while (!boardShell.isDisposed()) {
+            updateView();
             if (!menuDisplay.readAndDispatch()) {
                 menuDisplay.sleep();
             }
         }
-        model.removeObserver(this);
+    }
+
+    private void updateView() {
+        modelGameField = model.getGame().getGameField();
+        if (model.getGame().getGameType() != gameType) {
+            disposeAndCreateNewGameField();
+            gameType = model.getGame().getGameType();
+        }
+        if (model.isChanged()) {
+            redrawChangedCellsOnGameField();
+            deliverView();
+            model.setChanged(false);
+        }
+    }
+
+    private void deliverView() {
+        boardShell.layout();
+        boardShell.pack();
+        boardShell.open();
     }
 
 	/*
@@ -173,19 +188,15 @@ public class GameView implements View, GameObserver {
     private void redrawChangedCellsOnGameField() {
         for (int row = 0; row < gameFieldSize; row++) {
             for (int column = 0; column < gameFieldSize; column++) {
-                if (modelGameField[row][column].getChanged()) {
-                    viewGameField[row][column].setModelCell(modelGameField[row][column]);
-                    viewGameField[row][column].redraw();
-                    modelGameField[row][column].setChanged(false);
+                ModelCell modelCell = modelGameField[row][column];
+                if (modelCell.getChanged()) {
+                    ViewCell viewCell = viewGameField[row][column];
+                    viewCell.setModelCell(modelCell);
+                    viewCell.redraw();
+                    modelCell.setChanged(false);
                 }
             }
         }
-    }
-
-    private void deliverView() {
-        boardShell.layout();
-        boardShell.pack();
-        boardShell.open();
     }
 
     private final SelectionListener menuItemListener = new SelectionAdapter() {
@@ -255,16 +266,5 @@ public class GameView implements View, GameObserver {
             case SWT.OK:
                 break;
         }
-    }
-
-    @Override
-    public void updateView() {
-        modelGameField = model.getGame().getGameField();
-        if (model.getGame().getGameType() != gameType) {
-            disposeAndCreateNewGameField();
-            gameType = model.getGame().getGameType();
-        }
-        redrawChangedCellsOnGameField();
-        deliverView();
     }
 }

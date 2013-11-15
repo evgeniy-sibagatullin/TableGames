@@ -3,15 +3,11 @@ package model;
 import enums.GameType;
 import model.game.Game;
 import model.provider.impl.ProvidersHandler;
-import view.GameObserver;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameModel implements Model {
 
     private Game game;
-    private List<GameObserver> gameObservers = new ArrayList<GameObserver>();
+    private boolean isChanged;
 
     @Override
     public Game getGame() {
@@ -28,14 +24,15 @@ public class GameModel implements Model {
     public void initializeModel() {
         System.out.println("Hi, folks!");
         ProvidersHandler.registerProviders();
-        startGame(ProvidersHandler.DEFAULT_GAMETYPE);
     }
 
     @Override
     public void startGame(GameType gameType) {
         System.out.println("Game " + gameType + " started.");
         setGame(ProvidersHandler.newInstance(gameType, this));
-        modelChangedEvent();
+        setChanged(true);
+        Thread thread = new Thread(game);
+        thread.start();
     }
 
     @Override
@@ -47,8 +44,7 @@ public class GameModel implements Model {
     @Override
     public void stopGame() {
         System.out.println("Game " + game.getGameType() + " finished.");
-        setGame(ProvidersHandler.newInstance(this));
-        modelChangedEvent();
+        startGame(ProvidersHandler.DEFAULT_GAMETYPE);
     }
 
     @Override
@@ -57,30 +53,17 @@ public class GameModel implements Model {
     }
 
     @Override
+    public void setChanged(boolean changed) {
+        isChanged = changed;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return isChanged;
+    }
+
+    @Override
     public boolean checkWinConditions() {
         return game.checkWinConditions();
-    }
-
-    @Override
-    public void registerObserver(GameObserver gameObserver) {
-        gameObservers.add(gameObserver);
-    }
-
-    @Override
-    public void removeObserver(GameObserver gameObserver) {
-        if (gameObservers.contains(gameObserver)) {
-            gameObservers.remove(gameObserver);
-        }
-    }
-
-    @Override
-    public void modelChangedEvent() {
-        notifyGameObservers();
-    }
-
-    private void notifyGameObservers() {
-        for (GameObserver gameObserver : gameObservers) {
-            gameObserver.updateView();
-        }
     }
 }
