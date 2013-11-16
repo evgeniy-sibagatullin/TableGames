@@ -18,7 +18,7 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
 
     private static final int PREPARATION_RANDOM_MOVES_NEEDED = 50;
     private boolean isFieldPrepared = false;
-    private int preparationRandomMovesCount = 0;
+    private int randomMovesCount = 0;
     private Random random = new Random();
 
     public ClassicBarleyBreak(Model model, GameType gameType) {
@@ -67,15 +67,13 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
         while (!isFieldPrepared) {
             delay(150);
             performRandomMove();
-
-            preparationRandomMovesCount++;
-            if (preparationRandomMovesCount > PREPARATION_RANDOM_MOVES_NEEDED) {
+            if (randomMovesCount > PREPARATION_RANDOM_MOVES_NEEDED) {
                 isFieldPrepared = true;
             }
         }
 
         while (isFieldPrepared) {
-            delay(5000);
+            delay(3000);
             performRandomMove();
         }
     }
@@ -89,13 +87,14 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
 
     private void performRandomMove() {
         boolean moveHappened = false;
+
         while (!moveHappened) {
             int row = emptyCell.getRow();
             int column = emptyCell.getColumn();
             int delta = (random.nextDouble() > 0.5) ?
                     -1 : 1;
 
-            if (preparationRandomMovesCount % 2 == 0) {
+            if (randomMovesCount % 2 == 0) {
                 row += delta;
             } else {
                 column += delta;
@@ -106,6 +105,8 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
                 moveHappened = true;
             }
         }
+
+        randomMovesCount++;
     }
 
     private void swapCells(ModelCell selectedCell) {
