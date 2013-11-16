@@ -3,7 +3,7 @@ package model.provider.impl;
 import enums.GameType;
 import games.barleyBreak.BarleyBreakProvider;
 import games.chess.ChessProvider;
-import games.corners.CornersProvider;
+import games.draughts.DraughtsProvider;
 import model.Model;
 import model.game.Game;
 import model.provider.Provider;
@@ -23,15 +23,11 @@ public class ProvidersHandler {
     public static void registerProviders() {
         registerProvider(GameType.BARLEY_BREAK, new BarleyBreakProvider());
         registerProvider(GameType.CHESS, new ChessProvider());
-        registerProvider(GameType.CORNERS, new CornersProvider());
+        registerProvider(GameType.DRAUGHTS, new DraughtsProvider());
     }
 
     public static void registerProvider(GameType gametype, Provider p) {
         providers.put(gametype, p);
-    }
-
-    public static Game newInstance(Model model) {
-        return newInstance(DEFAULT_GAMETYPE, model);
     }
 
     public static Game newInstance(GameType gametype, Model model) {

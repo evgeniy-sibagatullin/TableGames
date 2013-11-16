@@ -18,7 +18,7 @@ public class GameView implements View {
     private static final String SELECT_MENU_HEADER_TEXT = "Select Game";
     private static final String MANAGE_MENU_HEADER_TEXT = "Manage Game";
     private static final String CHESS_MENUITEM_TEXT = "Chess";
-    private static final String CORNERS_MENUITEM_TEXT = "Corners";
+    private static final String DRAUGHTS_MENUITEM_TEXT = "Draughts";
     private static final String RESTART_MENUITEM_TEXT = "Restart game";
     private static final String ANOTHER_MENUITEM_TEXT = "Choose another game";
     private static final int BOARD_SHELL_SIZE = 900;
@@ -135,8 +135,8 @@ public class GameView implements View {
 
         MenuItem cornersMenuItem = new MenuItem(selectGameMenu, SWT.PUSH);
         cornersMenuItem.addSelectionListener(menuItemListener);
-        cornersMenuItem.setText(CORNERS_MENUITEM_TEXT);
-        cornersMenuItem.setData(MENUITEM_KEY_GAMETYPE, GameType.CORNERS);
+        cornersMenuItem.setText(DRAUGHTS_MENUITEM_TEXT);
+        cornersMenuItem.setData(MENUITEM_KEY_GAMETYPE, GameType.DRAUGHTS);
     }
 
     private void constructManageGameMenuHeader(Menu barMenu) {
