@@ -28,6 +28,10 @@ public class GameModel implements Model {
 
     @Override
     public void startGame(GameType gameType) {
+        if (game != null) {
+            game.terminateThread();
+        }
+
         System.out.println("Game " + gameType + " started.");
         setGame(ProvidersHandler.newInstance(gameType, this));
         setChanged(true);

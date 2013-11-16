@@ -64,7 +64,7 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
 
     @Override
     public void run() {
-        while (!isFieldPrepared) {
+        while (isThreadNeeded && !isFieldPrepared) {
             delay(150);
             performRandomMove();
             if (randomMovesCount > PREPARATION_RANDOM_MOVES_NEEDED) {
@@ -72,7 +72,7 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
             }
         }
 
-        while (isFieldPrepared) {
+        while (isThreadNeeded && isFieldPrepared) {
             delay(3000);
             performRandomMove();
         }

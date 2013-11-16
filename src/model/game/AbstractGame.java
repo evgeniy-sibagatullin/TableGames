@@ -10,6 +10,7 @@ import java.util.List;
 public abstract class AbstractGame implements Game {
 
     protected Model model;
+    protected boolean isThreadNeeded = true;
     private GameType gameType;
     private ModelCell[][] gameField;
     private List<Piece> pieces;
@@ -51,5 +52,10 @@ public abstract class AbstractGame implements Game {
 
     @Override
     public void run() {
+    }
+
+    @Override
+    public void terminateThread() {
+        isThreadNeeded = false;
     }
 }

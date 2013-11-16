@@ -23,4 +23,6 @@ public interface Game extends Runnable {
     void clickCell(int row, int column);
 
     boolean checkWinConditions();
+
+    void terminateThread();
 }
