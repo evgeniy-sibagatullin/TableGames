@@ -33,7 +33,7 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
 
     @Override
     public void clickCell(int row, int column) {
-        ModelCell selectedCell = getGameField()[row][column];
+        ModelCell selectedCell = gameField[row][column];
         if (selectedCell.getCellState() == CellState.ALLOWED_PIECE) {
             swapCells(selectedCell);
             model.setChanged(true);
@@ -47,7 +47,7 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
         }
         numbers.add(0);
 
-        ModelCell[][] gameField = new ModelCell[FIELD_SIZE][FIELD_SIZE];
+        gameField = new ModelCell[FIELD_SIZE][FIELD_SIZE];
 
         for (int row = 0; row < FIELD_SIZE; row++) {
             for (int column = 0; column < FIELD_SIZE; column++) {
@@ -58,7 +58,6 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
             }
         }
         gameField[FIELD_SIZE - 1][FIELD_SIZE - 1] = emptyCell;
-        setGameField(gameField);
         updateNeighbourCellStates(FIELD_SIZE - 1, FIELD_SIZE - 1, CellState.ALLOWED_PIECE);
     }
 
@@ -110,7 +109,7 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
     }
 
     private void swapCells(ModelCell selectedCell) {
-        getGameField()[emptyCell.getRow()][emptyCell.getColumn()] =
+        gameField[emptyCell.getRow()][emptyCell.getColumn()] =
                 new ModelCell(emptyCell.getRow(), emptyCell.getColumn(), selectedCell.getPower(),
                         COLOR_CELL, null, CellState.DEFAULT);
 
@@ -120,27 +119,27 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
         emptyCell.setRow(selectedCell.getRow());
         emptyCell.setColumn(selectedCell.getColumn());
 
-        getGameField()[selectedCell.getRow()][selectedCell.getColumn()] = emptyCell;
-        getGameField()[selectedCell.getRow()][selectedCell.getColumn()].setChanged(true);
+        gameField[selectedCell.getRow()][selectedCell.getColumn()] = emptyCell;
+        gameField[selectedCell.getRow()][selectedCell.getColumn()].setChanged(true);
 
     }
 
     private void updateNeighbourCellStates(int row, int column, CellState cellState) {
         if (row > 0) {
-            getGameField()[row - 1][column].setCellState(cellState);
-            getGameField()[row - 1][column].setChanged(true);
+            gameField[row - 1][column].setCellState(cellState);
+            gameField[row - 1][column].setChanged(true);
         }
         if (row < FIELD_SIZE - 1) {
-            getGameField()[row + 1][column].setCellState(cellState);
-            getGameField()[row + 1][column].setChanged(true);
+            gameField[row + 1][column].setCellState(cellState);
+            gameField[row + 1][column].setChanged(true);
         }
         if (column > 0) {
-            getGameField()[row][column - 1].setCellState(cellState);
-            getGameField()[row][column - 1].setChanged(true);
+            gameField[row][column - 1].setCellState(cellState);
+            gameField[row][column - 1].setChanged(true);
         }
         if (column < FIELD_SIZE - 1) {
-            getGameField()[row][column + 1].setCellState(cellState);
-            getGameField()[row][column + 1].setChanged(true);
+            gameField[row][column + 1].setCellState(cellState);
+            gameField[row][column + 1].setChanged(true);
         }
     }
 
@@ -148,7 +147,7 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
     public boolean checkWinConditions() {
         for (int row = 0; row < FIELD_SIZE; row++) {
             for (int column = 0; column < FIELD_SIZE; column++) {
-                int power = getGameField()[row][column].getPower();
+                int power = gameField[row][column].getPower();
                 if (row * FIELD_SIZE + column + 1 != power) {
                     if ((row != FIELD_SIZE - 1 || column != FIELD_SIZE - 1))
                         return false;

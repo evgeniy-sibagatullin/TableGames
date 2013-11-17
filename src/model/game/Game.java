@@ -14,8 +14,6 @@ public interface Game extends Runnable {
 
     ModelCell[][] getGameField();
 
-    void setGameField(ModelCell[][] gameField);
-
     List<Piece> getPieces();
 
     void setPieces(List<Piece> pieces);
