@@ -5,9 +5,9 @@ import model.ModelCell;
 
 public abstract class GamePiece implements Piece {
 
-    private int row;
-    private int column;
-    private Side side;
+    protected int row;
+    protected int column;
+    protected Side side;
     protected ModelCell[][] gameField;
 
     public GamePiece(int row, int column, Side side, ModelCell[][] gameField) {
