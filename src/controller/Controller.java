@@ -13,4 +13,6 @@ public interface Controller {
     void reselectGame();
 
     void clickCell(int row, int column);
+
+    void checkWinConditions();
 }

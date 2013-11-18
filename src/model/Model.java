@@ -33,5 +33,5 @@ public interface Model {
 
     boolean isChanged();
 
-    boolean checkWinConditions();
+    String checkWinConditions();
 }

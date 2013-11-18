@@ -75,6 +75,7 @@ public class GameView implements View {
             redrawChangedCellsOnGameField();
             deliverView();
             model.setChanged(false);
+            controller.checkWinConditions();
         }
     }
 

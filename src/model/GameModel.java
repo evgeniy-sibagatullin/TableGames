@@ -67,7 +67,7 @@ public class GameModel implements Model {
     }
 
     @Override
-    public boolean checkWinConditions() {
+    public String checkWinConditions() {
         return game.checkWinConditions();
     }
 }

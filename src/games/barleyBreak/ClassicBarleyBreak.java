@@ -16,7 +16,7 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
     private ModelCell emptyCell = new ModelCell(FIELD_SIZE - 1, FIELD_SIZE - 1, 0,
             null, null, CellState.SELECTED);
 
-    private static final int PREPARATION_RANDOM_MOVES_NEEDED = 50;
+    private static final int PREPARATION_RANDOM_MOVES_NEEDED = 5;
     private boolean isFieldPrepared = false;
     private int randomMovesCount = 0;
     private Random random = new Random();
@@ -144,17 +144,21 @@ public class ClassicBarleyBreak extends AbstractGame implements BarleyBreak {
     }
 
 
-    public boolean checkWinConditions() {
-        for (int row = 0; row < FIELD_SIZE; row++) {
-            for (int column = 0; column < FIELD_SIZE; column++) {
-                int power = gameField[row][column].getPower();
-                if (row * FIELD_SIZE + column + 1 != power) {
-                    if ((row != FIELD_SIZE - 1 || column != FIELD_SIZE - 1))
-                        return false;
+    public String checkWinConditions() {
+        if (isFieldPrepared) {
+            for (int row = 0; row < FIELD_SIZE; row++) {
+                for (int column = 0; column < FIELD_SIZE; column++) {
+                    int power = gameField[row][column].getPower();
+                    if (row * FIELD_SIZE + column + 1 != power &&
+                            (row != FIELD_SIZE - 1 || column != FIELD_SIZE - 1)) {
+                        return "";
+                    }
                 }
             }
+            return "Congratulations. You win!";
+        } else {
+            return "";
         }
-        return true;
     }
 
 }

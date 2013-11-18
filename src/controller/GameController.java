@@ -48,12 +48,13 @@ public class GameController implements Controller {
     @Override
     public void clickCell(int row, int column) {
         model.clickCell(row, column);
-        checkWinConditions();
     }
 
-    private void checkWinConditions() {
-        if (model.checkWinConditions()) {
-            view.showMessage("Congratulations. You win!");
+    @Override
+    public void checkWinConditions() {
+        String checkWinConditionsResult = model.checkWinConditions();
+        if (!checkWinConditionsResult.isEmpty()) {
+            view.showMessage(checkWinConditionsResult);
             model.restartGame();
         }
     }

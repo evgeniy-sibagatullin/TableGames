@@ -41,8 +41,8 @@ public abstract class AbstractGame implements Game {
     }
 
     @Override
-    public boolean checkWinConditions() {
-        return false;
+    public String checkWinConditions() {
+        return "";
     }
 
     @Override
