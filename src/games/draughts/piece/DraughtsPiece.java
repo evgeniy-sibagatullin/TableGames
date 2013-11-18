@@ -4,13 +4,21 @@ import enums.Side;
 import model.ModelCell;
 import model.piece.GamePiece;
 
+import java.util.List;
+
 public abstract class DraughtsPiece extends GamePiece {
 
     public DraughtsPiece(int row, int column, Side side, ModelCell[][] gameField) {
         super(row, column, side, gameField);
     }
 
-    public abstract boolean isAbleToCapture(Side side);
+    protected boolean isValidPosition(int row, int column) {
+        return (row >= 0 && row < gameField.length && column >= 0 && column < gameField.length);
+    }
 
-    public abstract boolean isAbleToMove(Side side);
+    public abstract boolean isAbleToCapture();
+
+    public abstract boolean isAbleToMove();
+
+    public abstract List<ModelCell> getCellsAllowedToMoveIn();
 }

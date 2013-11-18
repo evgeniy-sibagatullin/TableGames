@@ -3,6 +3,8 @@ package games.draughts.piece;
 import enums.Side;
 import model.ModelCell;
 
+import java.util.List;
+
 public class King extends DraughtsPiece {
 
     public King(int row, int column, Side side, ModelCell[][] gameField) {
@@ -11,18 +13,23 @@ public class King extends DraughtsPiece {
 
     @Override
     public String getImagePath() {
-        return (getSide() == Side.WHITE) ?
+        return (side == Side.WHITE) ?
                 "img/draughts/Draughts-KingB.png" :
                 "img/draughts/Draughts-KingR.png";
     }
 
     @Override
-    public boolean isAbleToCapture(Side side) {
-        return side == null;
+    public boolean isAbleToCapture() {
+        return false;
     }
 
     @Override
-    public boolean isAbleToMove(Side side) {
-        return side == null;
+    public boolean isAbleToMove() {
+        return false;
+    }
+
+    @Override
+    public List<ModelCell> getCellsAllowedToMoveIn() {
+        return null;
     }
 }

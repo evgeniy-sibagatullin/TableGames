@@ -19,10 +19,12 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
 
     private boolean isPlayerMove = true;
     private Side playerSide = Side.WHITE;
+    private Side AIside = Side.BLACK;
     private boolean needToPrepareFieldForPlayer = true;
 
     private ModelCell selectedCell = null;
     private boolean isPieceSelected = false;
+    private String checkWinConditionsResult = "";
 
 
     public ClassicDraughts(Model model, GameType gameType) {
@@ -116,39 +118,60 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         }
     }
 
+
     private void updateGameFieldForPlayer() {
-        boolean isCapturePossible = false;
-        for (Piece piece : getPieces()) {
-            DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
-            if (draughtsPiece.getSide() == Side.WHITE) {
-                if (draughtsPiece.isAbleToCapture(playerSide)) {
-                    // updateReadyToCapture(draughtsPiece);
-                    isCapturePossible = true;
-                }
-                if (!isCapturePossible && draughtsPiece.isAbleToMove(playerSide)) {
-                    updateReadyToMove(draughtsPiece);
-                }
-            }
+        List<DraughtsPiece> ableToCaptureList = getPiecesAbleToCapture(playerSide);
+        List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(playerSide);
+
+        if (!ableToCaptureList.isEmpty()) {
+            updatePiecesReadyToCapture(ableToCaptureList);
+        } else if (!ableToMoveList.isEmpty()) {
+            updatePiecesReadyToMove(ableToMoveList);
+        } else {
+            checkWinConditionsResult = "You have lost this game.";
         }
+
         needToPrepareFieldForPlayer = false;
         model.setChanged(true);
     }
 
-    /*
-    private void updateReadyToCapture(DraughtsPiece draughtsPiece) {}
-    */
+    private List<DraughtsPiece> getPiecesAbleToCapture(Side side) {
+        List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
+        for (Piece piece : getPieces()) {
+            DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
+            if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToCapture()) {
+                pieceList.add(draughtsPiece);
+            }
+        }
+        return pieceList;
+    }
 
-    private void updateReadyToMove(DraughtsPiece draughtsPiece) {
-        ModelCell modelCell = gameField[draughtsPiece.getRow()][draughtsPiece.getColumn()];
-        if (modelCell.getCellState() != CellState.SELECTED) {
-            updateCellState(modelCell, CellState.ALLOWED_PIECE);
+    private List<DraughtsPiece> getPiecesAbleToMove(Side side) {
+        List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
+        for (Piece piece : getPieces()) {
+            DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
+            if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToMove()) {
+                pieceList.add(draughtsPiece);
+            }
+        }
+        return pieceList;
+    }
+
+
+    private void updatePiecesReadyToCapture(List<DraughtsPiece> pieceList) {
+        pieceList.isEmpty();
+    }
+
+
+    private void updatePiecesReadyToMove(List<DraughtsPiece> pieceList) {
+        for (DraughtsPiece draughtsPiece : pieceList) {
+            ModelCell modelCell = gameField[draughtsPiece.getRow()][draughtsPiece.getColumn()];
+            if (modelCell.getCellState() != CellState.SELECTED) {
+                updateCellState(modelCell, CellState.ALLOWED_PIECE);
+            }
         }
     }
 
-    private void updateCellState(ModelCell modelCell, CellState cellState) {
-        modelCell.setCellState(cellState);
-        modelCell.setChanged(true);
-    }
 
     private void selectPiece(ModelCell modelCell) {
         updateCellState(modelCell, CellState.SELECTED);
@@ -189,12 +212,25 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         isPieceSelected = false;
     }
 
-    private boolean isValidPosition(int row, int column) {
-        return (row >= 0 && row < gameField.length && column >= 0 && column < gameField.length);
-    }
 
     private void performAIMove() {
         totalCleanUp();
+
+        List<DraughtsPiece> ableToCaptureList = getPiecesAbleToCapture(AIside);
+        List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(AIside);
+
+        if (!ableToCaptureList.isEmpty()) {
+            updatePiecesReadyToCapture(ableToCaptureList);
+        } else if (!ableToMoveList.isEmpty()) {
+            DraughtsPiece piece = ableToMoveList.get(0);
+            List<ModelCell> cellsAllowedToMoveIn = piece.getCellsAllowedToMoveIn();
+
+            selectedCell = gameField[piece.getRow()][piece.getColumn()];
+            movePiece(cellsAllowedToMoveIn.get(0));
+        } else {
+            checkWinConditionsResult = "Congratulations! You have win this game!";
+        }
+
         isPlayerMove = true;
         needToPrepareFieldForPlayer = true;
     }
@@ -208,10 +244,25 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         }
     }
 
+
+    private void updateCellState(ModelCell modelCell, CellState cellState) {
+        modelCell.setCellState(cellState);
+        modelCell.setChanged(true);
+    }
+
+    private boolean isValidPosition(int row, int column) {
+        return (row >= 0 && row < gameField.length && column >= 0 && column < gameField.length);
+    }
+
     private void delay(int millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException ignored) {
         }
+    }
+
+    @Override
+    public String checkWinConditions() {
+        return checkWinConditionsResult;
     }
 }
