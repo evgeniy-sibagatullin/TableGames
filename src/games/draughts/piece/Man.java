@@ -21,35 +21,51 @@ public class Man extends DraughtsPiece {
 
     @Override
     public boolean isAbleToCapture() {
-        return false;
+        cellsAllowedToCaptureIn = new ArrayList<ModelCell>();
+
+        for (int deltaY = -1; deltaY <= 1; deltaY += 2) {
+            for (int deltaX = -1; deltaX <= 1; deltaX += 2) {
+                int checkRow = row + deltaY;
+                int checkColumn = column + deltaX;
+
+                if (isCellOpponent(checkRow, checkColumn)) {
+                    checkRow += deltaY;
+                    checkColumn += deltaX;
+
+                    if (isCellEmpty(checkRow, checkColumn)) {
+                        cellsAllowedToCaptureIn.add(gameField[checkRow][checkColumn]);
+                    }
+                }
+            }
+        }
+
+        return (!cellsAllowedToCaptureIn.isEmpty());
+    }
+
+    @Override
+    public List<ModelCell> getCellsAllowedToCapture() {
+        return cellsAllowedToCaptureIn;
     }
 
     @Override
     public boolean isAbleToMove() {
+        cellsAllowedToMoveIn = new ArrayList<ModelCell>();
         int deltaY = (side == Side.WHITE) ? -1 : 1;
+
         for (int deltaX = -1; deltaX <= 1; deltaX += 2) {
-            int checkRow = getRow() + deltaY;
-            int checkColumn = getColumn() + deltaX;
-            if (isValidPosition(checkRow, checkColumn) && gameField[checkRow][checkColumn].getPiece() == null) {
-                return true;
+            int checkRow = row + deltaY;
+            int checkColumn = column + deltaX;
+
+            if (isCellEmpty(checkRow, checkColumn)) {
+                cellsAllowedToMoveIn.add(gameField[checkRow][checkColumn]);
             }
         }
-        return false;
+
+        return (!cellsAllowedToMoveIn.isEmpty());
     }
 
     @Override
     public List<ModelCell> getCellsAllowedToMoveIn() {
-        List<ModelCell> cellList = new ArrayList<ModelCell>();
-        int deltaY = (side == Side.WHITE) ? -1 : 1;
-
-        for (int deltaX = -1; deltaX <= 1; deltaX += 2) {
-            int checkRow = getRow() + deltaY;
-            int checkColumn = getColumn() + deltaX;
-            if (isValidPosition(checkRow, checkColumn) && gameField[checkRow][checkColumn].getPiece() == null) {
-                cellList.add(gameField[checkRow][checkColumn]);
-            }
-        }
-
-        return cellList;
+        return cellsAllowedToMoveIn;
     }
 }

@@ -29,7 +29,12 @@ public class King extends DraughtsPiece {
     }
 
     @Override
+    public List<ModelCell> getCellsAllowedToCapture() {
+        return cellsAllowedToCaptureIn;
+    }
+
+    @Override
     public List<ModelCell> getCellsAllowedToMoveIn() {
-        return null;
+        return cellsAllowedToMoveIn;
     }
 }

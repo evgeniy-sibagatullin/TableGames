@@ -19,7 +19,7 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
 
     private boolean isPlayerMove = true;
     private Side playerSide = Side.WHITE;
-    private Side AIside = Side.BLACK;
+    private Side AISide = Side.BLACK;
     private boolean needToPrepareFieldForPlayer = true;
 
     private ModelCell selectedCell = null;
@@ -46,7 +46,7 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
     }
 
     private void initPieces() {
-        List<Piece> pieces = new ArrayList<Piece>();
+        pieces = new ArrayList<Piece>();
 
         for (int row = 0; row < FIELD_SIZE; row++) {
             for (int column = 0; column < FIELD_SIZE; column++) {
@@ -61,12 +61,10 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
                 }
             }
         }
-
-        setPieces(pieces);
     }
 
     private void addPiecesToGameField() {
-        for (Piece piece : getPieces()) {
+        for (Piece piece : pieces) {
             ModelCell cell = gameField[piece.getRow()][piece.getColumn()];
             cell.setPiece(piece);
         }
@@ -100,11 +98,11 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
                     movePiece(modelCell);
                     isModelChanged = true;
                     isPlayerMove = false;
-                }
-                /*else if (modelCell.getCellState() == CellState.ATTACKED) {
+                } else if (modelCell.getCellState() == CellState.ATTACKED) {
                     capturePiece(modelCell);
-                }*/
-                else if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {
+                    isModelChanged = true;
+                    isPlayerMove = false;
+                } else if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {
                     reselectPiece(modelCell);
                     isModelChanged = true;
                 }
@@ -124,7 +122,7 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(playerSide);
 
         if (!ableToCaptureList.isEmpty()) {
-            updatePiecesReadyToCapture(ableToCaptureList);
+            updatePiecesReadyToMove(ableToCaptureList);
         } else if (!ableToMoveList.isEmpty()) {
             updatePiecesReadyToMove(ableToMoveList);
         } else {
@@ -137,7 +135,7 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
 
     private List<DraughtsPiece> getPiecesAbleToCapture(Side side) {
         List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
-        for (Piece piece : getPieces()) {
+        for (Piece piece : pieces) {
             DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
             if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToCapture()) {
                 pieceList.add(draughtsPiece);
@@ -148,7 +146,7 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
 
     private List<DraughtsPiece> getPiecesAbleToMove(Side side) {
         List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
-        for (Piece piece : getPieces()) {
+        for (Piece piece : pieces) {
             DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
             if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToMove()) {
                 pieceList.add(draughtsPiece);
@@ -156,12 +154,6 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         }
         return pieceList;
     }
-
-
-    private void updatePiecesReadyToCapture(List<DraughtsPiece> pieceList) {
-        pieceList.isEmpty();
-    }
-
 
     private void updatePiecesReadyToMove(List<DraughtsPiece> pieceList) {
         for (DraughtsPiece draughtsPiece : pieceList) {
@@ -176,21 +168,25 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
     private void selectPiece(ModelCell modelCell) {
         updateCellState(modelCell, CellState.SELECTED);
         selectedCell = modelCell;
-        updateCellsAllowedToMoveIn(CellState.ALLOWED_MOVE);
+
+        if (!((DraughtsPiece) selectedCell.getPiece()).getCellsAllowedToCapture().isEmpty()) {
+            updateCellsAllowedToMoveIn(CellState.ATTACKED);
+        } else {
+            updateCellsAllowedToMoveIn(CellState.ALLOWED_MOVE);
+        }
         isPieceSelected = true;
     }
 
     private void updateCellsAllowedToMoveIn(CellState cellState) {
-        int deltaY = -1;
-        for (int deltaX = -1; deltaX <= 1; deltaX += 2) {
-            int updateRow = selectedCell.getRow() + deltaY;
-            int updateColumn = selectedCell.getColumn() + deltaX;
-            if (isValidPosition(updateRow, updateColumn)) {
-                ModelCell updateCell = gameField[updateRow][updateColumn];
-                if (updateCell.getPiece() == null) {
-                    updateCellState(updateCell, cellState);
-                }
-            }
+        DraughtsPiece piece = (DraughtsPiece) selectedCell.getPiece();
+        List<ModelCell> cellList = piece.getCellsAllowedToCapture();
+
+        if (cellList.isEmpty()) {
+            cellList = piece.getCellsAllowedToMoveIn();
+        }
+
+        for (ModelCell modelCell : cellList) {
+            updateCellState(modelCell, cellState);
         }
     }
 
@@ -212,15 +208,31 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         isPieceSelected = false;
     }
 
+    private void capturePiece(ModelCell modelCell) {
+        int deltaY = (modelCell.getRow() > selectedCell.getRow()) ? 1 : -1;
+        int deltaX = (modelCell.getColumn() > selectedCell.getColumn()) ? 1 : -1;
+
+        int checkRow = selectedCell.getRow() + deltaY;
+        int checkColumn = selectedCell.getColumn() + deltaX;
+        ModelCell checkCell = gameField[checkRow][checkColumn];
+        while (checkCell.getPiece() == null) {
+            checkRow += deltaY;
+            checkColumn += deltaX;
+        }
+        pieces.remove(checkCell.getPiece());
+        checkCell.setPiece(null);
+
+        movePiece(modelCell);
+    }
 
     private void performAIMove() {
-        totalCleanUp();
+        totalGameFieldCleanUp();
 
-        List<DraughtsPiece> ableToCaptureList = getPiecesAbleToCapture(AIside);
-        List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(AIside);
+        List<DraughtsPiece> ableToCaptureList = getPiecesAbleToCapture(AISide);
+        List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(AISide);
 
         if (!ableToCaptureList.isEmpty()) {
-            updatePiecesReadyToCapture(ableToCaptureList);
+            ableToCaptureList.isEmpty();
         } else if (!ableToMoveList.isEmpty()) {
             DraughtsPiece piece = ableToMoveList.get(0);
             List<ModelCell> cellsAllowedToMoveIn = piece.getCellsAllowedToMoveIn();
@@ -235,7 +247,7 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         needToPrepareFieldForPlayer = true;
     }
 
-    private void totalCleanUp() {
+    private void totalGameFieldCleanUp() {
         for (ModelCell[] gameFieldRow : gameField) {
             for (int column = 0; column < gameField.length; column++) {
                 ModelCell modelCell = gameFieldRow[column];
@@ -248,10 +260,6 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
     private void updateCellState(ModelCell modelCell, CellState cellState) {
         modelCell.setCellState(cellState);
         modelCell.setChanged(true);
-    }
-
-    private boolean isValidPosition(int row, int column) {
-        return (row >= 0 && row < gameField.length && column >= 0 && column < gameField.length);
     }
 
     private void delay(int millis) {
