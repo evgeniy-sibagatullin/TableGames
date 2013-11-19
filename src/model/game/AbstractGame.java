@@ -13,7 +13,7 @@ public abstract class AbstractGame implements Game {
     protected boolean isThreadNeeded = true;
     private GameType gameType;
     protected ModelCell[][] gameField;
-    private List<Piece> pieces;
+    protected List<Piece> pieces;
 
     public AbstractGame(Model model, GameType gameType) {
         this.model = model;
@@ -28,16 +28,6 @@ public abstract class AbstractGame implements Game {
     @Override
     public ModelCell[][] getGameField() {
         return gameField;
-    }
-
-    @Override
-    public List<Piece> getPieces() {
-        return pieces;
-    }
-
-    @Override
-    public void setPieces(List<Piece> pieces) {
-        this.pieces = pieces;
     }
 
     @Override

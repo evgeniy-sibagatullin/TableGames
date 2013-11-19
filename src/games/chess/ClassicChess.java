@@ -11,7 +11,6 @@ import model.game.AbstractGame;
 import model.piece.Piece;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ClassicChess extends AbstractGame implements Chess {
 
@@ -45,7 +44,7 @@ public class ClassicChess extends AbstractGame implements Chess {
     }
 
     private void initPieces() {
-        List<Piece> pieces = new ArrayList<Piece>();
+        pieces = new ArrayList<Piece>();
 
         for (int i = 0; i < FIELD_SIZE; i++) {
             pieces.add(new Pawn(6, i, Side.WHITE, gameField));
@@ -71,12 +70,10 @@ public class ClassicChess extends AbstractGame implements Chess {
         pieces.add(new Queen(7, 3, Side.WHITE, gameField));
         pieces.add(new King(0, 4, Side.BLACK, gameField));
         pieces.add(new King(7, 4, Side.WHITE, gameField));
-
-        setPieces(pieces);
     }
 
     private void addPiecesToGameField() {
-        for (Piece piece : getPieces()) {
+        for (Piece piece : pieces) {
             ModelCell cell = gameField[piece.getRow()][piece.getColumn()];
             cell.setPiece(piece);
         }
@@ -113,7 +110,7 @@ public class ClassicChess extends AbstractGame implements Chess {
 
     private void updatePiecesOnMove(int row, int column) {
         Piece pieceToBeRemoved = null;
-        for (Piece piece : getPieces()) {
+        for (Piece piece : pieces) {
             if (piece.getRow() == row && piece.getColumn() == column) {
                 pieceToBeRemoved = piece;
             } else if (piece.getRow() == selectedCell.getRow() && piece.getColumn() == selectedCell.getColumn()) {
@@ -122,7 +119,7 @@ public class ClassicChess extends AbstractGame implements Chess {
             }
         }
         if (pieceToBeRemoved != null) {
-            getPieces().remove(pieceToBeRemoved);
+            pieces.remove(pieceToBeRemoved);
         }
     }
 
@@ -145,7 +142,7 @@ public class ClassicChess extends AbstractGame implements Chess {
     }
 
     private void setPowerToCellsOfGameField() {
-        for (Piece piece : getPieces()) {
+        for (Piece piece : pieces) {
             if (piece.getSide() != activeSide) {
                 gameField[piece.getRow()][piece.getColumn()].setPower(((ChessPiece) piece).getPower());
                 updateAllowedCells(gameField[piece.getRow()][piece.getColumn()]);

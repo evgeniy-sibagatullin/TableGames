@@ -2,9 +2,6 @@ package model.game;
 
 import enums.GameType;
 import model.ModelCell;
-import model.piece.Piece;
-
-import java.util.List;
 
 public interface Game extends Runnable {
 
@@ -13,10 +10,6 @@ public interface Game extends Runnable {
     int getFieldSize();
 
     ModelCell[][] getGameField();
-
-    List<Piece> getPieces();
-
-    void setPieces(List<Piece> pieces);
 
     void clickCell(int row, int column);
 
