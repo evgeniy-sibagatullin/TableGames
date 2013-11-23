@@ -23,7 +23,6 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
     private boolean needToPrepareFieldForPlayer = true;
 
     private ModelCell selectedCell = null;
-    private boolean isPieceSelected = false;
     private String checkWinConditionsResult = "";
 
 
@@ -93,7 +92,7 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         if (isPlayerMove) {
             boolean isModelChanged = false;
             ModelCell modelCell = gameField[row][column];
-            if (isPieceSelected) {
+            if (selectedCell != null) {
                 if (modelCell.getCellState() == CellState.ALLOWED_MOVE) {
                     movePiece(modelCell);
                     isModelChanged = true;
@@ -174,7 +173,6 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         } else {
             updateCellsAllowedToMoveIn(CellState.ALLOWED_MOVE);
         }
-        isPieceSelected = true;
     }
 
     private void updateCellsAllowedToMoveIn(CellState cellState) {
@@ -204,8 +202,6 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         modelCell.setPiece(selectedCell.getPiece());
         selectedCell.setPiece(null);
         selectedCell = null;
-
-        isPieceSelected = false;
     }
 
     private void capturePiece(ModelCell modelCell) {
