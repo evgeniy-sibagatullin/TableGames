@@ -18,8 +18,8 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
     private static final int FIELD_SIZE = 8;
 
     private boolean isPlayerMove = true;
-    private Side playerSide = Side.WHITE;
-    private Side AISide = Side.BLACK;
+    private Side sidePlayer = Side.WHITE;
+    private Side sideAI = Side.BLACK;
     private boolean needToPrepareFieldForPlayer = true;
 
     private ModelCell selectedCell = null;
@@ -82,7 +82,7 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
                 updateGameFieldForPlayer();
             }
             if (!isPlayerMove) {
-                performAIMove();
+                performMoveAI();
             }
             delay(50);
         }
@@ -118,8 +118,8 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
 
 
     private void updateGameFieldForPlayer() {
-        List<DraughtsPiece> ableToCaptureList = getPiecesAbleToCapture(playerSide);
-        List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(playerSide);
+        List<DraughtsPiece> ableToCaptureList = getPiecesAbleToCapture(sidePlayer);
+        List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(sidePlayer);
 
         if (!ableToCaptureList.isEmpty()) {
             updatePiecesReadyToMove(ableToCaptureList);
@@ -225,26 +225,32 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
         movePiece(modelCell);
     }
 
-    private void performAIMove() {
+    private void performMoveAI() {
         totalGameFieldCleanUp();
 
-        List<DraughtsPiece> ableToCaptureList = getPiecesAbleToCapture(AISide);
-        List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(AISide);
-
+        List<DraughtsPiece> ableToCaptureList = getPiecesAbleToCapture(sideAI);
         if (!ableToCaptureList.isEmpty()) {
-            ableToCaptureList.isEmpty();
-        } else if (!ableToMoveList.isEmpty()) {
-            DraughtsPiece piece = ableToMoveList.get(0);
-            List<ModelCell> cellsAllowedToMoveIn = piece.getCellsAllowedToMoveIn();
-
-            selectedCell = gameField[piece.getRow()][piece.getColumn()];
-            movePiece(cellsAllowedToMoveIn.get(0));
+            capturePieceAI(ableToCaptureList.get(0));
         } else {
-            checkWinConditionsResult = "Congratulations! You have win this game!";
+            List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(sideAI);
+            if (!ableToMoveList.isEmpty()) {
+                movePieceAI(ableToMoveList.get(0));
+            } else {
+                checkWinConditionsResult = "Congratulations! You have win this game!";
+            }
         }
-
         isPlayerMove = true;
         needToPrepareFieldForPlayer = true;
+    }
+
+    private void capturePieceAI(DraughtsPiece piece) {
+        selectedCell = gameField[piece.getRow()][piece.getColumn()];
+        capturePiece(piece.getCellsAllowedToCapture().get(0));
+    }
+
+    private void movePieceAI(DraughtsPiece piece) {
+        selectedCell = gameField[piece.getRow()][piece.getColumn()];
+        movePiece(piece.getCellsAllowedToMoveIn().get(0));
     }
 
     private void totalGameFieldCleanUp() {
