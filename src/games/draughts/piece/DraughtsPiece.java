@@ -39,4 +39,8 @@ public abstract class DraughtsPiece extends GamePiece {
     public abstract boolean isAbleToMove();
 
     public abstract List<ModelCell> getCellsAllowedToMoveIn();
+
+    public boolean isAbleToBecomeKing() {
+        return (this instanceof Man && ((side == Side.WHITE && row == 0) || (side == Side.BLACK && row == 7)));
+    }
 }

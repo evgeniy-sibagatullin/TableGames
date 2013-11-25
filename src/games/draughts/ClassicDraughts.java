@@ -4,6 +4,7 @@ import enums.CellState;
 import enums.GameType;
 import enums.Side;
 import games.draughts.piece.DraughtsPiece;
+import games.draughts.piece.King;
 import games.draughts.piece.Man;
 import model.Model;
 import model.ModelCell;
@@ -242,13 +243,24 @@ public class ClassicDraughts extends AbstractGame implements Draughts {
     }
 
     private void moveToCell(ModelCell modelCell) {
-        Piece piece = selectedCell.getPiece();
+        DraughtsPiece piece = (DraughtsPiece) selectedCell.getPiece();
         piece.setRow(modelCell.getRow());
         piece.setColumn(modelCell.getColumn());
+
+        if (piece.isAbleToBecomeKing()) {
+            promoteToKing(piece);
+        }
 
         modelCell.setPiece(selectedCell.getPiece());
         selectedCell.setPiece(null);
         selectedCell = null;
+    }
+
+    private void promoteToKing(DraughtsPiece piece) {
+        pieces.remove(piece);
+        piece = new King(piece.getRow(), piece.getColumn(), piece.getSide(), gameField);
+        pieces.add(piece);
+        selectedCell.setPiece(piece);
     }
 
     private void performMoveAI() {
