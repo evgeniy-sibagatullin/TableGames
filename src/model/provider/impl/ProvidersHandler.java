@@ -23,7 +23,8 @@ public class ProvidersHandler {
     public static void registerProviders() {
         registerProvider(GameType.BARLEY_BREAK, new BarleyBreakProvider());
         registerProvider(GameType.CHESS, new ChessProvider());
-        registerProvider(GameType.DRAUGHTS, new DraughtsProvider());
+        registerProvider(GameType.DRAUGHTS_DUEL, new DraughtsProvider());
+        registerProvider(GameType.DRAUGHTS_VS_AI, new DraughtsProvider());
     }
 
     public static void registerProvider(GameType gametype, Provider p) {

@@ -18,7 +18,8 @@ public class GameView implements View {
     private static final String SELECT_MENU_HEADER_TEXT = "Select Game";
     private static final String MANAGE_MENU_HEADER_TEXT = "Manage Game";
     private static final String CHESS_MENUITEM_TEXT = "Chess";
-    private static final String DRAUGHTS_MENUITEM_TEXT = "Draughts";
+    private static final String DRAUGHTS_VS_AI_MENUITEM_TEXT = "Draughts vs AI";
+    private static final String DRAUGHTS_DUEL_MENUITEM_TEXT = "Draughts Duel";
     private static final String RESTART_MENUITEM_TEXT = "Restart game";
     private static final String ANOTHER_MENUITEM_TEXT = "Choose another game";
     private static final int BOARD_SHELL_SIZE = 900;
@@ -134,10 +135,15 @@ public class GameView implements View {
         chessMenuItem.setText(CHESS_MENUITEM_TEXT);
         chessMenuItem.setData(MENUITEM_KEY_GAMETYPE, GameType.CHESS);
 
-        MenuItem cornersMenuItem = new MenuItem(selectGameMenu, SWT.PUSH);
-        cornersMenuItem.addSelectionListener(menuItemListener);
-        cornersMenuItem.setText(DRAUGHTS_MENUITEM_TEXT);
-        cornersMenuItem.setData(MENUITEM_KEY_GAMETYPE, GameType.DRAUGHTS);
+        MenuItem draughtsDuelMenuItem = new MenuItem(selectGameMenu, SWT.PUSH);
+        draughtsDuelMenuItem.addSelectionListener(menuItemListener);
+        draughtsDuelMenuItem.setText(DRAUGHTS_DUEL_MENUITEM_TEXT);
+        draughtsDuelMenuItem.setData(MENUITEM_KEY_GAMETYPE, GameType.DRAUGHTS_DUEL);
+
+        MenuItem draughtsVsAiMenuItem = new MenuItem(selectGameMenu, SWT.PUSH);
+        draughtsVsAiMenuItem.addSelectionListener(menuItemListener);
+        draughtsVsAiMenuItem.setText(DRAUGHTS_VS_AI_MENUITEM_TEXT);
+        draughtsVsAiMenuItem.setData(MENUITEM_KEY_GAMETYPE, GameType.DRAUGHTS_VS_AI);
     }
 
     private void constructManageGameMenuHeader(Menu barMenu) {
