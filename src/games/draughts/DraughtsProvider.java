@@ -9,7 +9,13 @@ public class DraughtsProvider implements Provider {
 
     @Override
     public Game newGame(Model model, GameType gameType) {
-        return new ClassicDraughts(model, gameType);
+        if (gameType == GameType.DRAUGHTS_DUEL) {
+            return new ClassicDraughtsDuel(model);
+        } else if (gameType == GameType.DRAUGHTS_VS_AI) {
+            return new ClassicDraughtsVsAi(model);
+        } else {
+            return null;
+        }
     }
 
 }

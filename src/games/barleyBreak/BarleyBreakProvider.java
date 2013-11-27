@@ -9,7 +9,11 @@ public class BarleyBreakProvider implements Provider {
 
     @Override
     public Game newGame(Model model, GameType gameType) {
-        return new ClassicBarleyBreak(model, gameType);
+        if (gameType == GameType.BARLEY_BREAK) {
+            return new ClassicBarleyBreak(model);
+        } else {
+            return null;
+        }
     }
 
 }

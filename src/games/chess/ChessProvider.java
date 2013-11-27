@@ -9,7 +9,11 @@ public class ChessProvider implements Provider {
 
     @Override
     public Game newGame(Model model, GameType gameType) {
-        return new ClassicChess(model, gameType);
+        if (gameType == GameType.CHESS) {
+            return new ClassicChess(model);
+        } else {
+            return null;
+        }
     }
 
 }
