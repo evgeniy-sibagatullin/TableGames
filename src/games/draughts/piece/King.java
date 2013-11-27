@@ -1,11 +1,18 @@
 package games.draughts.piece;
 
+import enums.Direction;
 import enums.Side;
 import model.ModelCell;
 
-import java.util.List;
-
 public class King extends DraughtsPiece {
+
+    private static final Direction[] KING_MOVE_DIRECTIONS =
+            {Direction.NORTHEAST,
+                    Direction.NORTHWEST,
+                    Direction.SOUTHEAST,
+                    Direction.SOUTHWEST};
+
+    private static final int MOVE_LENGTH = 7;
 
     public King(int row, int column, Side side, ModelCell[][] gameField) {
         super(row, column, side, gameField);
@@ -20,21 +27,13 @@ public class King extends DraughtsPiece {
 
     @Override
     public boolean isAbleToCapture() {
-        return false;
+        searchCellsAllowedToCapture(KING_MOVE_DIRECTIONS, MOVE_LENGTH);
+        return !cellsAllowedToCaptureIn.isEmpty();
     }
 
     @Override
     public boolean isAbleToMove() {
-        return false;
-    }
-
-    @Override
-    public List<ModelCell> getCellsAllowedToCapture() {
-        return cellsAllowedToCaptureIn;
-    }
-
-    @Override
-    public List<ModelCell> getCellsAllowedToMoveIn() {
-        return cellsAllowedToMoveIn;
+        searchCellsAllowedToMoveIn(KING_MOVE_DIRECTIONS, MOVE_LENGTH);
+        return !cellsAllowedToMoveIn.isEmpty();
     }
 }

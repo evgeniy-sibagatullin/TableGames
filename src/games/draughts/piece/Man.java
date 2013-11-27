@@ -1,12 +1,26 @@
 package games.draughts.piece;
 
+import enums.Direction;
 import enums.Side;
 import model.ModelCell;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Man extends DraughtsPiece {
+
+    private static final Direction[] WHITE_MAN_MOVE_DIRECTIONS =
+            {Direction.NORTHEAST,
+                    Direction.NORTHWEST};
+
+    private static final Direction[] BLACK_MAN_MOVE_DIRECTIONS =
+            {Direction.SOUTHEAST,
+                    Direction.SOUTHWEST};
+
+    private static final Direction[] MAN_CAPTURE_DIRECTIONS =
+            {Direction.NORTHEAST,
+                    Direction.NORTHWEST,
+                    Direction.SOUTHEAST,
+                    Direction.SOUTHWEST};
+
+    private static final int MOVE_LENGTH = 1;
 
     public Man(int row, int column, Side side, ModelCell[][] gameField) {
         super(row, column, side, gameField);
@@ -21,51 +35,16 @@ public class Man extends DraughtsPiece {
 
     @Override
     public boolean isAbleToCapture() {
-        cellsAllowedToCaptureIn = new ArrayList<ModelCell>();
-
-        for (int deltaY = -1; deltaY <= 1; deltaY += 2) {
-            for (int deltaX = -1; deltaX <= 1; deltaX += 2) {
-                int checkRow = row + deltaY;
-                int checkColumn = column + deltaX;
-
-                if (isCellOpponent(checkRow, checkColumn)) {
-                    checkRow += deltaY;
-                    checkColumn += deltaX;
-
-                    if (isCellEmpty(checkRow, checkColumn)) {
-                        cellsAllowedToCaptureIn.add(gameField[checkRow][checkColumn]);
-                    }
-                }
-            }
-        }
-
-        return (!cellsAllowedToCaptureIn.isEmpty());
-    }
-
-    @Override
-    public List<ModelCell> getCellsAllowedToCapture() {
-        return cellsAllowedToCaptureIn;
+        searchCellsAllowedToCapture(MAN_CAPTURE_DIRECTIONS, MOVE_LENGTH);
+        return !cellsAllowedToCaptureIn.isEmpty();
     }
 
     @Override
     public boolean isAbleToMove() {
-        cellsAllowedToMoveIn = new ArrayList<ModelCell>();
-        int deltaY = (side == Side.WHITE) ? -1 : 1;
-
-        for (int deltaX = -1; deltaX <= 1; deltaX += 2) {
-            int checkRow = row + deltaY;
-            int checkColumn = column + deltaX;
-
-            if (isCellEmpty(checkRow, checkColumn)) {
-                cellsAllowedToMoveIn.add(gameField[checkRow][checkColumn]);
-            }
-        }
-
-        return (!cellsAllowedToMoveIn.isEmpty());
-    }
-
-    @Override
-    public List<ModelCell> getCellsAllowedToMoveIn() {
-        return cellsAllowedToMoveIn;
+        Direction[] directions = (side == Side.WHITE) ?
+                WHITE_MAN_MOVE_DIRECTIONS :
+                BLACK_MAN_MOVE_DIRECTIONS;
+        searchCellsAllowedToMoveIn(directions, MOVE_LENGTH);
+        return !cellsAllowedToMoveIn.isEmpty();
     }
 }
