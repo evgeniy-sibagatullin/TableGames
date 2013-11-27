@@ -11,13 +11,12 @@ public abstract class AbstractGame implements Game {
 
     protected Model model;
     protected boolean isThreadNeeded = true;
-    private GameType gameType;
+    protected GameType gameType;
     protected ModelCell[][] gameField;
     protected List<Piece> pieces;
 
-    public AbstractGame(Model model, GameType gameType) {
+    public AbstractGame(Model model) {
         this.model = model;
-        this.gameType = gameType;
     }
 
     @Override

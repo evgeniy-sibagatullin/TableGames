@@ -18,8 +18,9 @@ public class ClassicChess extends AbstractGame implements Chess {
     private Side activeSide;
     private ModelCell selectedCell;
 
-    public ClassicChess(Model model, GameType gameType) {
-        super(model, gameType);
+    public ClassicChess(Model model) {
+        super(model);
+        gameType = GameType.CHESS;
         activeSide = Side.WHITE;
         initGameField();
         initPieces();
