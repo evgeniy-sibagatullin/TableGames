@@ -2,10 +2,11 @@ package model;
 
 import enums.GameType;
 import model.game.Game;
+import model.game.position.Position;
 
 public interface Model {
 
-    Game getGame();
+    Game<?> getGame();
 
     /**
      * Initializes model during application start.
@@ -27,7 +28,7 @@ public interface Model {
      */
     void stopGame();
 
-    void clickCell(int row, int column);
+    void clickCell(Position position);
 
     void setChanged(boolean changed);
 

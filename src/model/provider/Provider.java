@@ -6,6 +6,6 @@ import model.game.Game;
 
 public interface Provider {
 
-    public Game newGame(Model model, GameType gameType);
+    public Game<?> newGame(Model model, GameType gameType);
 
 }

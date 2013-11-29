@@ -8,9 +8,9 @@ import model.provider.Provider;
 public class ChessProvider implements Provider {
 
     @Override
-    public Game newGame(Model model, GameType gameType) {
+    public Game<?> newGame(Model model, GameType gameType) {
         if (gameType == GameType.CHESS) {
-            return new ClassicChess(model);
+            return new Chess(model);
         } else {
             return null;
         }

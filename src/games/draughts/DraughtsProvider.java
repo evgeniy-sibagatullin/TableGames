@@ -8,11 +8,11 @@ import model.provider.Provider;
 public class DraughtsProvider implements Provider {
 
     @Override
-    public Game newGame(Model model, GameType gameType) {
+    public Game<?> newGame(Model model, GameType gameType) {
         if (gameType == GameType.DRAUGHTS_DUEL) {
-            return new ClassicDraughtsDuel(model);
+            return new DraughtsDuel(model);
         } else if (gameType == GameType.DRAUGHTS_VS_AI) {
-            return new ClassicDraughtsVsAi(model);
+            return new DraughtsVsAi(model);
         } else {
             return null;
         }

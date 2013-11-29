@@ -1,9 +1,9 @@
 package controller;
 
 import enums.GameType;
+import model.game.position.Position;
 
 public interface Controller {
-
     void startDefaultGame();
 
     void startGame(GameType gameType);
@@ -12,7 +12,7 @@ public interface Controller {
 
     void reselectGame();
 
-    void clickCell(int row, int column);
+    void clickCell(Position position);
 
     void checkWinConditions();
 }

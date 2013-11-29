@@ -1,7 +1,7 @@
 package view.impl;
 
 import enums.CellState;
-import model.ModelCell;
+import model.game.gamefield.ModelCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -19,8 +19,8 @@ public class ViewCell extends Canvas {
     private ModelCell modelCell;
     private boolean isMouseEnterEvent;
 
-    public ViewCell(Composite parent, int style) {
-        super(parent, style);
+    public ViewCell(Composite parent) {
+        super(parent, SWT.PUSH);
         addListeners();
     }
 
@@ -55,7 +55,7 @@ public class ViewCell extends Canvas {
         });
     }
 
-    protected void paintControl(PaintEvent e) {
+    private void paintControl(PaintEvent e) {
         GC gc = e.gc;
         Rectangle rectangle = getClientArea();
         drawBackgroundImage(gc, rectangle);

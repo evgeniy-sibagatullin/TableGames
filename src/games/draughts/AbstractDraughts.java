@@ -2,20 +2,20 @@ package games.draughts;
 
 import enums.CellState;
 import enums.Side;
+import games.draughts.gamefield.DraughtsField;
 import games.draughts.piece.DraughtsPiece;
+import games.draughts.piece.DraughtsPieceInit;
 import games.draughts.piece.King;
-import games.draughts.piece.Man;
 import model.Model;
-import model.ModelCell;
-import model.game.AbstractGame;
-import model.piece.Piece;
+import model.game.Game;
+import model.game.gamefield.ModelCell;
+import model.game.piece.Piece;
+import model.game.position.Position;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ClassicDraughts extends AbstractGame implements Draughts {
-
-    private static final int FIELD_SIZE = 8;
+public abstract class AbstractDraughts extends Game<DraughtsField> {
 
     protected Side sidePlayer = Side.WHITE;
     protected boolean isPlayerMove = true;
@@ -23,56 +23,16 @@ public abstract class ClassicDraughts extends AbstractGame implements Draughts {
     protected String checkWinConditionsResult = "";
     protected ModelCell selectedCell = null;
 
-    public ClassicDraughts(Model model) {
+    public AbstractDraughts(Model model) {
         super(model);
-        initGameField();
-        initPieces();
-        addPiecesToGameField();
-    }
 
-    @Override
-    public int getFieldSize() {
-        return FIELD_SIZE;
+        gamefield = new DraughtsField();
+        pieces = new DraughtsPieceInit().initPieces(gamefield);
     }
 
     @Override
     public String checkWinConditions() {
         return checkWinConditionsResult;
-    }
-
-    private void initGameField() {
-        gameField = new ModelCell[FIELD_SIZE][FIELD_SIZE];
-        for (int row = 0; row < FIELD_SIZE; row++) {
-            for (int column = 0; column < FIELD_SIZE; column++) {
-                String color = ((row + column) % 2 == 0) ? WHITE_CELL
-                        : BLACK_CELL;
-                gameField[row][column] = new ModelCell(row, column, 0, color, null, CellState.DEFAULT);
-            }
-        }
-    }
-
-    private void initPieces() {
-        pieces = new ArrayList<Piece>();
-
-        for (int row = 0; row < FIELD_SIZE; row++) {
-            for (int column = 0; column < FIELD_SIZE; column++) {
-                if ((row + column) % 2 != 0) {
-                    if (row < 3) {
-                        pieces.add(new Man(row, column, Side.BLACK, gameField));
-                    }
-
-                    if (row > 4) {
-                        pieces.add(new Man(row, column, Side.WHITE, gameField));
-                    }
-                }
-            }
-        }
-    }
-
-    private void addPiecesToGameField() {
-        for (Piece piece : pieces) {
-            gameField[piece.getRow()][piece.getColumn()].setPiece(piece);
-        }
     }
 
     protected void updateGameFieldForPlayer() {
@@ -115,7 +75,7 @@ public abstract class ClassicDraughts extends AbstractGame implements Draughts {
 
     private void updatePiecesReadyToMove(List<DraughtsPiece> pieceList) {
         for (DraughtsPiece draughtsPiece : pieceList) {
-            ModelCell modelCell = gameField[draughtsPiece.getRow()][draughtsPiece.getColumn()];
+            ModelCell modelCell = gamefield.getCell(draughtsPiece.getPosition());
             if (modelCell.getCellState() != CellState.SELECTED) {
                 updateCellState(modelCell, CellState.ALLOWED_PIECE);
             }
@@ -128,10 +88,10 @@ public abstract class ClassicDraughts extends AbstractGame implements Draughts {
     }
 
     @Override
-    public void clickCell(int row, int column) {
+    public void clickCell(Position position) {
         if (isPlayerMove) {
             boolean isModelChanged = false;
-            ModelCell modelCell = gameField[row][column];
+            ModelCell modelCell = gamefield.getCell(position);
             if (selectedCell != null) {
                 if (modelCell.getCellState() == CellState.ATTACKED) {
                     capturePlayer(modelCell);
@@ -203,16 +163,17 @@ public abstract class ClassicDraughts extends AbstractGame implements Draughts {
     }
 
     protected void captureToCell(ModelCell modelCell) {
-        int deltaY = (modelCell.getRow() > selectedCell.getRow()) ? 1 : -1;
-        int deltaX = (modelCell.getColumn() > selectedCell.getColumn()) ? 1 : -1;
+        int checkRow = selectedCell.getPosition().getRow();
+        int checkColumn = selectedCell.getPosition().getColumn();
 
-        int checkRow = selectedCell.getRow();
-        int checkColumn = selectedCell.getColumn();
+        Position checkPosition = new Position(checkRow, checkColumn);
+
+        int deltaY = (modelCell.getPosition().getRow() > checkRow) ? 1 : -1;
+        int deltaX = (modelCell.getPosition().getColumn() > checkColumn) ? 1 : -1;
         ModelCell checkCell;
         do {
-            checkRow += deltaY;
-            checkColumn += deltaX;
-            checkCell = gameField[checkRow][checkColumn];
+            checkPosition.setPosition(checkPosition.getRow() + deltaY, checkPosition.getColumn() + deltaX);
+            checkCell = gamefield.getCell(checkPosition);
         } while (checkCell.getPiece() == null);
 
         pieces.remove(checkCell.getPiece());
@@ -223,8 +184,7 @@ public abstract class ClassicDraughts extends AbstractGame implements Draughts {
 
     protected void moveToCell(ModelCell modelCell) {
         DraughtsPiece piece = (DraughtsPiece) selectedCell.getPiece();
-        piece.setRow(modelCell.getRow());
-        piece.setColumn(modelCell.getColumn());
+        piece.setPosition(modelCell.getPosition());
 
         if (piece.isAbleToBecomeKing()) {
             promoteToKing(piece);
@@ -237,14 +197,14 @@ public abstract class ClassicDraughts extends AbstractGame implements Draughts {
 
     private void promoteToKing(DraughtsPiece piece) {
         pieces.remove(piece);
-        piece = new King(piece.getRow(), piece.getColumn(), piece.getSide(), gameField);
+        piece = new King(piece.getPosition(), piece.getSide(), gamefield);
         pieces.add(piece);
         selectedCell.setPiece(piece);
     }
 
     protected void totalGameFieldCleanUp() {
-        for (ModelCell[] gameFieldRow : gameField) {
-            for (int column = 0; column < gameField.length; column++) {
+        for (ModelCell[] gameFieldRow : gamefield.getField()) {
+            for (int column = 0; column < gamefield.getSize(); column++) {
                 ModelCell modelCell = gameFieldRow[column];
                 updateCellState(modelCell, CellState.DEFAULT);
             }

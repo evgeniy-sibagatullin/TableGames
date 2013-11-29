@@ -2,19 +2,20 @@ package model;
 
 import enums.GameType;
 import model.game.Game;
+import model.game.position.Position;
 import model.provider.impl.ProvidersHandler;
 
 public class GameModel implements Model {
 
-    private Game game;
+    private Game<?> game;
     private boolean isChanged;
 
     @Override
-    public Game getGame() {
+    public Game<?> getGame() {
         return game;
     }
 
-    private void setGame(Game game) {
+    private void setGame(Game<?> game) {
         this.game = game;
     }
 
@@ -52,8 +53,8 @@ public class GameModel implements Model {
     }
 
     @Override
-    public void clickCell(int row, int column) {
-        game.clickCell(row, column);
+    public void clickCell(Position position) {
+        game.clickCell(position);
     }
 
     @Override

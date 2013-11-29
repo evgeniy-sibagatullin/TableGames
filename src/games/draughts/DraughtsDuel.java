@@ -4,9 +4,9 @@ import enums.GameType;
 import enums.Side;
 import model.Model;
 
-public class ClassicDraughtsDuel extends ClassicDraughts {
+public class DraughtsDuel extends AbstractDraughts {
 
-    public ClassicDraughtsDuel(Model model) {
+    public DraughtsDuel(Model model) {
         super(model);
         gameType = GameType.DRAUGHTS_DUEL;
     }

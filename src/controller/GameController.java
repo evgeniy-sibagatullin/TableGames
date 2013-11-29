@@ -2,20 +2,24 @@ package controller;
 
 import enums.GameType;
 import model.Model;
+import model.game.position.Position;
 import model.provider.impl.ProvidersHandler;
 import view.View;
 import view.impl.GameView;
 
 public class GameController implements Controller {
 
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
 
     public GameController(Model model) {
         this.model = model;
         model.initializeModel();
+
         view = new GameView(this, model);
+
         startDefaultGame();
+
         view.initializeView();
     }
 
@@ -46,8 +50,8 @@ public class GameController implements Controller {
     }
 
     @Override
-    public void clickCell(int row, int column) {
-        model.clickCell(row, column);
+    public void clickCell(Position position) {
+        model.clickCell(position);
     }
 
     @Override

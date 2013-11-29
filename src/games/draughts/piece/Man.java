@@ -2,7 +2,8 @@ package games.draughts.piece;
 
 import enums.Direction;
 import enums.Side;
-import model.ModelCell;
+import model.game.gamefield.Gamefield;
+import model.game.position.Position;
 
 public class Man extends DraughtsPiece {
 
@@ -22,8 +23,8 @@ public class Man extends DraughtsPiece {
 
     private static final int MOVE_LENGTH = 1;
 
-    public Man(int row, int column, Side side, ModelCell[][] gameField) {
-        super(row, column, side, gameField);
+    public Man(Position position, Side side, Gamefield gameField) {
+        super(position, side, gameField);
     }
 
     @Override

@@ -17,9 +17,9 @@ public enum CellState {
 
     SELECTED(SWT.LINE_DASH, 4, new Color(Display.getCurrent(), 250, 250, 50));
 
-    int borderStyle;
-    int borderWidth;
-    Color borderColor;
+    private final int borderStyle;
+    private final int borderWidth;
+    private final Color borderColor;
 
     private CellState(int borderStyle, int borderWidth, Color borderColor) {
         this.borderStyle = borderStyle;

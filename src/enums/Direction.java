@@ -10,8 +10,8 @@ public enum Direction {
     SOUTH(1, 0),
     SOUTHEAST(1, 1);
 
-    int deltaY;
-    int deltaX;
+    private final int deltaY;
+    private final int deltaX;
 
     private Direction(int deltaRow, int deltaColumn) {
         this.deltaY = deltaRow;

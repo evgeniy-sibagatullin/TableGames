@@ -1,12 +1,13 @@
 package games.chess.piece;
 
 import enums.Side;
-import model.ModelCell;
+import model.game.gamefield.Gamefield;
+import model.game.position.Position;
 
 public class Pawn extends ChessPiece {
 
-    public Pawn(int row, int column, Side side, ModelCell[][] gameField) {
-        super(row, column, side, gameField);
+    public Pawn(Position position, Side side, Gamefield gameField) {
+        super(position, side, gameField);
     }
 
     @Override

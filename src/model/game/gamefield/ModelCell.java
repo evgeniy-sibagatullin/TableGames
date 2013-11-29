@@ -1,29 +1,24 @@
-package model;
+package model.game.gamefield;
 
 import enums.CellState;
-import model.piece.Piece;
+import model.game.piece.Piece;
+import model.game.position.Position;
 
 public class ModelCell {
 
     private CellState cellState = CellState.DEFAULT;
-    private int row;
-    private int column;
+    private Position position;
     private String backgroundImage;
     private int power;
     private boolean changed;
     private Piece piece;
 
-    public ModelCell(int row, int column, String color, Piece piece) {
-        this(row, column, 0, color, piece, CellState.DEFAULT);
-    }
-
-    public ModelCell(int row, int column, int power, String color,
-                     Piece piece, CellState cellState) {
-        setRow(row);
-        setColumn(column);
+    public ModelCell(Position position, int power, String color,
+                     CellState cellState) {
+        setPosition(position);
         setPower(power);
         setBackgroundImage(color);
-        setPiece(piece);
+        setPiece(null);
         setCellState(cellState);
         setChanged(true);
     }
@@ -36,20 +31,12 @@ public class ModelCell {
         this.cellState = cellState;
     }
 
-    public int getRow() {
-        return row;
+    public Position getPosition() {
+        return position;
     }
 
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
-    public void setColumn(int column) {
-        this.column = column;
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public int getPower() {

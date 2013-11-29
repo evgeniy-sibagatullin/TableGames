@@ -1,12 +1,13 @@
 package games.chess.piece;
 
 import enums.Side;
-import model.ModelCell;
+import model.game.gamefield.Gamefield;
+import model.game.position.Position;
 
 public class King extends ChessPiece {
 
-    public King(int row, int column, Side side, ModelCell[][] gameField) {
-        super(row, column, side, gameField);
+    public King(Position position, Side side, Gamefield gameField) {
+        super(position, side, gameField);
     }
 
     @Override

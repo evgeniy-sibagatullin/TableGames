@@ -7,11 +7,11 @@ import model.Model;
 
 import java.util.List;
 
-public class ClassicDraughtsVsAi extends ClassicDraughts {
+public class DraughtsVsAi extends AbstractDraughts {
 
-    private Side sideAI = Side.BLACK;
+    private final Side sideAI = Side.BLACK;
 
-    public ClassicDraughtsVsAi(Model model) {
+    public DraughtsVsAi(Model model) {
         super(model);
         gameType = GameType.DRAUGHTS_VS_AI;
     }
@@ -49,13 +49,13 @@ public class ClassicDraughtsVsAi extends ClassicDraughts {
 
     private void capturePieceAI(DraughtsPiece piece) {
         while (piece.isAbleToCapture()) {
-            selectedCell = gameField[piece.getRow()][piece.getColumn()];
+            selectedCell = gamefield.getCell(piece.getPosition());
             captureToCell(piece.getCellsAllowedToCapture().get(0));
         }
     }
 
     private void movePieceAI(DraughtsPiece piece) {
-        selectedCell = gameField[piece.getRow()][piece.getColumn()];
+        selectedCell = gamefield.getCell(piece.getPosition());
         moveToCell(piece.getCellsAllowedToMoveIn().get(0));
     }
 

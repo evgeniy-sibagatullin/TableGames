@@ -3,7 +3,9 @@ package view.impl;
 import controller.Controller;
 import enums.GameType;
 import model.Model;
-import model.ModelCell;
+import model.game.gamefield.Gamefield;
+import model.game.gamefield.ModelCell;
+import model.game.position.Position;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
@@ -25,10 +27,10 @@ public class GameView implements View {
     private static final int BOARD_SHELL_SIZE = 900;
     private static final String MENUITEM_KEY_GAMETYPE = "gameName";
 
-    private Model model;
-    private Controller controller;
+    private final Model model;
+    private final Controller controller;
+    private final Display menuDisplay;
 
-    private Display menuDisplay;
     private int monitorCenterX;
     private int monitorCenterY;
     private int gameFieldSize;
@@ -40,7 +42,7 @@ public class GameView implements View {
     private MenuItem manageGameMenuHeader;
     private GameType gameType;
 
-    private ModelCell[][] modelGameField;
+    private Gamefield modelGameField;
     private ViewCell[][] viewGameField;
 
     public GameView(Controller menuController, Model model) {
@@ -178,14 +180,14 @@ public class GameView implements View {
         viewGameField = new ViewCell[gameFieldSize][gameFieldSize];
         for (int row = 0; row < gameFieldSize; row++) {
             for (int column = 0; column < gameFieldSize; column++) {
-                ModelCell modelCell = modelGameField[row][column];
+                ModelCell modelCell = modelGameField.getCell(new Position(row, column));
                 viewGameField[row][column] = constructCell(modelCell, gridData);
             }
         }
     }
 
     private ViewCell constructCell(ModelCell modelCell, GridData gridData) {
-        ViewCell viewCell = new ViewCell(gameFieldComposite, SWT.PUSH);
+        ViewCell viewCell = new ViewCell(gameFieldComposite);
         viewCell.setModelCell(modelCell);
         viewCell.setLayoutData(gridData);
         viewCell.addMouseListener(cellListener);
@@ -195,7 +197,7 @@ public class GameView implements View {
     private void redrawChangedCellsOnGameField() {
         for (int row = 0; row < gameFieldSize; row++) {
             for (int column = 0; column < gameFieldSize; column++) {
-                ModelCell modelCell = modelGameField[row][column];
+                ModelCell modelCell = modelGameField.getCell(new Position(row, column));
                 if (modelCell.getChanged()) {
                     ViewCell viewCell = viewGameField[row][column];
                     viewCell.setModelCell(modelCell);
@@ -230,7 +232,7 @@ public class GameView implements View {
         @Override
         public void mouseUp(MouseEvent e) {
             ViewCell cell = (ViewCell) e.widget;
-            controller.clickCell(cell.getModelCell().getRow(), cell.getModelCell().getColumn());
+            controller.clickCell(cell.getModelCell().getPosition());
         }
 
     };

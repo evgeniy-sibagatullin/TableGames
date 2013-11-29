@@ -31,7 +31,7 @@ public class ProvidersHandler {
         providers.put(gametype, p);
     }
 
-    public static Game newInstance(GameType gametype, Model model) {
+    public static Game<?> newInstance(GameType gametype, Model model) {
 
         Provider p = providers.get(gametype);
         if (p == null)

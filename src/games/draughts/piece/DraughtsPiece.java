@@ -2,29 +2,28 @@ package games.draughts.piece;
 
 import enums.Direction;
 import enums.Side;
-import model.ModelCell;
-import model.piece.GamePiece;
-import model.piece.Piece;
+import model.game.gamefield.Gamefield;
+import model.game.gamefield.ModelCell;
+import model.game.piece.Piece;
+import model.game.position.Position;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DraughtsPiece extends GamePiece {
+public abstract class DraughtsPiece extends Piece {
 
     protected List<ModelCell> cellsAllowedToMoveIn;
     protected List<ModelCell> cellsAllowedToCaptureIn;
 
-    private int deltaX;
-    private int deltaY;
-    private int checkRow;
-    private int checkColumn;
+    private Position checkPosition;
 
-    public DraughtsPiece(int row, int column, Side side, ModelCell[][] gameField) {
-        super(row, column, side, gameField);
+    public DraughtsPiece(Position position, Side side, Gamefield gameField) {
+        super(position, side, gameField);
     }
 
     public boolean isAbleToBecomeKing() {
-        return (this instanceof Man && ((side == Side.WHITE && row == 0) || (side == Side.BLACK && row == 7)));
+        return (this instanceof Man &&
+                ((side == Side.WHITE && position.getRow() == 0) || (side == Side.BLACK && position.getRow() == 7)));
     }
 
     public List<ModelCell> getCellsAllowedToCapture() {
@@ -43,17 +42,17 @@ public abstract class DraughtsPiece extends GamePiece {
         cellsAllowedToCaptureIn = new ArrayList<ModelCell>();
 
         for (Direction direction : directions) {
-            prepareDeltaAndCheckVars(direction);
+            checkPosition = new Position(position);
 
             for (int moveIndex = 1; moveIndex <= moveLength; moveIndex++) {
-                updateCheckVarsByDeltas();
+                checkPosition.moveInDirection(direction);
 
-                if (isCellOpponent(checkRow, checkColumn)) {
+                if (isCellOpponent(checkPosition)) {
                     do {
-                        updateCheckVarsByDeltas();
+                        checkPosition.moveInDirection(direction);
 
-                        if (isCellEmpty(checkRow, checkColumn)) {
-                            cellsAllowedToCaptureIn.add(gameField[checkRow][checkColumn]);
+                        if (isCellEmpty(checkPosition)) {
+                            cellsAllowedToCaptureIn.add(gamefield.getCell(checkPosition));
                         } else {
                             break;
                         }
@@ -62,7 +61,7 @@ public abstract class DraughtsPiece extends GamePiece {
                     } while (moveIndex <= moveLength);
 
                     break;
-                } else if (!isCellEmpty(checkRow, checkColumn)) {
+                } else if (!isCellEmpty(checkPosition)) {
                     break;
                 }
             }
@@ -73,13 +72,13 @@ public abstract class DraughtsPiece extends GamePiece {
         cellsAllowedToMoveIn = new ArrayList<ModelCell>();
 
         for (Direction direction : directions) {
-            prepareDeltaAndCheckVars(direction);
+            checkPosition = new Position(position);
 
             for (int moveIndex = 1; moveIndex <= moveLength; moveIndex++) {
-                updateCheckVarsByDeltas();
+                checkPosition.moveInDirection(direction);
 
-                if (isCellEmpty(checkRow, checkColumn)) {
-                    cellsAllowedToMoveIn.add(gameField[checkRow][checkColumn]);
+                if (isCellEmpty(checkPosition)) {
+                    cellsAllowedToMoveIn.add(gamefield.getCell(checkPosition));
                 } else {
                     break;
                 }
@@ -87,32 +86,15 @@ public abstract class DraughtsPiece extends GamePiece {
         }
     }
 
-    private void prepareDeltaAndCheckVars(Direction direction) {
-        deltaX = direction.getDeltaX();
-        deltaY = direction.getDeltaY();
-        checkRow = row;
-        checkColumn = column;
+    private boolean isCellEmpty(Position position) {
+        return position.isValid(gamefield.getSize()) && gamefield.getCell(position).getPiece() == null;
     }
 
-    private void updateCheckVarsByDeltas() {
-        checkRow += deltaY;
-        checkColumn += deltaX;
-    }
-
-    private boolean isCellEmpty(int row, int column) {
-        return (isValidPosition(row, column) && gameField[row][column].getPiece() == null);
-    }
-
-    private boolean isCellOpponent(int row, int column) {
-        if (isValidPosition(row, column)) {
-            Piece gamePiece = gameField[row][column].getPiece();
+    private boolean isCellOpponent(Position position) {
+        if (position.isValid(gamefield.getSize())) {
+            Piece gamePiece = gamefield.getPiece(position);
             return (gamePiece != null && gamePiece.getSide() != side);
         }
         return false;
     }
-
-    private boolean isValidPosition(int row, int column) {
-        return (row >= 0 && row < gameField.length && column >= 0 && column < gameField.length);
-    }
-
 }
