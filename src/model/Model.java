@@ -6,7 +6,7 @@ import model.game.position.Position;
 
 public interface Model {
 
-    Game<?> getGame();
+    Game<?, ?> getGame();
 
     /**
      * Initializes model during application start.

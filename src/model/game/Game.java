@@ -6,14 +6,14 @@ import model.game.gamefield.Gamefield;
 import model.game.piece.Pieces;
 import model.game.position.Position;
 
-public abstract class Game<T extends Gamefield> implements Runnable {
+public abstract class Game<TF extends Gamefield, TP extends Pieces> implements Runnable {
 
     protected final Model model;
 
     protected boolean isThreadNeeded;
     protected GameType gameType;
-    protected T gamefield;
-    protected Pieces pieces;
+    protected TF gamefield;
+    protected TP pieces;
 
     public Game(Model model) {
         this.model = model;
@@ -24,7 +24,7 @@ public abstract class Game<T extends Gamefield> implements Runnable {
         return gameType;
     }
 
-    public T getGameField() {
+    public TF getGameField() {
         return gamefield;
     }
 

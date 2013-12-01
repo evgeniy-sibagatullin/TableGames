@@ -12,7 +12,7 @@ import model.game.gamefield.ModelCell;
 import model.game.piece.Piece;
 import model.game.position.Position;
 
-public class Chess extends Game<ChessField> {
+public class Chess extends Game<ChessField, ChessPieces> {
 
     private static final int FIELD_SIZE = 8;
 
