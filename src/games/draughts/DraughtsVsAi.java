@@ -30,13 +30,13 @@ public class DraughtsVsAi extends AbstractDraughts {
     }
 
     private void performMoveAI() {
-        totalGameFieldCleanUp();
+        gamefield.totalGameFieldCleanUp();
 
-        List<DraughtsPiece> ableToCaptureList = getPiecesAbleToCapture(sideAI);
+        List<DraughtsPiece> ableToCaptureList = pieces.getPiecesAbleToCapture(sideAI);
         if (!ableToCaptureList.isEmpty()) {
             capturePieceAI(ableToCaptureList.get(0));
         } else {
-            List<DraughtsPiece> ableToMoveList = getPiecesAbleToMove(sideAI);
+            List<DraughtsPiece> ableToMoveList = pieces.getPiecesAbleToMove(sideAI);
             if (!ableToMoveList.isEmpty()) {
                 movePieceAI(ableToMoveList.get(0));
             } else {
@@ -49,14 +49,14 @@ public class DraughtsVsAi extends AbstractDraughts {
 
     private void capturePieceAI(DraughtsPiece piece) {
         while (piece.isAbleToCapture()) {
-            selectedCell = gamefield.getCell(piece.getPosition());
-            captureToCell(piece.getCellsAllowedToCapture().get(0));
+            gamefield.setSelectedCellByPiece(piece);
+            gamefield.captureToCell(piece.getCellsAllowedToCapture().get(0));
         }
     }
 
     private void movePieceAI(DraughtsPiece piece) {
-        selectedCell = gamefield.getCell(piece.getPosition());
-        moveToCell(piece.getCellsAllowedToMoveIn().get(0));
+        gamefield.setSelectedCellByPiece(piece);
+        gamefield.moveToCell(piece.getCellsAllowedToMoveIn().get(0));
     }
 
 }

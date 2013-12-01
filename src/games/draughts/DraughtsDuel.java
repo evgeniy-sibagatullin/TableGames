@@ -25,7 +25,7 @@ public class DraughtsDuel extends AbstractDraughts {
     }
 
     private void switchPlayerSide() {
-        totalGameFieldCleanUp();
+        gamefield.totalGameFieldCleanUp();
         sidePlayer = (sidePlayer == Side.WHITE) ? Side.BLACK : Side.WHITE;
         isPlayerMove = true;
         needToPrepareFieldForPlayer = true;

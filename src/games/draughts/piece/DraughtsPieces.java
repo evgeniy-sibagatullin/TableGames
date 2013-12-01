@@ -7,6 +7,7 @@ import model.game.piece.Pieces;
 import model.game.position.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DraughtsPieces extends Pieces {
 
@@ -30,7 +31,28 @@ public class DraughtsPieces extends Pieces {
                 }
             }
         }
-
         addPiecesToGameField(gamefield);
+    }
+
+    public List<DraughtsPiece> getPiecesAbleToCapture(Side side) {
+        List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
+        for (Piece piece : pieces) {
+            DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
+            if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToCapture()) {
+                pieceList.add(draughtsPiece);
+            }
+        }
+        return pieceList;
+    }
+
+    public List<DraughtsPiece> getPiecesAbleToMove(Side side) {
+        List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
+        for (Piece piece : pieces) {
+            DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
+            if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToMove()) {
+                pieceList.add(draughtsPiece);
+            }
+        }
+        return pieceList;
     }
 }
