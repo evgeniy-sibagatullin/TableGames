@@ -3,10 +3,8 @@ package model.game;
 import enums.GameType;
 import model.Model;
 import model.game.gamefield.Gamefield;
-import model.game.piece.Piece;
+import model.game.piece.Pieces;
 import model.game.position.Position;
-
-import java.util.List;
 
 public abstract class Game<T extends Gamefield> implements Runnable {
 
@@ -15,7 +13,7 @@ public abstract class Game<T extends Gamefield> implements Runnable {
     protected boolean isThreadNeeded;
     protected GameType gameType;
     protected T gamefield;
-    protected List<Piece> pieces;
+    protected Pieces pieces;
 
     public Game(Model model) {
         this.model = model;

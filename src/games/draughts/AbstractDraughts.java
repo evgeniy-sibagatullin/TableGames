@@ -4,7 +4,7 @@ import enums.CellState;
 import enums.Side;
 import games.draughts.gamefield.DraughtsField;
 import games.draughts.piece.DraughtsPiece;
-import games.draughts.piece.DraughtsPieceInit;
+import games.draughts.piece.DraughtsPieces;
 import games.draughts.piece.King;
 import model.Model;
 import model.game.Game;
@@ -25,9 +25,8 @@ public abstract class AbstractDraughts extends Game<DraughtsField> {
 
     public AbstractDraughts(Model model) {
         super(model);
-
         gamefield = new DraughtsField();
-        pieces = new DraughtsPieceInit().initPieces(gamefield);
+        pieces = new DraughtsPieces(gamefield);
     }
 
     @Override
@@ -53,7 +52,7 @@ public abstract class AbstractDraughts extends Game<DraughtsField> {
 
     protected List<DraughtsPiece> getPiecesAbleToCapture(Side side) {
         List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
-        for (Piece piece : pieces) {
+        for (Piece piece : pieces.getPieces()) {
             DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
             if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToCapture()) {
                 pieceList.add(draughtsPiece);
@@ -64,7 +63,7 @@ public abstract class AbstractDraughts extends Game<DraughtsField> {
 
     protected List<DraughtsPiece> getPiecesAbleToMove(Side side) {
         List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
-        for (Piece piece : pieces) {
+        for (Piece piece : pieces.getPieces()) {
             DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
             if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToMove()) {
                 pieceList.add(draughtsPiece);

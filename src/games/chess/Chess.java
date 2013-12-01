@@ -24,8 +24,7 @@ public class Chess extends Game<ChessField> {
         gameType = GameType.CHESS;
         activeSide = Side.WHITE;
         gamefield = new ChessField();
-        pieces = new ChessPieceInit().initPieces(gamefield);
-
+        pieces = new ChessPieces(gamefield);
         updateFieldBeforeNewMove();
     }
 
@@ -60,7 +59,7 @@ public class Chess extends Game<ChessField> {
 
     private void updatePiecesOnMove(Position position) {
         Piece pieceToBeRemoved = null;
-        for (Piece piece : pieces) {
+        for (Piece piece : pieces.getPieces()) {
             if (piece.getPosition().equals(position)) {
                 pieceToBeRemoved = piece;
             } else if (piece.getPosition().equals(selectedCell.getPosition())) {
@@ -91,7 +90,7 @@ public class Chess extends Game<ChessField> {
     }
 
     private void setPowerToCellsOfGameField() {
-        for (Piece piece : pieces) {
+        for (Piece piece : pieces.getPieces()) {
             if (piece.getSide() != activeSide) {
                 gamefield.getCell(piece.getPosition()).setPower(((ChessPiece) piece).getPower());
                 updateAllowedCells(gamefield.getCell(piece.getPosition()));

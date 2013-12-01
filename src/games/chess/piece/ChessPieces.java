@@ -2,18 +2,22 @@ package games.chess.piece;
 
 import enums.Side;
 import model.game.gamefield.Gamefield;
-import model.game.gamefield.ModelCell;
 import model.game.piece.Piece;
+import model.game.piece.Pieces;
 import model.game.position.Position;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class ChessPieceInit {
+public class ChessPieces extends Pieces {
 
-    private final List<Piece> pieces = new ArrayList<Piece>();
+    public ChessPieces(Gamefield gamefield) {
+        super(gamefield);
+    }
 
-    public List<Piece> initPieces(Gamefield gamefield) {
+    @Override
+    protected void initializePieces(Gamefield gamefield) {
+        pieces = new ArrayList<Piece>();
+
         for (int i = 0; i < gamefield.getSize(); i++) {
             pieces.add(new Pawn(new Position(6, i), Side.WHITE, gamefield));
             pieces.add(new Pawn(new Position(1, i), Side.BLACK, gamefield));
@@ -40,15 +44,5 @@ public class ChessPieceInit {
         pieces.add(new King(new Position(7, 4), Side.WHITE, gamefield));
 
         addPiecesToGameField(gamefield);
-
-        return pieces;
     }
-
-    private void addPiecesToGameField(Gamefield gamefield) {
-        for (Piece piece : pieces) {
-            ModelCell cell = gamefield.getCell(piece.getPosition());
-            cell.setPiece(piece);
-        }
-    }
-
 }
