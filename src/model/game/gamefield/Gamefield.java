@@ -4,6 +4,8 @@ import model.game.piece.Piece;
 import model.game.piece.Pieces;
 import model.game.position.Position;
 
+import java.util.List;
+
 public abstract class Gamefield {
 
     protected ModelCell[][] field;
@@ -38,5 +40,17 @@ public abstract class Gamefield {
 
     public void setPieces(Pieces pieces) {
         this.pieces = pieces;
+    }
+
+    public List<Piece> getPieces() {
+        return pieces.getPieces();
+    }
+
+    public void removePieces() {
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                field[row][column].setPiece(null);
+            }
+        }
     }
 }
