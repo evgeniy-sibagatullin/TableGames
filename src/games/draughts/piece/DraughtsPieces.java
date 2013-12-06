@@ -15,7 +15,12 @@ public class DraughtsPieces extends Pieces {
         super(gamefield);
     }
 
-    public void initializePieces(Gamefield gamefield) {
+    public DraughtsPieces(Gamefield gamefield, Pieces inputPieces) {
+        super(gamefield, inputPieces);
+        gamefield.setPieces(this);
+    }
+
+    protected void initializePieces(Gamefield gamefield) {
         pieces = new ArrayList<Piece>();
         int size = gamefield.getSize();
         for (int row = 0; row < size; row++) {
@@ -29,6 +34,18 @@ public class DraughtsPieces extends Pieces {
                         pieces.add(new Man(new Position(row, column), Side.WHITE, gamefield));
                     }
                 }
+            }
+        }
+        addPiecesToGameField(gamefield);
+    }
+
+    protected void clonePiecesToGamefield(Gamefield gamefield, Pieces inputPieces) {
+        pieces = new ArrayList<Piece>();
+        for (Piece piece : inputPieces.getPieces()) {
+            if (piece instanceof Man) {
+                pieces.add(new Man(piece.getPosition(), piece.getSide(), gamefield));
+            } else {
+                pieces.add(new King(piece.getPosition(), piece.getSide(), gamefield));
             }
         }
         addPiecesToGameField(gamefield);
