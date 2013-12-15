@@ -2,6 +2,7 @@ package view.impl;
 
 import enums.CellState;
 import model.game.gamefield.ModelCell;
+import model.game.piece.Piece;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -77,12 +78,12 @@ public class ViewCell extends Canvas {
     }
 
     private void drawPieceImage(GC gc, Rectangle rectangle) {
-        if (getModelCell().getPiece() == null) {
+        Piece piece = getModelCell().getPiece();
+        if (piece == null) {
             return;
         }
         // image centered with padding
-        Image pieceImage = new Image(Display.getCurrent(), getModelCell()
-                .getPiece().getImagePath());
+        Image pieceImage = new Image(Display.getCurrent(), piece.getImagePath());
         Rectangle imgBounds = pieceImage.getBounds();
         gc.drawImage(pieceImage, 0, 0, imgBounds.width, imgBounds.height,
                 rectangle.x + PIECE_IMAGE_PADDING, rectangle.y
