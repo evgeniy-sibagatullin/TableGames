@@ -9,10 +9,16 @@ public abstract class Piece {
     protected Position position;
     protected Side side;
     protected Gamefield gamefield;
+    protected int power;
 
     public Piece(Position position, Side side, Gamefield gameField) {
+        this(position, side, 0, gameField);
+    }
+
+    public Piece(Position position, Side side, int power, Gamefield gameField) {
         setPosition(position);
         setSide(side);
+        setPower(power);
         setGameField(gameField);
     }
 
@@ -34,6 +40,14 @@ public abstract class Piece {
 
     public void setGameField(Gamefield gameField) {
         this.gamefield = gameField;
+    }
+
+    public int getPower() {
+        return power;
+    }
+
+    public void setPower(int power) {
+        this.power = power;
     }
 
     public abstract String getImagePath();

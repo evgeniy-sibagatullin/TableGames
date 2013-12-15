@@ -24,7 +24,7 @@ public class Man extends DraughtsPiece {
     private static final int MOVE_LENGTH = 1;
 
     public Man(Position position, Side side, Gamefield gameField) {
-        super(position, side, gameField);
+        super(position, side, 10, gameField);
     }
 
     @Override

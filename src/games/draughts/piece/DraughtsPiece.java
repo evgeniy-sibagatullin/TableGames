@@ -17,8 +17,8 @@ public abstract class DraughtsPiece extends Piece {
 
     private Position checkPosition;
 
-    public DraughtsPiece(Position position, Side side, Gamefield gameField) {
-        super(position, side, gameField);
+    public DraughtsPiece(Position position, Side side, int power, Gamefield gameField) {
+        super(position, side, power, gameField);
     }
 
     public boolean isAbleToBecomeKing() {
