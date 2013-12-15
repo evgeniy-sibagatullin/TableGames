@@ -107,7 +107,7 @@ public class DraughtsField extends Gamefield {
             checkCell = getCell(checkPosition);
         } while (checkCell.getPiece() == null);
 
-        pieces.remove(checkCell.getPiece());
+        pieceSet.remove(checkCell.getPiece());
         checkCell.setPiece(null);
 
         moveToCell(modelCell);
@@ -127,9 +127,9 @@ public class DraughtsField extends Gamefield {
     }
 
     private void promoteToKing(DraughtsPiece piece) {
-        pieces.remove(piece);
+        pieceSet.remove(piece);
         piece = new King(piece.getPosition(), piece.getSide(), this);
-        pieces.add(piece);
+        pieceSet.add(piece);
         selectedCell.setPiece(piece);
     }
 

@@ -3,17 +3,17 @@ package model.game;
 import enums.GameType;
 import model.Model;
 import model.game.gamefield.Gamefield;
-import model.game.piece.Pieces;
+import model.game.piece.PieceSet;
 import model.game.position.Position;
 
-public abstract class Game<TF extends Gamefield, TP extends Pieces> implements Runnable {
+public abstract class Game<TF extends Gamefield, TP extends PieceSet> implements Runnable {
 
     protected final Model model;
 
     protected boolean isThreadNeeded;
     protected GameType gameType;
     protected TF gamefield;
-    protected TP pieces;
+    protected TP pieceSet;
 
     public Game(Model model) {
         this.model = model;

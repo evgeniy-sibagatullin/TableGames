@@ -3,24 +3,23 @@ package games.draughts.piece;
 import enums.Side;
 import model.game.gamefield.Gamefield;
 import model.game.piece.Piece;
-import model.game.piece.Pieces;
+import model.game.piece.PieceSet;
 import model.game.position.Position;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DraughtsPieces extends Pieces {
+public class DraughtsPieceSet extends PieceSet {
 
-    public DraughtsPieces(Gamefield gamefield) {
+    public DraughtsPieceSet(Gamefield gamefield) {
         super(gamefield);
     }
 
-    public DraughtsPieces(Gamefield gamefield, Pieces inputPieces) {
-        super(gamefield, inputPieces);
-        gamefield.setPieces(this);
+    public DraughtsPieceSet(PieceSet pieceSet) {
+        super(pieceSet);
     }
 
-    protected void initializePieces(Gamefield gamefield) {
+    protected void initializePieces() {
         pieces = new ArrayList<Piece>();
         int size = gamefield.getSize();
         for (int row = 0; row < size; row++) {
@@ -36,10 +35,10 @@ public class DraughtsPieces extends Pieces {
                 }
             }
         }
-        addPiecesToGameField(gamefield);
+        addPiecesToGameField();
     }
 
-    protected void clonePiecesToGamefield(Gamefield gamefield, Pieces inputPieces) {
+    protected void clonePiecesToGamefield(PieceSet inputPieces) {
         pieces = new ArrayList<Piece>();
         for (Piece piece : inputPieces.getPieces()) {
             if (piece instanceof Man) {
@@ -48,7 +47,7 @@ public class DraughtsPieces extends Pieces {
                 pieces.add(new King(piece.getPosition(), piece.getSide(), gamefield));
             }
         }
-        addPiecesToGameField(gamefield);
+        addPiecesToGameField();
     }
 
     public List<DraughtsPiece> getPiecesAbleToCapture(Side side) {

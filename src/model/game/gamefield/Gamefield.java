@@ -1,16 +1,14 @@
 package model.game.gamefield;
 
 import model.game.piece.Piece;
-import model.game.piece.Pieces;
+import model.game.piece.PieceSet;
 import model.game.position.Position;
-
-import java.util.List;
 
 public abstract class Gamefield {
 
     protected ModelCell[][] field;
     protected int size;
-    protected Pieces pieces;
+    protected PieceSet pieceSet;
 
     public Gamefield() {
         initializeGamefield();
@@ -38,12 +36,8 @@ public abstract class Gamefield {
         return field[position.getRow()][position.getColumn()].getPiece();
     }
 
-    public void setPieces(Pieces pieces) {
-        this.pieces = pieces;
-    }
-
-    public List<Piece> getPieces() {
-        return pieces.getPieces();
+    public void setPieceSet(PieceSet pieceSet) {
+        this.pieceSet = pieceSet;
     }
 
     public void removePieces() {

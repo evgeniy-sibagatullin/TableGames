@@ -12,7 +12,7 @@ import model.game.gamefield.ModelCell;
 import model.game.piece.Piece;
 import model.game.position.Position;
 
-public class Chess extends Game<ChessField, ChessPieces> {
+public class Chess extends Game<ChessField, ChessPieceSet> {
 
     private static final int FIELD_SIZE = 8;
 
@@ -24,7 +24,7 @@ public class Chess extends Game<ChessField, ChessPieces> {
         gameType = GameType.CHESS;
         activeSide = Side.WHITE;
         gamefield = new ChessField();
-        pieces = new ChessPieces(gamefield);
+        pieceSet = new ChessPieceSet(gamefield);
         updateFieldBeforeNewMove();
     }
 
@@ -59,7 +59,7 @@ public class Chess extends Game<ChessField, ChessPieces> {
 
     private void updatePiecesOnMove(Position position) {
         Piece pieceToBeRemoved = null;
-        for (Piece piece : pieces.getPieces()) {
+        for (Piece piece : pieceSet.getPieces()) {
             if (piece.getPosition().equals(position)) {
                 pieceToBeRemoved = piece;
             } else if (piece.getPosition().equals(selectedCell.getPosition())) {
@@ -67,7 +67,7 @@ public class Chess extends Game<ChessField, ChessPieces> {
             }
         }
         if (pieceToBeRemoved != null) {
-            pieces.remove(pieceToBeRemoved);
+            pieceSet.remove(pieceToBeRemoved);
         }
     }
 
@@ -90,9 +90,9 @@ public class Chess extends Game<ChessField, ChessPieces> {
     }
 
     private void setPowerToCellsOfGameField() {
-        for (Piece piece : pieces.getPieces()) {
+        for (Piece piece : pieceSet.getPieces()) {
             if (piece.getSide() != activeSide) {
-                gamefield.getCell(piece.getPosition()).setPower(((ChessPiece) piece).getPower());
+                gamefield.getCell(piece.getPosition()).setPower(piece.getPower());
                 updateAllowedCells(gamefield.getCell(piece.getPosition()));
             }
         }
@@ -245,7 +245,7 @@ public class Chess extends Game<ChessField, ChessPieces> {
                     if (presentCell.getPower() == 0) {
                         power = cell.getPower();
                     } else {
-                        power = (presentCell.getPower() > cell.getPower()) ? ((ChessPiece) cell.getPiece()).getPower() : presentCell.getPower();
+                        power = (presentCell.getPower() > cell.getPower()) ? cell.getPiece().getPower() : presentCell.getPower();
                     }
 
                     if (presentCell.getPiece() == null) {

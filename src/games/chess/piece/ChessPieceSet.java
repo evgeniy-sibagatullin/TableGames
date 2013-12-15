@@ -3,19 +3,19 @@ package games.chess.piece;
 import enums.Side;
 import model.game.gamefield.Gamefield;
 import model.game.piece.Piece;
-import model.game.piece.Pieces;
+import model.game.piece.PieceSet;
 import model.game.position.Position;
 
 import java.util.ArrayList;
 
-public class ChessPieces extends Pieces {
+public class ChessPieceSet extends PieceSet {
 
-    public ChessPieces(Gamefield gamefield) {
+    public ChessPieceSet(Gamefield gamefield) {
         super(gamefield);
     }
 
     @Override
-    protected void initializePieces(Gamefield gamefield) {
+    protected void initializePieces() {
         pieces = new ArrayList<Piece>();
 
         for (int i = 0; i < gamefield.getSize(); i++) {
@@ -43,6 +43,6 @@ public class ChessPieces extends Pieces {
         pieces.add(new King(new Position(0, 4), Side.BLACK, gamefield));
         pieces.add(new King(new Position(7, 4), Side.WHITE, gamefield));
 
-        addPiecesToGameField(gamefield);
+        addPiecesToGameField();
     }
 }
