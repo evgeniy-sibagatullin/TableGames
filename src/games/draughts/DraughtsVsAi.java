@@ -18,7 +18,7 @@ public class DraughtsVsAi extends AbstractDraughts {
     private final Random random = new Random();
     private Side sideAI;
     private Side activeSide;
-    private int depth;
+    private int depth = 0;
     private static final int MAX_DEPTH = 6;
     private List<DraughtsPieceSet> tempCapturePieceSetList = new ArrayList<DraughtsPieceSet>();
 
@@ -40,44 +40,33 @@ public class DraughtsVsAi extends AbstractDraughts {
             if (!isPlayerMove) {
                 performMoveAI();
             }
-            delay(200);
+            delay(50);
         }
     }
 
     private synchronized void performMoveAI() {
-        List<DraughtsPieceSet> nextPieceSetList = new ArrayList<DraughtsPieceSet>();
-        activeSide = sideAI;
-        depth = 0;
-
-        List<DraughtsPiece> ableToCaptureList = pieceSet.getPiecesAbleToCapture(sideAI);
-        if (!ableToCaptureList.isEmpty()) {
-            nextPieceSetList = getCapturePieceSets(pieceSet, ableToCaptureList);
-        } else {
-            List<DraughtsPiece> ableToMoveList = pieceSet.getPiecesAbleToMove(sideAI);
-            if (!ableToMoveList.isEmpty()) {
-                nextPieceSetList = getMovePieceSets(pieceSet, ableToMoveList);
-            } else {
-                checkWinConditionsResult = "Congratulations! You have won this game!";
-            }
-        }
+        activeSide = sidePlayer;
+        List<DraughtsPieceSet> nextPieceSetList = getNextPieceSets(pieceSet);
 
         if (!nextPieceSetList.isEmpty()) {
-            DraughtsPieceSet bestMovePieces = new DraughtsPieceSet(pieceSet);
+            DraughtsPieceSet bestMovePieces = null;
             int bestMoveBalance = Integer.MIN_VALUE;
 
             for (DraughtsPieceSet nextPieceSet : nextPieceSetList) {
                 nextPieceSet.applyPiecesToGamefield();
 
                 int nextMoveBalance = checkNextMoveQuality(nextPieceSet);
-                if (nextMoveBalance >= bestMoveBalance) {
+                if (nextMoveBalance > bestMoveBalance) {
                     bestMoveBalance = nextMoveBalance;
                     bestMovePieces = new DraughtsPieceSet(nextPieceSet);
                 }
             }
 
             pieceSet = new DraughtsPieceSet(bestMovePieces);
-            isPlayerMove = true;
             needToPrepareFieldForPlayer = true;
+            isPlayerMove = true;
+        } else {
+            checkWinConditionsResult = "Congratulations! You have won this game!";
         }
 
         gamefield.totalGameFieldCleanUp();
@@ -91,22 +80,9 @@ public class DraughtsVsAi extends AbstractDraughts {
             return checkBalance(pieceSet);
         }
 
-        List<DraughtsPieceSet> nextPieceSetList = new ArrayList<DraughtsPieceSet>();
-        activeSide = (activeSide.equals(sideAI)) ? sidePlayer : sideAI;
-        int bestMoveBalance = (activeSide.equals(sideAI)) ? Integer.MIN_VALUE / 2 : Integer.MAX_VALUE / 2;
+        List<DraughtsPieceSet> nextPieceSetList = getNextPieceSets(pieceSet);
 
-        List<DraughtsPiece> ableToCaptureList = pieceSet.getPiecesAbleToCapture(activeSide);
-        if (!ableToCaptureList.isEmpty()) {
-            nextPieceSetList = getCapturePieceSets(pieceSet, ableToCaptureList);
-        } else {
-            List<DraughtsPiece> ableToMoveList = pieceSet.getPiecesAbleToMove(activeSide);
-            if (!ableToMoveList.isEmpty()) {
-                nextPieceSetList = getMovePieceSets(pieceSet, ableToMoveList);
-            } else {
-                bestMoveBalance = (activeSide.equals(sidePlayer)) ? Integer.MAX_VALUE - 5 : Integer.MIN_VALUE + 5;
-            }
-        }
-
+        int bestMoveBalance = (activeSide.equals(sideAI)) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         if (!nextPieceSetList.isEmpty()) {
             for (DraughtsPieceSet nextPieceSet : nextPieceSetList) {
                 nextPieceSet.applyPiecesToGamefield();
@@ -117,6 +93,8 @@ public class DraughtsVsAi extends AbstractDraughts {
                     bestMoveBalance = nextMoveBalance;
                 }
             }
+        } else {
+            bestMoveBalance = (activeSide.equals(sidePlayer)) ? Integer.MAX_VALUE / 2 : Integer.MIN_VALUE / 2;
         }
 
         depth--;
@@ -125,16 +103,21 @@ public class DraughtsVsAi extends AbstractDraughts {
         return bestMoveBalance;
     }
 
-    private int checkBalance(PieceSet pieceSet) {
-        int balance = 0;
-        for (Piece piece : pieceSet.getPieces()) {
-            if (piece.getSide().equals(sideAI)) {
-                balance += piece.getPower();
-            } else {
-                balance -= piece.getPower();
+    private List<DraughtsPieceSet> getNextPieceSets(DraughtsPieceSet pieceSet) {
+        List<DraughtsPieceSet> nextPieceSetList = new ArrayList<DraughtsPieceSet>();
+        activeSide = (activeSide.equals(sideAI)) ? sidePlayer : sideAI;
+
+        List<DraughtsPiece> ableToCaptureList = pieceSet.getPiecesAbleToCapture(activeSide);
+        if (!ableToCaptureList.isEmpty()) {
+            nextPieceSetList = getCapturePieceSets(pieceSet, ableToCaptureList);
+        } else {
+            List<DraughtsPiece> ableToMoveList = pieceSet.getPiecesAbleToMove(activeSide);
+            if (!ableToMoveList.isEmpty()) {
+                nextPieceSetList = getMovePieceSets(pieceSet, ableToMoveList);
             }
         }
-        return balance - 5 + random.nextInt(10);
+
+        return nextPieceSetList;
     }
 
     private List<DraughtsPieceSet> getCapturePieceSets(DraughtsPieceSet pieceSet, List<DraughtsPiece> ableToCaptureList) {
@@ -185,6 +168,18 @@ public class DraughtsVsAi extends AbstractDraughts {
         }
 
         return pieceSetList;
+    }
+
+    private int checkBalance(PieceSet pieceSet) {
+        int balance = 0;
+        for (Piece piece : pieceSet.getPieces()) {
+            if (piece.getSide().equals(sideAI)) {
+                balance += piece.getPower();
+            } else {
+                balance -= piece.getPower();
+            }
+        }
+        return balance - 5 + random.nextInt(10);
     }
 
 }
