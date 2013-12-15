@@ -9,6 +9,9 @@ public class DraughtsDuel extends AbstractDraughts {
     public DraughtsDuel(Model model) {
         super(model);
         gameType = GameType.DRAUGHTS_DUEL;
+        sidePlayer = Side.WHITE;
+        isPlayerMove = true;
+        needToPrepareFieldForPlayer = true;
     }
 
     @Override

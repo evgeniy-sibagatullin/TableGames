@@ -4,7 +4,7 @@ import enums.CellState;
 import enums.Side;
 import games.draughts.gamefield.DraughtsField;
 import games.draughts.piece.DraughtsPiece;
-import games.draughts.piece.DraughtsPieces;
+import games.draughts.piece.DraughtsPieceSet;
 import model.Model;
 import model.game.Game;
 import model.game.gamefield.ModelCell;
@@ -12,18 +12,18 @@ import model.game.position.Position;
 
 import java.util.List;
 
-public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPieces> {
+public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPieceSet> {
 
-    protected Side sidePlayer = Side.WHITE;
-    protected boolean isPlayerMove = true;
-    protected boolean needToPrepareFieldForPlayer = true;
+    protected Side sidePlayer;
+    protected boolean isPlayerMove;
+    protected boolean needToPrepareFieldForPlayer;
     protected String checkWinConditionsResult = "";
 
     public AbstractDraughts(Model model) {
         super(model);
         gamefield = new DraughtsField();
-        pieces = new DraughtsPieces(gamefield);
-        gamefield.setPieces(pieces);
+        pieceSet = new DraughtsPieceSet(gamefield);
+        gamefield.setPieceSet(pieceSet);
     }
 
     @Override
@@ -32,8 +32,8 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
     }
 
     protected void updateGameFieldForPlayer() {
-        List<DraughtsPiece> ableToCaptureList = pieces.getPiecesAbleToCapture(sidePlayer);
-        List<DraughtsPiece> ableToMoveList = pieces.getPiecesAbleToMove(sidePlayer);
+        List<DraughtsPiece> ableToCaptureList = pieceSet.getPiecesAbleToCapture(sidePlayer);
+        List<DraughtsPiece> ableToMoveList = pieceSet.getPiecesAbleToMove(sidePlayer);
 
         if (!ableToCaptureList.isEmpty()) {
             gamefield.updatePiecesReadyToMove(ableToCaptureList);
@@ -42,6 +42,7 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
         } else {
             checkWinConditionsResult = "You have lost this game.";
         }
+
 
         needToPrepareFieldForPlayer = false;
         model.setChanged(true);

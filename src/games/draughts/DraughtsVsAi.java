@@ -2,13 +2,14 @@ package games.draughts;
 
 import enums.GameType;
 import enums.Side;
-import games.draughts.gamefield.DraughtsField;
 import games.draughts.piece.DraughtsPiece;
-import games.draughts.piece.DraughtsPieces;
+import games.draughts.piece.DraughtsPieceSet;
 import model.Model;
 import model.game.gamefield.ModelCell;
 import model.game.piece.Piece;
+import model.game.piece.PieceSet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -17,6 +18,9 @@ public class DraughtsVsAi extends AbstractDraughts {
     private final Random random = new Random();
     private Side sideAI;
     private Side activeSide;
+    private int depth;
+    private static final int MAX_DEPTH = 6;
+    private List<DraughtsPieceSet> tempCapturePieceSetList = new ArrayList<DraughtsPieceSet>();
 
     public DraughtsVsAi(Model model) {
         super(model);
@@ -36,91 +40,151 @@ public class DraughtsVsAi extends AbstractDraughts {
             if (!isPlayerMove) {
                 performMoveAI();
             }
-            delay(50);
+            delay(200);
         }
     }
 
-    private void performMoveAI() {
-        DraughtsPieces bestMovePieces = new DraughtsPieces(new DraughtsField(), pieces);
-        int bestMoveBalance = Integer.MIN_VALUE;
+    private synchronized void performMoveAI() {
+        List<DraughtsPieceSet> nextPieceSetList = new ArrayList<DraughtsPieceSet>();
         activeSide = sideAI;
+        depth = 0;
 
-        List<DraughtsPiece> ableToCaptureList = pieces.getPiecesAbleToCapture(sideAI);
+        List<DraughtsPiece> ableToCaptureList = pieceSet.getPiecesAbleToCapture(sideAI);
         if (!ableToCaptureList.isEmpty()) {
-            for (DraughtsPiece piece : ableToCaptureList) {
-                for (ModelCell modelCell : piece.getCellsAllowedToCapture()) {
-                    gamefield.removePieces();
-                    DraughtsPieces nextPieces = new DraughtsPieces(gamefield, pieces);
-
-                    DraughtsPiece pieceToBeMoved = (DraughtsPiece) nextPieces.getPieceByPosition(piece.getPosition());
-                    int nextCaptureBalance = checkNextCaptureMove(pieceToBeMoved, modelCell);
-                    if (nextCaptureBalance > bestMoveBalance) {
-                        bestMoveBalance = nextCaptureBalance;
-                        bestMovePieces = new DraughtsPieces(gamefield, nextPieces);
-                    }
-                }
-            }
-            needToPrepareFieldForPlayer = true;
+            nextPieceSetList = getCapturePieceSets(pieceSet, ableToCaptureList);
         } else {
-            List<DraughtsPiece> ableToMoveList = pieces.getPiecesAbleToMove(sideAI);
+            List<DraughtsPiece> ableToMoveList = pieceSet.getPiecesAbleToMove(sideAI);
             if (!ableToMoveList.isEmpty()) {
-                activeSide = (activeSide.equals(sideAI)) ? sidePlayer : sideAI;
-
-                for (DraughtsPiece piece : ableToMoveList) {
-                    for (ModelCell modelCell : piece.getCellsAllowedToMoveIn()) {
-                        gamefield.removePieces();
-                        DraughtsPieces nextPieces = new DraughtsPieces(gamefield, pieces);
-
-                        DraughtsPiece pieceToBeMoved = (DraughtsPiece) nextPieces.getPieceByPosition(piece.getPosition());
-                        gamefield.setSelectedCellByPiece(pieceToBeMoved);
-                        gamefield.moveToCell(modelCell);
-
-                        int nextMoveBalance = checkNextMove(nextPieces);
-                        if (nextMoveBalance > bestMoveBalance) {
-                            bestMoveBalance = nextMoveBalance;
-                            bestMovePieces = new DraughtsPieces(gamefield, nextPieces);
-                        }
-                    }
-                }
-
-                needToPrepareFieldForPlayer = true;
+                nextPieceSetList = getMovePieceSets(pieceSet, ableToMoveList);
             } else {
                 checkWinConditionsResult = "Congratulations! You have won this game!";
             }
         }
 
-        gamefield.removePieces();
-        pieces = new DraughtsPieces(gamefield, bestMovePieces);
+        if (!nextPieceSetList.isEmpty()) {
+            DraughtsPieceSet bestMovePieces = new DraughtsPieceSet(pieceSet);
+            int bestMoveBalance = Integer.MIN_VALUE;
 
-        model.setChanged(true);
-        isPlayerMove = true;
-        gamefield.totalGameFieldCleanUp();
-    }
+            for (DraughtsPieceSet nextPieceSet : nextPieceSetList) {
+                nextPieceSet.applyPiecesToGamefield();
 
-    private int checkNextMove(DraughtsPieces inputPieces) {
-        List<DraughtsPiece> ableToCaptureList = inputPieces.getPiecesAbleToCapture(activeSide);
-        return (ableToCaptureList.isEmpty()) ? random.nextInt(100) : 0;
-    }
+                int nextMoveBalance = checkNextMoveQuality(nextPieceSet);
+                if (nextMoveBalance >= bestMoveBalance) {
+                    bestMoveBalance = nextMoveBalance;
+                    bestMovePieces = new DraughtsPieceSet(nextPieceSet);
+                }
+            }
 
-    private int checkNextCaptureMove(DraughtsPiece piece, ModelCell modelCell) {
-        gamefield.setSelectedCellByPiece(piece);
-        gamefield.captureToCell(modelCell);
-        if (piece.isAbleToCapture()) {
-            return checkNextCaptureMove(piece, piece.getCellsAllowedToCapture().get(0));
-        } else {
-            return checkBalance();
+            pieceSet = new DraughtsPieceSet(bestMovePieces);
+            isPlayerMove = true;
+            needToPrepareFieldForPlayer = true;
         }
+
+        gamefield.totalGameFieldCleanUp();
+        model.setChanged(true);
     }
 
-    private int checkBalance() {
-        int balance = 0;
-        for (Piece piece : gamefield.getPieces()) {
-            if (piece.getSide().equals(Side.BLACK)) {
-                balance++;
+    private int checkNextMoveQuality(DraughtsPieceSet pieceSet) {
+        depth++;
+        if (depth == MAX_DEPTH) {
+            depth--;
+            return checkBalance(pieceSet);
+        }
+
+        List<DraughtsPieceSet> nextPieceSetList = new ArrayList<DraughtsPieceSet>();
+        activeSide = (activeSide.equals(sideAI)) ? sidePlayer : sideAI;
+        int bestMoveBalance = (activeSide.equals(sideAI)) ? Integer.MIN_VALUE / 2 : Integer.MAX_VALUE / 2;
+
+        List<DraughtsPiece> ableToCaptureList = pieceSet.getPiecesAbleToCapture(activeSide);
+        if (!ableToCaptureList.isEmpty()) {
+            nextPieceSetList = getCapturePieceSets(pieceSet, ableToCaptureList);
+        } else {
+            List<DraughtsPiece> ableToMoveList = pieceSet.getPiecesAbleToMove(activeSide);
+            if (!ableToMoveList.isEmpty()) {
+                nextPieceSetList = getMovePieceSets(pieceSet, ableToMoveList);
             } else {
-                balance--;
+                bestMoveBalance = (activeSide.equals(sidePlayer)) ? Integer.MAX_VALUE - 5 : Integer.MIN_VALUE + 5;
             }
         }
-        return balance;
+
+        if (!nextPieceSetList.isEmpty()) {
+            for (DraughtsPieceSet nextPieceSet : nextPieceSetList) {
+                nextPieceSet.applyPiecesToGamefield();
+
+                int nextMoveBalance = checkNextMoveQuality(nextPieceSet);
+                if ((activeSide.equals(sideAI) && nextMoveBalance > bestMoveBalance)
+                        || ((activeSide.equals(sidePlayer) && nextMoveBalance < bestMoveBalance))) {
+                    bestMoveBalance = nextMoveBalance;
+                }
+            }
+        }
+
+        depth--;
+        activeSide = (activeSide.equals(sideAI)) ? sidePlayer : sideAI;
+
+        return bestMoveBalance;
     }
+
+    private int checkBalance(PieceSet pieceSet) {
+        int balance = 0;
+        for (Piece piece : pieceSet.getPieces()) {
+            if (piece.getSide().equals(sideAI)) {
+                balance += piece.getPower();
+            } else {
+                balance -= piece.getPower();
+            }
+        }
+        return balance - 5 + random.nextInt(10);
+    }
+
+    private List<DraughtsPieceSet> getCapturePieceSets(DraughtsPieceSet pieceSet, List<DraughtsPiece> ableToCaptureList) {
+        List<DraughtsPieceSet> pieceSetList = new ArrayList<DraughtsPieceSet>();
+
+        tempCapturePieceSetList.clear();
+
+        for (DraughtsPiece piece : ableToCaptureList) {
+            pieceSet.applyPiecesToGamefield();
+            findPossibleCapturesByPiece(pieceSet, piece);
+
+            for (DraughtsPieceSet capturePieceSet : tempCapturePieceSetList) {
+                pieceSetList.add(capturePieceSet);
+            }
+        }
+
+        return pieceSetList;
+    }
+
+    private void findPossibleCapturesByPiece(DraughtsPieceSet pieceSet, DraughtsPiece piece) {
+        if (!piece.isAbleToCapture()) {
+            tempCapturePieceSetList.add(pieceSet);
+        } else {
+            for (ModelCell modelCell : piece.getCellsAllowedToCapture()) {
+                DraughtsPieceSet nextPieceSet = new DraughtsPieceSet(pieceSet);
+                DraughtsPiece pieceToCapture = (DraughtsPiece) nextPieceSet.getPieceByPosition(piece.getPosition());
+                gamefield.setSelectedCellByPiece(pieceToCapture);
+                gamefield.captureToCell(modelCell);
+                pieceToCapture = (DraughtsPiece) nextPieceSet.getPieceByPosition(pieceToCapture.getPosition());
+                findPossibleCapturesByPiece(nextPieceSet, pieceToCapture);
+            }
+        }
+    }
+
+    private List<DraughtsPieceSet> getMovePieceSets(DraughtsPieceSet pieceSet, List<DraughtsPiece> ableToMoveList) {
+        List<DraughtsPieceSet> pieceSetList = new ArrayList<DraughtsPieceSet>();
+
+        for (DraughtsPiece piece : ableToMoveList) {
+            for (ModelCell modelCell : piece.getCellsAllowedToMoveIn()) {
+                DraughtsPieceSet movePieceSet = new DraughtsPieceSet(pieceSet);
+
+                DraughtsPiece pieceToBeMoved = (DraughtsPiece) movePieceSet.getPieceByPosition(piece.getPosition());
+                gamefield.setSelectedCellByPiece(pieceToBeMoved);
+                gamefield.moveToCell(modelCell);
+
+                pieceSetList.add(movePieceSet);
+            }
+        }
+
+        return pieceSetList;
+    }
+
 }
