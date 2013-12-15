@@ -5,10 +5,10 @@ import enums.GameType;
 import games.barleyBreak.gamefield.BarleyBreakField;
 import model.Model;
 import model.game.Game;
-import model.game.piece.Pieces;
+import model.game.piece.PieceSet;
 import model.game.position.Position;
 
-public class BarleyBreak extends Game<BarleyBreakField, Pieces> {
+public class BarleyBreak extends Game<BarleyBreakField, PieceSet> {
 
     private static final int PREPARATION_RANDOM_MOVES_NEEDED = 5;
 
