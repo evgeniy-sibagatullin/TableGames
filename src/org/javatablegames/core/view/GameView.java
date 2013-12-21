@@ -19,16 +19,16 @@ import java.util.Properties;
 
 public class GameView implements View {
 
+    private static final int BOARD_SHELL_SIZE = 900;
     private static final String APPLICATION_TITLE_TEXT = "Table Games";
     private static final String SELECT_MENU_HEADER_TEXT = "Select Game";
     private static final String MANAGE_MENU_HEADER_TEXT = "Manage Game";
     private static final String RESTART_MENUITEM_TEXT = "Restart game";
     private static final String ANOTHER_MENUITEM_TEXT = "Choose another game";
-    private static final int BOARD_SHELL_SIZE = 900;
     private static final String MENUITEM_KEY_GAMETYPE = "gameName";
 
-    private final Model model;
     private final Controller controller;
+    private final Model model;
     private final Display menuDisplay;
 
     private int monitorCenterX;
@@ -48,18 +48,18 @@ public class GameView implements View {
     public GameView(Controller menuController, Model model) {
         this.controller = menuController;
         this.model = model;
-
         menuDisplay = Display.getDefault();
+
         setMonitorCenter();
         constructGridData();
         constructBoardShell();
-
-        enableSelectGameMenu();
-        disableManageGameMenu();
     }
 
     @Override
     public void initializeView() {
+        enableSelectGameMenu();
+        disableManageGameMenu();
+
         while (!boardShell.isDisposed()) {
             updateView();
             if (!menuDisplay.readAndDispatch()) {
@@ -89,29 +89,28 @@ public class GameView implements View {
     }
 
     private void setMonitorCenter() {
-        Monitor primary = menuDisplay.getPrimaryMonitor();
-        Rectangle bounds = primary.getBounds();
+        Rectangle bounds = menuDisplay.getPrimaryMonitor().getBounds();
         monitorCenterX = bounds.width / 2;
         monitorCenterY = bounds.height / 2;
     }
 
     private void constructGridData() {
-        GridData gridData = new GridData();
+        this.gridData = new GridData();
         gridData.verticalAlignment = GridData.FILL;
         gridData.horizontalAlignment = GridData.FILL;
         gridData.grabExcessHorizontalSpace = true;
         gridData.grabExcessVerticalSpace = true;
-        this.gridData = gridData;
     }
 
     private void constructBoardShell() {
-        boardShell = new Shell(menuDisplay, SWT.SHELL_TRIM & (~SWT.RESIZE));
+        boardShell = new Shell(menuDisplay, SWT.TITLE | SWT.MIN);
         boardShell.setText(APPLICATION_TITLE_TEXT);
         boardShell.setMinimumSize(BOARD_SHELL_SIZE, BOARD_SHELL_SIZE);
         boardShell.setLocation(monitorCenterX - BOARD_SHELL_SIZE / 2,
                 monitorCenterY - BOARD_SHELL_SIZE / 2);
         boardShell.setMenuBar(constructBarMenu());
         boardShell.setLayout(new GridLayout(1, true));
+        boardShell.addShellListener(shellListener);
     }
 
     private Menu constructBarMenu() {
@@ -161,13 +160,14 @@ public class GameView implements View {
         Menu manageGameMenu = new Menu(boardShell, SWT.DROP_DOWN);
         manageGameMenuHeader.setMenu(manageGameMenu);
 
-        MenuItem restartMenuItem = new MenuItem(manageGameMenu, SWT.PUSH);
-        restartMenuItem.addSelectionListener(menuItemListener);
-        restartMenuItem.setText(RESTART_MENUITEM_TEXT);
+        constructManageGameMenuItem(manageGameMenu, RESTART_MENUITEM_TEXT);
+        constructManageGameMenuItem(manageGameMenu, ANOTHER_MENUITEM_TEXT);
+    }
 
-        MenuItem anotherMenuItem = new MenuItem(manageGameMenu, SWT.PUSH);
-        anotherMenuItem.addSelectionListener(menuItemListener);
-        anotherMenuItem.setText(ANOTHER_MENUITEM_TEXT);
+    private void constructManageGameMenuItem(Menu manageGameMenu, String menuItemText) {
+        MenuItem menuItem = new MenuItem(manageGameMenu, SWT.PUSH);
+        menuItem.addSelectionListener(menuItemListener);
+        menuItem.setText(menuItemText);
     }
 
     private void disposeAndCreateNewGameField() {
@@ -213,6 +213,19 @@ public class GameView implements View {
             }
         }
     }
+
+    private final ShellListener shellListener = new ShellAdapter() {
+
+        @Override
+        public void shellClosed(ShellEvent event) {
+            int style = SWT.YES | SWT.NO;
+            MessageBox messageBox = new MessageBox(boardShell, style);
+            messageBox.setText("Confirm exit");
+            messageBox.setMessage("Are you sure you want to exit \"Table Games\"?");
+            event.doit = messageBox.open() == SWT.YES;
+        }
+
+    };
 
     private final SelectionListener menuItemListener = new SelectionAdapter() {
 
