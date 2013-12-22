@@ -1,6 +1,7 @@
 package org.javatablegames.games.draughts.gamefield;
 
 import org.javatablegames.core.enums.CellState;
+import org.javatablegames.core.enums.Direction;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
 import org.javatablegames.core.model.game.piece.Piece;
@@ -43,8 +44,7 @@ public class DraughtsField extends Gamefield {
     public void totalGameFieldCleanUp() {
         for (ModelCell[] gameFieldRow : getField()) {
             for (int column = 0; column < getSize(); column++) {
-                ModelCell modelCell = gameFieldRow[column];
-                updateCellState(modelCell, CellState.DEFAULT);
+                gameFieldRow[column].updateCellState(CellState.DEFAULT);
             }
         }
     }
@@ -53,13 +53,13 @@ public class DraughtsField extends Gamefield {
         for (DraughtsPiece draughtsPiece : pieceList) {
             ModelCell modelCell = getCell(draughtsPiece.getPosition());
             if (modelCell.getCellState() != CellState.SELECTED) {
-                updateCellState(modelCell, CellState.ALLOWED_PIECE);
+                modelCell.updateCellState(CellState.ALLOWED_PIECE);
             }
         }
     }
 
     public void selectCell(ModelCell modelCell) {
-        updateCellState(modelCell, CellState.SELECTED);
+        modelCell.updateCellState(CellState.SELECTED);
         selectedCell = modelCell;
 
         if (isAbleToCapture(modelCell)) {
@@ -70,7 +70,7 @@ public class DraughtsField extends Gamefield {
     }
 
     public void reselectCell(ModelCell modelCell) {
-        updateCellState(selectedCell, CellState.ALLOWED_PIECE);
+        selectedCell.updateCellState(CellState.ALLOWED_PIECE);
         updateCellsAllowedToMoveIn(CellState.DEFAULT);
         selectCell(modelCell);
     }
@@ -85,7 +85,7 @@ public class DraughtsField extends Gamefield {
         }
 
         for (ModelCell modelCell : cellList) {
-            updateCellState(modelCell, cellState);
+            modelCell.updateCellState(cellState);
         }
     }
 
@@ -94,17 +94,16 @@ public class DraughtsField extends Gamefield {
     }
 
     public void captureToCell(ModelCell modelCell) {
-        int checkRow = selectedCell.getPosition().getRow();
-        int checkColumn = selectedCell.getPosition().getColumn();
+        Position targetPosition = new Position(modelCell.getPosition());
+        Position selectedPosition = new Position(selectedCell.getPosition());
+        Direction captureDirection = Direction.getDirection(
+                targetPosition.getRow() - selectedPosition.getRow(),
+                targetPosition.getColumn() - selectedPosition.getColumn());
 
-        Position checkPosition = new Position(checkRow, checkColumn);
-
-        int deltaY = (modelCell.getPosition().getRow() > checkRow) ? 1 : -1;
-        int deltaX = (modelCell.getPosition().getColumn() > checkColumn) ? 1 : -1;
         ModelCell checkCell;
         do {
-            checkPosition.setPosition(checkPosition.getRow() + deltaY, checkPosition.getColumn() + deltaX);
-            checkCell = getCell(checkPosition);
+            selectedPosition.moveInDirection(captureDirection);
+            checkCell = getCell(selectedPosition);
         } while (checkCell.getPiece() == null);
 
         pieceSet.remove(checkCell.getPiece());
@@ -131,12 +130,6 @@ public class DraughtsField extends Gamefield {
         piece = new King(piece.getPosition(), piece.getSide(), this);
         pieceSet.add(piece);
         selectedCell.setPiece(piece);
-    }
-
-
-    private void updateCellState(ModelCell modelCell, CellState cellState) {
-        modelCell.setCellState(cellState);
-        modelCell.setChanged(true);
     }
 
 }

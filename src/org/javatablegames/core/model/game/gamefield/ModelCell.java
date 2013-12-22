@@ -71,4 +71,9 @@ public class ModelCell {
         this.changed = changed;
     }
 
+    public void updateCellState(CellState cellState) {
+        setCellState(cellState);
+        setChanged(true);
+    }
+
 }
