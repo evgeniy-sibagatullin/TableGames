@@ -1,5 +1,6 @@
 package org.javatablegames.games.draughts;
 
+import org.javatablegames.core.enums.CellState;
 import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.Model;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
@@ -16,6 +17,7 @@ import static org.javatablegames.core.enums.Side.oppositeSide;
 
 public class DraughtsVsAi extends AbstractDraughts {
 
+    private static final int DELAY_AI = 200;
     private final Random random = new Random();
     private final Side sideAI;
     private final List<DraughtsPieceSet> tempCapturePieceSetList = new ArrayList<DraughtsPieceSet>();
@@ -40,10 +42,18 @@ public class DraughtsVsAi extends AbstractDraughts {
                 updateGameFieldForPlayer();
             }
             if (!isPlayerMove) {
+                updateGameFieldForAI();
                 performMoveAI();
             }
             delay(50);
         }
+    }
+
+    private void updateGameFieldForAI() {
+        gamefield.totalGameFieldCleanUp();
+        pieceSet.applyPiecesToGamefield();
+        model.setChanged(true);
+        delay(DELAY_AI);
     }
 
     private synchronized void performMoveAI() {
@@ -63,6 +73,7 @@ public class DraughtsVsAi extends AbstractDraughts {
                     bestMovePieces = new DraughtsPieceSet(nextPieceSet);
                 }
             }
+            showMoveAI(bestMovePieces);
 
             pieceSet = new DraughtsPieceSet(bestMovePieces);
             needToPrepareFieldForPlayer = true;
@@ -114,6 +125,7 @@ public class DraughtsVsAi extends AbstractDraughts {
             nextPieceSetList = getCapturePieceSets(pieceSet, ableToCaptureList);
         } else {
             List<DraughtsPiece> ableToMoveList = pieceSet.getPiecesAbleToMove(activeSide);
+
             if (!ableToMoveList.isEmpty()) {
                 nextPieceSetList = getMovePieceSets(pieceSet, ableToMoveList);
             }
@@ -146,8 +158,10 @@ public class DraughtsVsAi extends AbstractDraughts {
             for (ModelCell modelCell : piece.getCellsAllowedToCapture()) {
                 DraughtsPieceSet nextPieceSet = new DraughtsPieceSet(pieceSet);
                 DraughtsPiece pieceToCapture = (DraughtsPiece) nextPieceSet.getPieceByPosition(piece.getPosition());
+
                 gamefield.setSelectedCellByPiece(pieceToCapture);
                 gamefield.captureToCell(modelCell);
+
                 pieceToCapture = (DraughtsPiece) nextPieceSet.getPieceByPosition(pieceToCapture.getPosition());
                 findPossibleCapturesByPiece(nextPieceSet, pieceToCapture);
             }
@@ -174,6 +188,7 @@ public class DraughtsVsAi extends AbstractDraughts {
 
     private int checkBalance(PieceSet pieceSet) {
         int balance = 0;
+
         for (Piece piece : pieceSet.getPieces()) {
             if (piece.getSide().equals(sideAI)) {
                 balance += piece.getPower();
@@ -181,7 +196,40 @@ public class DraughtsVsAi extends AbstractDraughts {
                 balance -= piece.getPower();
             }
         }
+
         return balance - 5 + random.nextInt(10);
+    }
+
+    private void showMoveAI(PieceSet bestMovePieces) {
+        int numberOfChangedPieces = 1;
+        pieceSet.applyPiecesToGamefield();
+
+        for (Piece pieceOfPresentSet : pieceSet.getPieces()) {
+            if (isPieceChanged(pieceOfPresentSet, bestMovePieces)) {
+                numberOfChangedPieces++;
+
+                if (pieceOfPresentSet.getSide().equals(sideAI)) {
+                    gamefield.getCell(pieceOfPresentSet.getPosition()).updateCellState(CellState.SELECTED);
+                } else {
+                    gamefield.getCell(pieceOfPresentSet.getPosition()).updateCellState(CellState.ATTACKED);
+                }
+            }
+        }
+
+        model.setChanged(true);
+        delay(numberOfChangedPieces * DELAY_AI);
+    }
+
+    private boolean isPieceChanged(Piece pieceOfPresentSet, PieceSet bestMovePieces) {
+        boolean changed = true;
+
+        for (Piece pieceOfBestSet : bestMovePieces.getPieces()) {
+            if (pieceOfBestSet.getPosition().equals(pieceOfPresentSet.getPosition())) {
+                changed = false;
+            }
+        }
+
+        return changed;
     }
 
 }
