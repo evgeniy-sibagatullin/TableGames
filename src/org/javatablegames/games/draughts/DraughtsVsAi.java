@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static org.javatablegames.core.enums.Side.oppositeSide;
+
 public class DraughtsVsAi extends AbstractDraughts {
 
     private final Random random = new Random();
@@ -25,9 +27,10 @@ public class DraughtsVsAi extends AbstractDraughts {
     public DraughtsVsAi(Model model) {
         super(model);
         sidePlayer = Side.WHITE;
-        sideAI = Side.BLACK;
-        isPlayerMove = true;
-        needToPrepareFieldForPlayer = true;
+
+        sideAI = oppositeSide(sidePlayer);
+        isPlayerMove = (sidePlayer.equals(Side.WHITE));
+        needToPrepareFieldForPlayer = isPlayerMove;
     }
 
     @Override
@@ -97,14 +100,14 @@ public class DraughtsVsAi extends AbstractDraughts {
         }
 
         depth--;
-        activeSide = (activeSide.equals(sideAI)) ? sidePlayer : sideAI;
+        activeSide = oppositeSide(activeSide);
 
         return bestMoveBalance;
     }
 
     private List<DraughtsPieceSet> getNextPieceSets(DraughtsPieceSet pieceSet) {
         List<DraughtsPieceSet> nextPieceSetList = new ArrayList<DraughtsPieceSet>();
-        activeSide = (activeSide.equals(sideAI)) ? sidePlayer : sideAI;
+        activeSide = oppositeSide(activeSide);
 
         List<DraughtsPiece> ableToCaptureList = pieceSet.getPiecesAbleToCapture(activeSide);
         if (!ableToCaptureList.isEmpty()) {
