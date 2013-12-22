@@ -17,16 +17,6 @@ public class Position {
         this.column = position.column;
     }
 
-    public void setPosition(int row, int column) {
-        this.row = row;
-        this.column = column;
-    }
-
-    public void setPosition(Position position) {
-        this.row = position.row;
-        this.column = position.column;
-    }
-
     public int getRow() {
         return row;
     }
