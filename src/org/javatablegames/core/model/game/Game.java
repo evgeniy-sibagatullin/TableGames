@@ -26,16 +26,23 @@ public abstract class Game<TF extends Gamefield, TP extends PieceSet> implements
         return gamefield;
     }
 
-    public void terminateThread() {
-        isThreadNeeded = false;
-    }
-
     public int getFieldSize() {
         return gamefield.getSize();
+    }
+
+    public void terminateThread() {
+        isThreadNeeded = false;
     }
 
     public abstract String checkWinConditions();
 
     public abstract void clickCell(Position position);
+
+    protected void delay(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ignored) {
+        }
+    }
 
 }
