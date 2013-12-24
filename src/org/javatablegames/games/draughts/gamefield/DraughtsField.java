@@ -41,14 +41,6 @@ public class DraughtsField extends Gamefield {
         }
     }
 
-    public void totalGameFieldCleanUp() {
-        for (ModelCell[] gameFieldRow : getField()) {
-            for (int column = 0; column < getSize(); column++) {
-                gameFieldRow[column].updateCellState(CellState.DEFAULT);
-            }
-        }
-    }
-
     public void updatePiecesReadyToMove(List<DraughtsPiece> pieceList) {
         for (DraughtsPiece draughtsPiece : pieceList) {
             ModelCell modelCell = getCell(draughtsPiece.getPosition());

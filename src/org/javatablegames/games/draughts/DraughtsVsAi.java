@@ -18,13 +18,12 @@ import static org.javatablegames.core.enums.Side.oppositeSide;
 public class DraughtsVsAi extends AbstractDraughts {
 
     private static final int DELAY_AI = 200;
+    private static final int MAX_DEPTH = 6;
     private final Random random = new Random();
     private final Side sideAI;
     private final List<DraughtsPieceSet> tempCapturePieceSetList = new ArrayList<DraughtsPieceSet>();
-
     private Side activeSide;
     private int depth = 0;
-    private static final int MAX_DEPTH = 6;
 
     public DraughtsVsAi(Model model) {
         super(model);
@@ -32,26 +31,27 @@ public class DraughtsVsAi extends AbstractDraughts {
 
         sideAI = oppositeSide(sidePlayer);
         isPlayerMove = (sidePlayer.equals(Side.WHITE));
-        needToPrepareFieldForPlayer = isPlayerMove;
     }
 
     @Override
     public void run() {
+        if (isPlayerMove) {
+            giveMoveToPlayer();
+        }
+
         while (isThreadNeeded) {
-            if (needToPrepareFieldForPlayer) {
-                updateGameFieldForPlayer();
-            }
             if (!isPlayerMove) {
                 updateGameFieldForAI();
                 performMoveAI();
+                giveMoveToPlayer();
             }
+
             delay(50);
         }
     }
 
     private void updateGameFieldForAI() {
-        gamefield.totalGameFieldCleanUp();
-        pieceSet.applyPiecesToGamefield();
+        gamefield.setTotalCellStateDefault();
         model.setChanged(true);
         delay(DELAY_AI);
     }
@@ -76,14 +76,9 @@ public class DraughtsVsAi extends AbstractDraughts {
             showMoveAI(bestMovePieces);
 
             pieceSet = new DraughtsPieceSet(bestMovePieces);
-            needToPrepareFieldForPlayer = true;
-            isPlayerMove = true;
         } else {
             checkWinConditionsResult = "Congratulations! You have won this game!";
         }
-
-        gamefield.totalGameFieldCleanUp();
-        model.setChanged(true);
     }
 
     private int checkNextMoveQuality(DraughtsPieceSet pieceSet) {
@@ -201,7 +196,7 @@ public class DraughtsVsAi extends AbstractDraughts {
     }
 
     private void showMoveAI(PieceSet bestMovePieces) {
-        int numberOfChangedPieces = 1;
+        int numberOfChangedPieces = 0;
         pieceSet.applyPiecesToGamefield();
 
         for (Piece pieceOfPresentSet : pieceSet.getPieces()) {

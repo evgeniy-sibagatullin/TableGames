@@ -47,11 +47,11 @@ public abstract class DraughtsPiece extends Piece {
             for (int moveIndex = 1; moveIndex <= moveLength; moveIndex++) {
                 checkPosition.moveInDirection(direction);
 
-                if (isCellOpponent(checkPosition)) {
+                if (gamefield.isCellOpponent(checkPosition, side)) {
                     do {
                         checkPosition.moveInDirection(direction);
 
-                        if (isCellEmpty(checkPosition)) {
+                        if (gamefield.isCellEmpty(checkPosition)) {
                             cellsAllowedToCaptureIn.add(gamefield.getCell(checkPosition));
                         } else {
                             break;
@@ -61,7 +61,7 @@ public abstract class DraughtsPiece extends Piece {
                     } while (moveIndex <= moveLength);
 
                     break;
-                } else if (!isCellEmpty(checkPosition)) {
+                } else if (!gamefield.isCellEmpty(checkPosition)) {
                     break;
                 }
             }
@@ -77,25 +77,13 @@ public abstract class DraughtsPiece extends Piece {
             for (int moveIndex = 1; moveIndex <= moveLength; moveIndex++) {
                 checkPosition.moveInDirection(direction);
 
-                if (isCellEmpty(checkPosition)) {
+                if (gamefield.isCellEmpty(checkPosition)) {
                     cellsAllowedToMoveIn.add(gamefield.getCell(checkPosition));
                 } else {
                     break;
                 }
             }
         }
-    }
-
-    private boolean isCellEmpty(Position position) {
-        return position.isValid(gamefield.getSize()) && gamefield.getCell(position).getPiece() == null;
-    }
-
-    private boolean isCellOpponent(Position position) {
-        if (position.isValid(gamefield.getSize())) {
-            Piece gamePiece = gamefield.getPiece(position);
-            return (gamePiece != null && gamePiece.getSide() != side);
-        }
-        return false;
     }
 
 }

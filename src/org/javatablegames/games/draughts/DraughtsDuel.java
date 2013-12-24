@@ -9,27 +9,19 @@ public class DraughtsDuel extends AbstractDraughts {
         super(model);
         sidePlayer = Side.WHITE;
         isPlayerMove = true;
-        needToPrepareFieldForPlayer = true;
     }
 
     @Override
     public void run() {
+        giveMoveToPlayer();
+
         while (isThreadNeeded) {
-            if (needToPrepareFieldForPlayer) {
-                updateGameFieldForPlayer();
-            }
             if (!isPlayerMove) {
-                switchPlayerSide();
+                sidePlayer = Side.oppositeSide(sidePlayer);
+                giveMoveToPlayer();
             }
             delay(50);
         }
-    }
-
-    private void switchPlayerSide() {
-        gamefield.totalGameFieldCleanUp();
-        sidePlayer = (sidePlayer == Side.WHITE) ? Side.BLACK : Side.WHITE;
-        isPlayerMove = true;
-        needToPrepareFieldForPlayer = true;
     }
 
 }
