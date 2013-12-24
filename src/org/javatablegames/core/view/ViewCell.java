@@ -11,12 +11,11 @@ import org.javatablegames.core.model.game.piece.Piece;
 
 public class ViewCell extends Canvas {
 
+    private static final Display DISPLAY = Display.getCurrent();
     private static final int BORDER_PADDING = 5;
-
     private static final int POWER_DEFAULT_FONT_SIZE = 20;
-    private static final Font POWER_DEFAULT_FONT = new Font(Display.getCurrent(), "Georgia", POWER_DEFAULT_FONT_SIZE, SWT.BOLD);
     private static final int PIECE_IMAGE_PADDING = (BORDER_PADDING + 5) * 2;
-
+    private static final Font POWER_DEFAULT_FONT = new Font(DISPLAY, "Georgia", POWER_DEFAULT_FONT_SIZE, SWT.BOLD);
     private ModelCell modelCell;
     private boolean isMouseEnterEvent;
 
@@ -70,9 +69,10 @@ public class ViewCell extends Canvas {
             return;
         }
         // image stretched
-        Image backgroundImage = new Image(Display.getCurrent(), getModelCell()
+        Image backgroundImage = new Image(DISPLAY, getModelCell()
                 .getBackgroundImage());
         Rectangle imgBounds = backgroundImage.getBounds();
+
         gc.drawImage(backgroundImage, 0, 0, imgBounds.width, imgBounds.height,
                 rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }
@@ -83,7 +83,7 @@ public class ViewCell extends Canvas {
             return;
         }
         // image centered with padding
-        Image pieceImage = new Image(Display.getCurrent(), piece.getImagePath());
+        Image pieceImage = new Image(DISPLAY, piece.getImagePath());
         Rectangle imgBounds = pieceImage.getBounds();
         gc.drawImage(pieceImage, 0, 0, imgBounds.width, imgBounds.height,
                 rectangle.x + PIECE_IMAGE_PADDING, rectangle.y
@@ -121,7 +121,7 @@ public class ViewCell extends Canvas {
     private void drawPowerText(GC gc, Rectangle rectangle) {
         if (modelCell != null && modelCell.getPower() != 0) {
             gc.setFont(POWER_DEFAULT_FONT);
-            gc.setForeground(new Color(Display.getCurrent(), 0, 250, 0));
+            gc.setForeground(new Color(DISPLAY, 0, 250, 0));
             gc.drawText(Integer.toString(modelCell.getPower()), (rectangle.width - POWER_DEFAULT_FONT_SIZE) / 2,
                     (rectangle.height - POWER_DEFAULT_FONT_SIZE) / 2, SWT.DRAW_TRANSPARENT);
         }
