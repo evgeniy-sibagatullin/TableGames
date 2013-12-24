@@ -1,5 +1,7 @@
 package org.javatablegames.core.model.game.gamefield;
 
+import org.javatablegames.core.enums.CellState;
+import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.core.model.position.Position;
@@ -46,6 +48,26 @@ public abstract class Gamefield {
                 field[row][column].setPiece(null);
             }
         }
+    }
+
+    public void setTotalCellStateDefault() {
+        for (ModelCell[] gameFieldRow : getField()) {
+            for (int column = 0; column < getSize(); column++) {
+                gameFieldRow[column].updateCellState(CellState.DEFAULT);
+            }
+        }
+    }
+
+    public boolean isCellEmpty(Position position) {
+        return position.isValid(size) && getCell(position).getPiece() == null;
+    }
+
+    public boolean isCellOpponent(Position position, Side side) {
+        if (position.isValid(getSize())) {
+            Piece gamePiece = getPiece(position);
+            return (gamePiece != null && gamePiece.getSide() != side);
+        }
+        return false;
     }
 
 }
