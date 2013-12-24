@@ -14,6 +14,7 @@ public abstract class PieceSet {
     protected PieceSet(Gamefield gamefield) {
         setGamefield(gamefield);
         initializePieces();
+        gamefield.setPieceSet(this);
     }
 
     protected PieceSet(PieceSet pieceSet) {
