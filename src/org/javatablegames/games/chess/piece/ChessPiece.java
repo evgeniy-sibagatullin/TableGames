@@ -11,6 +11,4 @@ public abstract class ChessPiece extends Piece {
         super(position, side, gameField);
     }
 
-    public abstract int getPower();
-
 }

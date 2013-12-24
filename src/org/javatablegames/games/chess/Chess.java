@@ -11,39 +11,87 @@ import org.javatablegames.core.model.position.Position;
 import org.javatablegames.games.chess.gamefield.ChessField;
 import org.javatablegames.games.chess.piece.*;
 
+import java.util.List;
+
 public class Chess extends Game<ChessField, ChessPieceSet> {
 
     private static final int FIELD_SIZE = 8;
-
-    private Side activeSide;
+    protected boolean isPlayerMove;
+    protected List<ChessPiece> ableToMoveList;
     private ModelCell selectedCell;
+    private Side sidePlayer = Side.WHITE;
+    private String checkWinConditionsResult = "";
 
     public Chess(Model model) {
         super(model);
-        activeSide = Side.WHITE;
         gamefield = new ChessField();
         pieceSet = new ChessPieceSet(gamefield);
-        updateFieldBeforeNewMove();
+    }
+
+    @Override
+    public String checkWinConditions() {
+        return checkWinConditionsResult;
+    }
+
+    @Override
+    public void run() {
+        giveMoveToPlayer();
+
+        while (isThreadNeeded) {
+            if (!isPlayerMove) {
+                sidePlayer = Side.oppositeSide(sidePlayer);
+                giveMoveToPlayer();
+            }
+            delay(50);
+        }
     }
 
     @Override
     public void clickCell(Position position) {
-        ModelCell cell = gamefield.getCell(position);
-        boolean isChanged = false;
-        if (CellState.ATTACKED == cell.getCellState() || CellState.ALLOWED_MOVE == cell.getCellState()) {
-            movePiece(position);
-            isChanged = true;
-        } else if (CellState.ALLOWED_PIECE == cell.getCellState()) {
-            updateFieldBeforeNewMove();
+        if (isPlayerMove) {
+            ModelCell modelCell = gamefield.getCell(position);
 
-            updateAllowedCells(cell);
-            selectedCell = gamefield.getCell(position);
-            selectedCell.setCellState(CellState.SELECTED);
-            selectedCell.setChanged(true);
-            isChanged = true;
+            if (gamefield.getSelectedCell() != null) {
+                if (modelCell.getCellState() == CellState.ATTACKED) {
+//                    gamefield.captureToCell(modelCell);
+                    isPlayerMove = false;
+                } else if (modelCell.getCellState() == CellState.ALLOWED_MOVE) {
+//                    gamefield.moveToCell(modelCell);
+                    isPlayerMove = false;
+                } else if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {
+//                    gamefield.reselectCell(modelCell);
+                }
+            } else {
+                if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {
+//                    gamefield.selectCell(modelCell);
+                }
+            }
+
+            model.setChanged(true);
         }
-        model.setChanged(isChanged);
     }
+
+    protected void giveMoveToPlayer() {
+        if (hasPlayerAnyMove()) {
+            updateGameFieldForPlayer();
+            isPlayerMove = true;
+        } else {
+            checkWinConditionsResult = "You have lost this game.";
+        }
+    }
+
+    private boolean hasPlayerAnyMove() {
+        return !pieceSet.getPiecesAbleToMove(sidePlayer).isEmpty();
+    }
+
+    private void updateGameFieldForPlayer() {
+        gamefield.setTotalCellStateDefault();
+        gamefield.updatePiecesReadyToMove(ableToMoveList);
+        model.setChanged(true);
+    }
+
+
+    ////////////////////
 
     private void movePiece(Position position) {
         updatePiecesOnMove(position);
@@ -51,7 +99,7 @@ public class Chess extends Game<ChessField, ChessPieceSet> {
         gamefield.getCell(position).setPower(selectedCell.getPower());
         selectedCell.setPiece(null);
         selectedCell.setPower(0);
-        activeSide = (activeSide == Side.WHITE) ? Side.BLACK : Side.WHITE;
+        sidePlayer = (sidePlayer == Side.WHITE) ? Side.BLACK : Side.WHITE;
         updateFieldBeforeNewMove();
     }
 
@@ -70,30 +118,7 @@ public class Chess extends Game<ChessField, ChessPieceSet> {
     }
 
     private void updateFieldBeforeNewMove() {
-        clearPowerFromEmptyCells();
-        setPowerToCellsOfGameField();
         setPiecesOfActiveSideAllowed();
-    }
-
-    private void clearPowerFromEmptyCells() {
-        for (int row = 0; row < FIELD_SIZE; row++) {
-            for (int column = 0; column < FIELD_SIZE; column++) {
-                ModelCell cell = gamefield.getCell(new Position(row, column));
-                if (cell.getPiece() == null && cell.getPower() != 0) {
-                    cell.setPower(0);
-                    cell.setChanged(true);
-                }
-            }
-        }
-    }
-
-    private void setPowerToCellsOfGameField() {
-        for (Piece piece : pieceSet.getPieces()) {
-            if (piece.getSide() != activeSide) {
-                gamefield.getCell(piece.getPosition()).setPower(piece.getPower());
-                updateAllowedCells(gamefield.getCell(piece.getPosition()));
-            }
-        }
     }
 
     private void setPiecesOfActiveSideAllowed() {
@@ -102,7 +127,7 @@ public class Chess extends Game<ChessField, ChessPieceSet> {
                 ModelCell cell = gamefield.getCell(new Position(row, column));
                 CellState cellState = (cell.getPiece() == null) ?
                         CellState.DEFAULT :
-                        (cell.getPiece().getSide() == activeSide) ?
+                        (cell.getPiece().getSide() == sidePlayer) ?
                                 CellState.ALLOWED_PIECE :
                                 CellState.DEFAULT;
                 if (cell.getCellState() != cellState) {
@@ -171,7 +196,7 @@ public class Chess extends Game<ChessField, ChessPieceSet> {
     private void updateAttackedByPawnCells(int row, int column) {
         ModelCell cellToBeCaptured = gamefield.getCell(new Position(row, column));
         if (cellToBeCaptured.getPiece() != null) {
-            if (cellToBeCaptured.getPiece().getSide() != activeSide) {
+            if (cellToBeCaptured.getPiece().getSide() != sidePlayer) {
                 setCellStatePowerAndStatusChanged(cellToBeCaptured, CellState.ATTACKED, cellToBeCaptured.getPower());
             }
         } else {
@@ -184,7 +209,9 @@ public class Chess extends Game<ChessField, ChessPieceSet> {
             for (int deltaY = -2; deltaY <= 2; deltaY++) {
                 int row = cell.getPosition().getRow() + deltaY;
                 int column = cell.getPosition().getColumn() + deltaX;
-                if (isValidPosition(row, column) && ((Math.abs(deltaX) + Math.abs(deltaY)) == 3)) {
+
+                Position position = new Position(row, column);
+                if (position.isValid(gamefield.getSize()) && ((Math.abs(deltaX) + Math.abs(deltaY)) == 3)) {
                     ModelCell presentCell = gamefield.getCell(new Position(row, column));
 
                     int power;
@@ -236,7 +263,9 @@ public class Chess extends Game<ChessField, ChessPieceSet> {
             for (int move = 0; move < moveLength; move++) {
                 row += deltaY;
                 column += deltaX;
-                if (isValidPosition(row, column)) {
+
+                Position position = new Position(row, column);
+                if (position.isValid(gamefield.getSize())) {
                     ModelCell presentCell = gamefield.getCell(new Position(row, column));
 
                     int power;
@@ -257,19 +286,6 @@ public class Chess extends Game<ChessField, ChessPieceSet> {
                 }
             }
         }
-    }
-
-    private boolean isValidPosition(int row, int column) {
-        return (row >= 0 && row < FIELD_SIZE && column >= 0 && column < FIELD_SIZE);
-    }
-
-    @Override
-    public void run() {
-    }
-
-    @Override
-    public String checkWinConditions() {
-        return "";
     }
 
 }

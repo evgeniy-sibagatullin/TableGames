@@ -7,6 +7,7 @@ import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.core.model.position.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChessPieceSet extends PieceSet {
 
@@ -44,6 +45,13 @@ public class ChessPieceSet extends PieceSet {
         pieces.add(new King(new Position(7, 4), Side.WHITE, gamefield));
 
         addPiecesToGameField();
+    }
+
+    public List<ChessPiece> getPiecesAbleToMove(Side side) {
+        List<ChessPiece> pieceList = new ArrayList<ChessPiece>();
+
+
+        return pieceList;
     }
 
 }
