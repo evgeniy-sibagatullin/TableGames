@@ -68,11 +68,4 @@ public class BarleyBreak extends Game<BarleyBreakField, PieceSet> {
         model.setChanged(true);
     }
 
-    private void delay(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ignored) {
-        }
-    }
-
 }
