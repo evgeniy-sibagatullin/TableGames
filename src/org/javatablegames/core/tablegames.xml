@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-    <entry key="Chess">org.javatablegames.games.chess.Chess</entry>
+    <entry key="Chess Duel">org.javatablegames.games.chess.Chess</entry>
     <entry key="Draughts Duel">org.javatablegames.games.draughts.DraughtsDuel</entry>
     <entry key="Draughts vs AI">org.javatablegames.games.draughts.DraughtsVsAi</entry>
 </properties>
