@@ -2,7 +2,10 @@ package org.javatablegames.games.chess.piece;
 
 import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
+import org.javatablegames.core.model.game.gamefield.ModelCell;
 import org.javatablegames.core.model.position.Position;
+
+import java.util.ArrayList;
 
 public class Knight extends ChessPiece {
 
@@ -13,13 +16,33 @@ public class Knight extends ChessPiece {
     @Override
     public String getImagePath() {
         return (getSide() == Side.WHITE) ?
-                "img/chess/Chess-KnightW.png" :
-                "img/chess/Chess-KnightB.png";
+                "src/org/javatablegames/games/chess/img/Chess-KnightW.png" :
+                "src/org/javatablegames/games/chess/img/Chess-KnightB.png";
     }
 
     @Override
-    public int getPower() {
-        return 2;
+    public boolean isAbleToMove() {
+        searchCellsAllowedToMoveIn();
+        return !cellsAllowedToMoveIn.isEmpty();
+    }
+
+    private void searchCellsAllowedToMoveIn() {
+        cellsAllowedToMoveIn = new ArrayList<ModelCell>();
+
+        for (int deltaX = -2; deltaX <= 2; deltaX++) {
+            for (int deltaY = -2; deltaY <= 2; deltaY++) {
+                int row = getPosition().getRow() + deltaY;
+                int column = getPosition().getColumn() + deltaX;
+                checkPosition = new Position(row, column);
+
+                if (((Math.abs(deltaX) + Math.abs(deltaY)) == 3)
+                        && checkPosition.isValid(gamefield.getSize())
+                        && (gamefield.isCellEmpty(checkPosition) || gamefield.isCellOpponent(checkPosition, side))
+                        ) {
+                    cellsAllowedToMoveIn.add(gamefield.getCell(checkPosition));
+                }
+            }
+        }
     }
 
 }

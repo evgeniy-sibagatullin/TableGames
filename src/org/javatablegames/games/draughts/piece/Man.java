@@ -30,8 +30,8 @@ public class Man extends DraughtsPiece {
     @Override
     public String getImagePath() {
         return (getSide() == Side.WHITE) ?
-                "img/draughts/Draughts-ManB.png" :
-                "img/draughts/Draughts-ManR.png";
+                "src/org/javatablegames/games/draughts/img/Draughts-ManB.png" :
+                "src/org/javatablegames/games/draughts/img/Draughts-ManR.png";
     }
 
     @Override
