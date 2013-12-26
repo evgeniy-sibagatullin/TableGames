@@ -13,9 +13,8 @@ import java.util.List;
 
 public class DraughtsField extends Gamefield {
 
-    private static final String BLACK_CELL = "img/chess/black-cell.png";
-    private static final String WHITE_CELL = "img/chess/white-cell.png";
-
+    private static final String BLACK_CELL = "src/org/javatablegames/games/draughts/img/black-cell.png";
+    private static final String WHITE_CELL = "src/org/javatablegames/games/draughts/img/white-cell.png";
     private ModelCell selectedCell = null;
 
     public void setSelectedCellByPiece(Piece piece) {
@@ -41,44 +40,34 @@ public class DraughtsField extends Gamefield {
         }
     }
 
-    public void updatePiecesReadyToMove(List<DraughtsPiece> pieceList) {
-        for (DraughtsPiece draughtsPiece : pieceList) {
-            ModelCell modelCell = getCell(draughtsPiece.getPosition());
-            if (modelCell.getCellState() != CellState.SELECTED) {
-                modelCell.updateCellState(CellState.ALLOWED_PIECE);
-            }
-        }
-    }
-
     public void selectCell(ModelCell modelCell) {
         modelCell.updateCellState(CellState.SELECTED);
         selectedCell = modelCell;
 
         if (isAbleToCapture(modelCell)) {
-            updateCellsAllowedToMoveIn(CellState.ATTACKED);
+            setCellStateToAllowedCells(CellState.ATTACKED);
         } else {
-            updateCellsAllowedToMoveIn(CellState.ALLOWED_MOVE);
+            setCellStateToAllowedCells(CellState.ALLOWED_MOVE);
         }
     }
 
     public void reselectCell(ModelCell modelCell) {
         selectedCell.updateCellState(CellState.ALLOWED_PIECE);
-        updateCellsAllowedToMoveIn(CellState.DEFAULT);
+        setCellStateToAllowedCells(CellState.DEFAULT);
         selectCell(modelCell);
     }
 
-
-    private void updateCellsAllowedToMoveIn(CellState cellState) {
+    public void moveToCell(ModelCell modelCell) {
         DraughtsPiece piece = (DraughtsPiece) selectedCell.getPiece();
-        List<ModelCell> cellList = piece.getCellsAllowedToCapture();
+        piece.setPosition(modelCell.getPosition());
 
-        if (cellList.isEmpty()) {
-            cellList = piece.getCellsAllowedToMoveIn();
+        if (piece.isAbleToBecomeKing()) {
+            promoteToKing(piece);
         }
 
-        for (ModelCell modelCell : cellList) {
-            modelCell.updateCellState(cellState);
-        }
+        modelCell.setPiece(selectedCell.getPiece());
+        selectedCell.setPiece(null);
+        selectedCell = null;
     }
 
     public boolean isAbleToCapture(ModelCell modelCell) {
@@ -104,17 +93,17 @@ public class DraughtsField extends Gamefield {
         moveToCell(modelCell);
     }
 
-    public void moveToCell(ModelCell modelCell) {
+    private void setCellStateToAllowedCells(CellState cellState) {
         DraughtsPiece piece = (DraughtsPiece) selectedCell.getPiece();
-        piece.setPosition(modelCell.getPosition());
+        List<ModelCell> cellList = piece.getCellsAllowedToCapture();
 
-        if (piece.isAbleToBecomeKing()) {
-            promoteToKing(piece);
+        if (cellList.isEmpty()) {
+            cellList = piece.getCellsAllowedToMoveIn();
         }
 
-        modelCell.setPiece(selectedCell.getPiece());
-        selectedCell.setPiece(null);
-        selectedCell = null;
+        for (ModelCell modelCell : cellList) {
+            modelCell.updateCellState(cellState);
+        }
     }
 
     private void promoteToKing(DraughtsPiece piece) {

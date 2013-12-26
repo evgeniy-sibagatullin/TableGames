@@ -36,18 +36,18 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
         if (isPlayerMove) {
             ModelCell modelCell = gamefield.getCell(position);
 
-            if (gamefield.getSelectedCell() != null) {
-                if (modelCell.getCellState() == CellState.ATTACKED) {
-                    capturePlayer(modelCell);
-                } else if (modelCell.getCellState() == CellState.ALLOWED_MOVE) {
-                    gamefield.moveToCell(modelCell);
-                    isPlayerMove = false;
-                } else if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {
-                    gamefield.reselectCell(modelCell);
+            if (gamefield.getSelectedCell() == null) {
+                if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {
+                    gamefield.selectCell(modelCell);
                 }
             } else {
                 if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {
-                    gamefield.selectCell(modelCell);
+                    gamefield.reselectCell(modelCell);
+                } else if (modelCell.getCellState() == CellState.ALLOWED_MOVE) {
+                    gamefield.moveToCell(modelCell);
+                    isPlayerMove = false;
+                } else if (modelCell.getCellState() == CellState.ATTACKED) {
+                    capturePlayer(modelCell);
                 }
             }
 
@@ -60,7 +60,8 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
             updateGameFieldForPlayer();
             isPlayerMove = true;
         } else {
-            checkWinConditionsResult = "You have lost this game.";
+            String winnerSideName = (sidePlayer.equals(Side.WHITE)) ? "Black" : "White";
+            checkWinConditionsResult = "Congratulations to winner - " + winnerSideName + " player!";
         }
     }
 

@@ -17,7 +17,7 @@ import static org.javatablegames.core.enums.Side.oppositeSide;
 
 public class DraughtsVsAi extends AbstractDraughts {
 
-    private static final int DELAY_AI = 200;
+    private static final int DELAY_AI = 500;
     private static final int MAX_DEPTH = 6;
     private final Random random = new Random();
     private final Side sideAI;

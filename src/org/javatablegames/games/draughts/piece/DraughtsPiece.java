@@ -14,7 +14,6 @@ public abstract class DraughtsPiece extends Piece {
 
     protected List<ModelCell> cellsAllowedToMoveIn;
     protected List<ModelCell> cellsAllowedToCaptureIn;
-
     private Position checkPosition;
 
     public DraughtsPiece(Position position, Side side, int power, Gamefield gameField) {
@@ -44,8 +43,9 @@ public abstract class DraughtsPiece extends Piece {
         for (Direction direction : directions) {
             checkPosition = new Position(position);
 
-            for (int moveIndex = 1; moveIndex <= moveLength; moveIndex++) {
+            for (int moveIndex = 0; moveIndex < moveLength; moveIndex++) {
                 checkPosition.moveInDirection(direction);
+                moveIndex++;
 
                 if (gamefield.isCellOpponent(checkPosition, side)) {
                     do {

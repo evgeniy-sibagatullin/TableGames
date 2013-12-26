@@ -7,6 +7,7 @@ import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.core.model.position.Position;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class DraughtsPieceSet extends PieceSet {
@@ -20,8 +21,9 @@ public class DraughtsPieceSet extends PieceSet {
     }
 
     protected void initializePieces() {
-        pieces = new ArrayList<Piece>();
+        pieces = new HashSet<Piece>();
         int size = gamefield.getSize();
+
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
                 if ((row + column) % 2 != 0) {
@@ -35,11 +37,12 @@ public class DraughtsPieceSet extends PieceSet {
                 }
             }
         }
+
         addPiecesToGameField();
     }
 
     protected void clonePiecesToGamefield(PieceSet inputPieces) {
-        pieces = new ArrayList<Piece>();
+        pieces = new HashSet<Piece>();
         for (Piece piece : inputPieces.getPieces()) {
             if (piece instanceof Man) {
                 pieces.add(new Man(piece.getPosition(), piece.getSide(), gamefield));
