@@ -7,6 +7,7 @@ import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.core.model.position.Position;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class ChessPieceSet extends PieceSet {
@@ -17,7 +18,7 @@ public class ChessPieceSet extends PieceSet {
 
     @Override
     protected void initializePieces() {
-        pieces = new ArrayList<Piece>();
+        pieces = new HashSet<Piece>();
 
         for (int i = 0; i < gamefield.getSize(); i++) {
             pieces.add(new Pawn(new Position(6, i), Side.WHITE, gamefield));
@@ -50,6 +51,13 @@ public class ChessPieceSet extends PieceSet {
     public List<ChessPiece> getPiecesAbleToMove(Side side) {
         List<ChessPiece> pieceList = new ArrayList<ChessPiece>();
 
+        for (Piece piece : pieces) {
+            ChessPiece chessPiece = (ChessPiece) piece;
+
+            if (chessPiece.getSide() == side && chessPiece.isAbleToMove()) {
+                pieceList.add(chessPiece);
+            }
+        }
 
         return pieceList;
     }

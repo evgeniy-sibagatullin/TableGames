@@ -4,6 +4,7 @@ import org.javatablegames.core.enums.Direction;
 import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
+import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.position.Position;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Pawn extends ChessPiece {
     private static final Direction[] WHITE_PAWN_CAPTURE_DIRECTIONS = {Direction.NORTHEAST, Direction.NORTHWEST};
     private static final Direction BLACK_PAWN_MOVE_DIRECTION = Direction.SOUTH;
     private static final Direction[] BLACK_PAWN_CAPTURE_DIRECTIONS = {Direction.SOUTHEAST, Direction.SOUTHWEST};
+    private boolean isJumped;
 
     public Pawn(Position position, Side side, Gamefield gameField) {
         super(position, side, gameField);
@@ -28,8 +30,17 @@ public class Pawn extends ChessPiece {
 
     @Override
     public boolean isAbleToMove() {
+        isJumped = false;
         searchCellsAllowedToMoveIn();
         return !cellsAllowedToMoveIn.isEmpty();
+    }
+
+    public boolean isJumped() {
+        return isJumped;
+    }
+
+    public void setJumped() {
+        this.isJumped = true;
     }
 
     private void searchCellsAllowedToMoveIn() {
@@ -57,6 +68,28 @@ public class Pawn extends ChessPiece {
                 cellsAllowedToMoveIn.add(gamefield.getCell(checkPosition));
             }
         }
+
+        //elPassant
+        checkPosition = new Position(position);
+        checkPosition.moveInDirection(Direction.EAST);
+        if (gamefield.isCellOpponent(checkPosition, side)) {
+            ChessPiece chessPiece = (ChessPiece) gamefield.getPiece(checkPosition);
+            if (chessPiece instanceof Pawn && ((Pawn) chessPiece).isJumped) {
+                checkPosition.moveInDirection(moveDirection);
+                cellsAllowedToMoveIn.add(gamefield.getCell(checkPosition));
+            }
+        }
+
+        checkPosition = new Position(position);
+        checkPosition.moveInDirection(Direction.WEST);
+        if (gamefield.isCellOpponent(checkPosition, side)) {
+            ChessPiece chessPiece = (ChessPiece) gamefield.getPiece(checkPosition);
+            if (chessPiece instanceof Pawn && ((Pawn) chessPiece).isJumped) {
+                checkPosition.moveInDirection(moveDirection);
+                cellsAllowedToMoveIn.add(gamefield.getCell(checkPosition));
+            }
+        }
+
     }
 
     private void checkNextMoveInDirection(Direction moveDirection) {
