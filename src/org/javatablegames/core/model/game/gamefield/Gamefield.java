@@ -6,6 +6,8 @@ import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.core.model.position.Position;
 
+import java.util.List;
+
 public abstract class Gamefield {
 
     protected ModelCell[][] field;
@@ -68,6 +70,15 @@ public abstract class Gamefield {
             return (gamePiece != null && gamePiece.getSide() != side);
         }
         return false;
+    }
+
+    public void updatePiecesReadyToMove(List<? extends Piece> pieceList) {
+        for (Piece piece : pieceList) {
+            ModelCell modelCell = getCell(piece.getPosition());
+            if (modelCell.getCellState() != CellState.SELECTED) {
+                modelCell.updateCellState(CellState.ALLOWED_PIECE);
+            }
+        }
     }
 
 }

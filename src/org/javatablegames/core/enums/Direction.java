@@ -11,7 +11,7 @@ public enum Direction {
     SOUTH(1, 0),
     SOUTHEAST(1, 1);
 
-    private static final Direction[] directions =
+    public static final Direction[] directions =
             {NORTHWEST, NORTH, NORTHEAST, WEST, EAST, SOUTHWEST, SOUTH, SOUTHEAST};
 
     private final int deltaY;

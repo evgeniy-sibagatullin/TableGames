@@ -4,11 +4,11 @@ import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
 import org.javatablegames.core.model.position.Position;
 
-import java.util.List;
+import java.util.Set;
 
 public abstract class PieceSet {
 
-    protected List<Piece> pieces;
+    protected Set<Piece> pieces;
     protected Gamefield gamefield;
 
     protected PieceSet(Gamefield gamefield) {
@@ -24,7 +24,7 @@ public abstract class PieceSet {
         gamefield.setPieceSet(this);
     }
 
-    public List<Piece> getPieces() {
+    public Set<Piece> getPieces() {
         return pieces;
     }
 
@@ -36,12 +36,12 @@ public abstract class PieceSet {
         pieces.remove(piece);
     }
 
-    public void setGamefield(Gamefield gamefield) {
-        this.gamefield = gamefield;
-    }
-
     public Gamefield getGamefield() {
         return gamefield;
+    }
+
+    public void setGamefield(Gamefield gamefield) {
+        this.gamefield = gamefield;
     }
 
     public void applyPiecesToGamefield() {
@@ -56,6 +56,7 @@ public abstract class PieceSet {
                 return piece;
             }
         }
+
         return null;
     }
 

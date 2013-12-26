@@ -17,7 +17,6 @@ public class ViewCell extends Canvas {
     private static final int PIECE_IMAGE_PADDING = (BORDER_PADDING + 5) * 2;
     private static final Font POWER_DEFAULT_FONT = new Font(DISPLAY, "Georgia", POWER_DEFAULT_FONT_SIZE, SWT.BOLD);
     private ModelCell modelCell;
-    private boolean isMouseEnterEvent;
 
     public ViewCell(Composite parent) {
         super(parent, SWT.PUSH);
@@ -36,21 +35,6 @@ public class ViewCell extends Canvas {
         addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent e) {
                 ViewCell.this.paintControl(e);
-            }
-        });
-
-        addListener(SWT.MouseEnter, new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-                isMouseEnterEvent = true;
-                redraw();
-            }
-        });
-
-        addListener(SWT.MouseExit, new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-                redraw();
             }
         });
     }
@@ -93,13 +77,7 @@ public class ViewCell extends Canvas {
     }
 
     private void drawBorder(GC gc, Rectangle rectangle) {
-        CellState cellState;
-        if (isMouseEnterEvent) {
-            cellState = CellState.FOCUSED;
-            isMouseEnterEvent = false;
-        } else {
-            cellState = modelCell.getCellState();
-        }
+        CellState cellState = modelCell.getCellState();
         int borderStyle = cellState.getBorderStyle();
         int borderWidth = cellState.getBorderWidth();
         Color borderColor = cellState.getBorderColor();
@@ -107,6 +85,7 @@ public class ViewCell extends Canvas {
         gc.setLineStyle(borderStyle);
         gc.setLineWidth(borderWidth);
         gc.setForeground(borderColor);
+
         if (borderWidth > 0) {
             Point point = this.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
             int arcLength = Math.max(5, (point.y / 10));
