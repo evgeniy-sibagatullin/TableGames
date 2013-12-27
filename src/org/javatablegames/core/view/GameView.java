@@ -26,22 +26,56 @@ public class GameView implements View {
     private static final String RESTART_MENUITEM_TEXT = "Restart game";
     private static final String ANOTHER_MENUITEM_TEXT = "Choose another game";
     private static final String MENUITEM_KEY_GAMETYPE = "gameName";
-
     private final Controller controller;
     private final Model model;
     private final Display menuDisplay;
+    private final ShellListener shellListener = new ShellAdapter() {
 
+        @Override
+        public void shellClosed(ShellEvent event) {
+            int style = SWT.YES | SWT.NO;
+            MessageBox messageBox = new MessageBox(boardShell, style);
+            messageBox.setText("Confirm exit");
+            messageBox.setMessage("Are you sure you want to exit \"Table Games\"?");
+            event.doit = messageBox.open() == SWT.YES;
+        }
+
+    };
+    private final SelectionListener menuItemListener = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            String buttonText = ((MenuItem) e.widget).getText();
+            String gameClass = (String) (e.widget).getData(MENUITEM_KEY_GAMETYPE);
+
+            if (buttonText.equals(RESTART_MENUITEM_TEXT)) {
+                controller.restartGame();
+            } else if (buttonText.equals(ANOTHER_MENUITEM_TEXT)) {
+                controller.startDefaultGame();
+            } else {
+                controller.startGame(gameClass);
+            }
+        }
+
+    };
+    private final MouseListener cellListener = new MouseAdapter() {
+
+        @Override
+        public void mouseUp(MouseEvent e) {
+            ViewCell cell = (ViewCell) e.widget;
+            controller.clickCell(cell.getModelCell().getPosition());
+        }
+
+    };
     private int monitorCenterX;
     private int monitorCenterY;
     private int gameFieldSize;
-
     private Shell boardShell;
     private GridData gridData;
     private Composite gameFieldComposite;
     private MenuItem selectGameMenuHeader;
     private MenuItem manageGameMenuHeader;
     private String gameClassName;
-
     private Gamefield modelGameField;
     private ViewCell[][] viewGameField;
 
@@ -213,47 +247,6 @@ public class GameView implements View {
             }
         }
     }
-
-    private final ShellListener shellListener = new ShellAdapter() {
-
-        @Override
-        public void shellClosed(ShellEvent event) {
-            int style = SWT.YES | SWT.NO;
-            MessageBox messageBox = new MessageBox(boardShell, style);
-            messageBox.setText("Confirm exit");
-            messageBox.setMessage("Are you sure you want to exit \"Table Games\"?");
-            event.doit = messageBox.open() == SWT.YES;
-        }
-
-    };
-
-    private final SelectionListener menuItemListener = new SelectionAdapter() {
-
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            String buttonText = ((MenuItem) e.widget).getText();
-            String gameClass = (String) (e.widget).getData(MENUITEM_KEY_GAMETYPE);
-
-            if (buttonText.equals(RESTART_MENUITEM_TEXT)) {
-                controller.restartGame();
-            } else if (buttonText.equals(ANOTHER_MENUITEM_TEXT)) {
-                controller.startDefaultGame();
-            } else {
-                controller.startGame(gameClass);
-            }
-        }
-
-    };
-
-    private final MouseListener cellListener = new MouseAdapter() {
-
-        @Override
-        public void mouseUp(MouseEvent e) {
-            ViewCell cell = (ViewCell) e.widget;
-            controller.clickCell(cell.getModelCell().getPosition());
-        }
-
-    };
 
     @Override
     public void enableSelectGameMenu() {

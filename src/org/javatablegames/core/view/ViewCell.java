@@ -4,7 +4,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.javatablegames.core.enums.CellState;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
 import org.javatablegames.core.model.game.piece.Piece;
@@ -16,6 +18,7 @@ public class ViewCell extends Canvas {
     private static final int POWER_DEFAULT_FONT_SIZE = 20;
     private static final int PIECE_IMAGE_PADDING = (BORDER_PADDING + 5) * 2;
     private static final Font POWER_DEFAULT_FONT = new Font(DISPLAY, "Georgia", POWER_DEFAULT_FONT_SIZE, SWT.BOLD);
+    private static final Color POWER_FONT_COLOR = new Color(DISPLAY, 0, 250, 0);
     private ModelCell modelCell;
 
     public ViewCell(Composite parent) {
@@ -31,7 +34,7 @@ public class ViewCell extends Canvas {
         this.modelCell = modelCell;
     }
 
-    public void addListeners() {
+    private void addListeners() {
         addPaintListener(new PaintListener() {
             public void paintControl(PaintEvent e) {
                 ViewCell.this.paintControl(e);
@@ -100,7 +103,7 @@ public class ViewCell extends Canvas {
     private void drawPowerText(GC gc, Rectangle rectangle) {
         if (modelCell != null && modelCell.getPower() != 0) {
             gc.setFont(POWER_DEFAULT_FONT);
-            gc.setForeground(new Color(DISPLAY, 0, 250, 0));
+            gc.setForeground(POWER_FONT_COLOR);
             gc.drawText(Integer.toString(modelCell.getPower()), (rectangle.width - POWER_DEFAULT_FONT_SIZE) / 2,
                     (rectangle.height - POWER_DEFAULT_FONT_SIZE) / 2, SWT.DRAW_TRANSPARENT);
         }
