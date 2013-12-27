@@ -3,6 +3,7 @@ package org.javatablegames.games.chess.gamefield;
 import org.javatablegames.core.enums.CellState;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
+import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.position.Position;
 import org.javatablegames.games.chess.piece.ChessPiece;
 import org.javatablegames.games.chess.piece.King;
@@ -10,6 +11,7 @@ import org.javatablegames.games.chess.piece.Pawn;
 import org.javatablegames.games.chess.piece.Queen;
 
 import java.util.List;
+import java.util.Set;
 
 public class ChessField extends Gamefield {
 
@@ -57,7 +59,7 @@ public class ChessField extends Gamefield {
             promoteToQueen(piece);
         }
 
-        if (piece.isJumpedPawn(modelCell)) {
+        if (piece.isJumpedPawn(selectedCell)) {
             ((Pawn) piece).setJumped();
         }
 
@@ -72,7 +74,14 @@ public class ChessField extends Gamefield {
     }
 
     public void captureToCell(ModelCell modelCell) {
-        pieceSet.remove(getPiece(modelCell.getPosition()));
+        Piece piece = getPiece(modelCell.getPosition());
+
+        if (piece == null) { //elPassant case
+            piece = getPiece(new Position(selectedCell.getPosition().getRow(), modelCell.getPosition().getColumn()));
+            getCell(piece.getPosition()).setPiece(null);
+        }
+
+        pieceSet.remove(piece);
         moveToCell(modelCell);
     }
 
@@ -83,6 +92,20 @@ public class ChessField extends Gamefield {
         for (ModelCell modelCell : cellList) {
             CellState cellState = (modelCell.getPiece() == null) ? CellState.ALLOWED_MOVE : CellState.ATTACKED;
             modelCell.updateCellState(cellState);
+        }
+
+        setCellStateIfElPassant(piece);
+    }
+
+    private void setCellStateIfElPassant(ChessPiece piece) {
+        if (piece instanceof Pawn) {
+            Set<ModelCell> elPassantCells = ((Pawn) piece).getElPassantCells();
+
+            if (!elPassantCells.isEmpty()) {
+                for (ModelCell modelCell : elPassantCells) {
+                    modelCell.updateCellState(CellState.ATTACKED);
+                }
+            }
         }
     }
 
