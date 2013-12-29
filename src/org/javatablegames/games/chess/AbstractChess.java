@@ -12,14 +12,14 @@ import org.javatablegames.games.chess.piece.ChessPieceSet;
 
 import java.util.List;
 
-public class Chess extends Game<ChessField, ChessPieceSet> {
+public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
 
+    protected Side sidePlayer;
     protected boolean isPlayerMove;
+    protected String checkWinConditionsResult = "";
     protected List<ChessPiece> ableToMoveList;
-    private Side sidePlayer = Side.WHITE;
-    private String checkWinConditionsResult = "";
 
-    public Chess(Model model) {
+    public AbstractChess(Model model) {
         super(model);
         gamefield = new ChessField();
         pieceSet = new ChessPieceSet(gamefield);
@@ -28,19 +28,6 @@ public class Chess extends Game<ChessField, ChessPieceSet> {
     @Override
     public String checkWinConditions() {
         return checkWinConditionsResult;
-    }
-
-    @Override
-    public void run() {
-        giveMoveToPlayer();
-
-        while (isThreadNeeded) {
-            if (!isPlayerMove) {
-                sidePlayer = Side.oppositeSide(sidePlayer);
-                giveMoveToPlayer();
-            }
-            delay(50);
-        }
     }
 
     @Override
