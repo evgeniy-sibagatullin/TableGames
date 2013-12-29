@@ -45,7 +45,6 @@ public abstract class DraughtsPiece extends Piece {
 
             for (int moveIndex = 0; moveIndex < moveLength; moveIndex++) {
                 checkPosition.moveInDirection(direction);
-                moveIndex++;
 
                 if (gamefield.isCellOpponent(checkPosition, side)) {
                     do {
@@ -58,7 +57,7 @@ public abstract class DraughtsPiece extends Piece {
                         }
 
                         moveIndex++;
-                    } while (moveIndex <= moveLength);
+                    } while (moveIndex < moveLength);
 
                     break;
                 } else if (!gamefield.isCellEmpty(checkPosition)) {
