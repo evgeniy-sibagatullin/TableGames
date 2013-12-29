@@ -1,10 +1,10 @@
 package org.javatablegames.games.chess.piece;
 
 import org.javatablegames.core.enums.Side;
-import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.core.model.position.Position;
+import org.javatablegames.games.chess.gamefield.ChessField;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,7 +12,10 @@ import java.util.List;
 
 public class ChessPieceSet extends PieceSet {
 
-    public ChessPieceSet(Gamefield gamefield) {
+    private King whiteKing;
+    private King blackKing;
+
+    public ChessPieceSet(ChessField gamefield) {
         super(gamefield);
     }
 
@@ -21,8 +24,8 @@ public class ChessPieceSet extends PieceSet {
         pieces = new HashSet<Piece>();
 
         for (int i = 0; i < gamefield.getSize(); i++) {
-            pieces.add(new Pawn(new Position(6, i), Side.WHITE, gamefield));
             pieces.add(new Pawn(new Position(1, i), Side.BLACK, gamefield));
+            pieces.add(new Pawn(new Position(6, i), Side.WHITE, gamefield));
         }
 
         pieces.add(new Rook(new Position(0, 0), Side.BLACK, gamefield));
@@ -42,8 +45,11 @@ public class ChessPieceSet extends PieceSet {
 
         pieces.add(new Queen(new Position(0, 3), Side.BLACK, gamefield));
         pieces.add(new Queen(new Position(7, 3), Side.WHITE, gamefield));
-        pieces.add(new King(new Position(0, 4), Side.BLACK, gamefield));
-        pieces.add(new King(new Position(7, 4), Side.WHITE, gamefield));
+
+        blackKing = new King(new Position(0, 4), Side.BLACK, gamefield);
+        whiteKing = new King(new Position(7, 4), Side.WHITE, gamefield);
+        pieces.add(blackKing);
+        pieces.add(whiteKing);
 
         addPiecesToGameField();
     }
@@ -51,15 +57,21 @@ public class ChessPieceSet extends PieceSet {
     public List<ChessPiece> getPiecesAbleToMove(Side side) {
         List<ChessPiece> pieceList = new ArrayList<ChessPiece>();
 
-        for (Piece piece : pieces) {
-            ChessPiece chessPiece = (ChessPiece) piece;
+        if (!gamefield.isCellUnderAttack(getKingBySide(side).getPosition(), side)) {
+            for (Object piece : pieces) {
+                ChessPiece chessPiece = (ChessPiece) piece;
 
-            if (chessPiece.getSide() == side && chessPiece.isAbleToMove()) {
-                pieceList.add(chessPiece);
+                if (chessPiece.getSide() == side && chessPiece.isAbleToMove()) {
+                    pieceList.add(chessPiece);
+                }
             }
         }
 
         return pieceList;
+    }
+
+    private King getKingBySide(Side side) {
+        return (side.equals(Side.WHITE)) ? whiteKing : blackKing;
     }
 
 }

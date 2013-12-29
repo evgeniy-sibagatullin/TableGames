@@ -26,6 +26,10 @@ public abstract class ChessPiece extends Piece {
 
     public abstract boolean isAbleToMove();
 
+    public Direction[] getCaptureDirections(Side side) {
+        return Direction.directions;
+    }
+
     protected void searchCellsAllowedToMoveIn(Direction[] directions, int moveLength) {
         cellsAllowedToMoveIn = new ArrayList<ModelCell>();
 
@@ -53,7 +57,7 @@ public abstract class ChessPiece extends Piece {
     }
 
     public boolean isJumpedPawn(ModelCell modelCell) {
-        return (this instanceof Pawn && Math.abs(modelCell.getPosition().getRow() - getPosition().getRow()) >  1);
+        return (this instanceof Pawn && Math.abs(modelCell.getPosition().getRow() - getPosition().getRow()) > 1);
     }
 
     public boolean isEverMoved() {

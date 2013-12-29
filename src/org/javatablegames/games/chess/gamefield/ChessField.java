@@ -1,15 +1,15 @@
 package org.javatablegames.games.chess.gamefield;
 
 import org.javatablegames.core.enums.CellState;
+import org.javatablegames.core.enums.Direction;
+import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
 import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.position.Position;
-import org.javatablegames.games.chess.piece.ChessPiece;
-import org.javatablegames.games.chess.piece.King;
-import org.javatablegames.games.chess.piece.Pawn;
-import org.javatablegames.games.chess.piece.Queen;
+import org.javatablegames.games.chess.piece.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -83,6 +83,57 @@ public class ChessField extends Gamefield {
 
         pieceSet.remove(piece);
         moveToCell(modelCell);
+    }
+
+    public boolean isCellUnderAttack(Position position, Side side) {
+        if (isCellUnderKnightAttack(position, side)) {
+            return true;
+        }
+
+        for (Direction direction : Direction.directions) {
+            Position checkPosition = new Position(position);
+            int distance = 0;
+
+            while (checkPosition.isValid(size)) {
+                checkPosition.moveInDirection(direction);
+                distance++;
+
+                if (isCellOpponent(checkPosition, side)) {
+                    ChessPiece piece = (ChessPiece) getPiece(checkPosition);
+
+                    if ((piece instanceof Pawn && distance > 1)
+                            || (piece instanceof King && distance > 1)
+                            || piece instanceof Knight) {
+                        break;
+                    }
+
+                    if (Arrays.asList(piece.getCaptureDirections(side)).contains(direction)) {
+                        return true;
+                    }
+                } else if (!isCellEmpty(checkPosition)) {
+                    break;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isCellUnderKnightAttack(Position position, Side side) {
+        for (int deltaX = -2; deltaX <= 2; deltaX++) {
+            for (int deltaY = -2; deltaY <= 2; deltaY++) {
+                int row = position.getRow() + deltaY;
+                int column = position.getColumn() + deltaX;
+                Position checkPosition = new Position(row, column);
+
+                if (((Math.abs(deltaX) + Math.abs(deltaY)) == 3) && checkPosition.isValid(size)
+                        && isCellOpponent(checkPosition, side)) {
+                    return getPiece(checkPosition) instanceof Knight;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void setCellStateToAllowedCells() {

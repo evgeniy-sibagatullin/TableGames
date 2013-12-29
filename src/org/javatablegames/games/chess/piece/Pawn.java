@@ -31,6 +31,12 @@ public class Pawn extends ChessPiece {
     }
 
     @Override
+    public Direction[] getCaptureDirections(Side side) {
+        return (side.equals(Side.WHITE)) ?
+                WHITE_PAWN_CAPTURE_DIRECTIONS : BLACK_PAWN_CAPTURE_DIRECTIONS;
+    }
+
+    @Override
     public boolean isAbleToMove() {
         isJumped = false;
         elPassantCells = new HashSet<ModelCell>();
@@ -104,8 +110,7 @@ public class Pawn extends ChessPiece {
     }
 
     private void checkCaptures() {
-        Direction[] captureDirections = (side.equals(Side.WHITE)) ?
-                WHITE_PAWN_CAPTURE_DIRECTIONS : BLACK_PAWN_CAPTURE_DIRECTIONS;
+        Direction[] captureDirections = getCaptureDirections(side);
 
         for (Direction direction : captureDirections) {
             checkPosition = new Position(position);

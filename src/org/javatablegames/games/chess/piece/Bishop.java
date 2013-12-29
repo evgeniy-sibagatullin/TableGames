@@ -23,6 +23,11 @@ public class Bishop extends ChessPiece {
     }
 
     @Override
+    public Direction[] getCaptureDirections(Side side) {
+        return MOVE_DIRECTIONS;
+    }
+
+    @Override
     public boolean isAbleToMove() {
         searchCellsAllowedToMoveIn(MOVE_DIRECTIONS, MOVE_LENGTH);
         return !cellsAllowedToMoveIn.isEmpty();

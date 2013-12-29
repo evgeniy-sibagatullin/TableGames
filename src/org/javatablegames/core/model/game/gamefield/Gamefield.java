@@ -24,12 +24,12 @@ public abstract class Gamefield {
         return field;
     }
 
-    public int getSize() {
-        return size;
-    }
-
     protected void setCell(ModelCell modelCell, Position position) {
         field[position.getRow()][position.getColumn()] = modelCell;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public ModelCell getCell(Position position) {
@@ -70,6 +70,10 @@ public abstract class Gamefield {
             return (gamePiece != null && gamePiece.getSide() != side);
         }
         return false;
+    }
+
+    public boolean isCellUnderAttack(Position position, Side side) {
+        return position == null;
     }
 
     public void updatePiecesReadyToMove(List<? extends Piece> pieceList) {
