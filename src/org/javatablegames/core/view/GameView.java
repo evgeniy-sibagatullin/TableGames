@@ -28,7 +28,7 @@ public class GameView implements View {
     private static final String MENUITEM_KEY_GAMETYPE = "gameName";
     private final Controller controller;
     private final Model model;
-    private final Display menuDisplay;
+    private final Display display;
     private final ShellListener shellListener = new ShellAdapter() {
 
         @Override
@@ -82,7 +82,7 @@ public class GameView implements View {
     public GameView(Controller menuController, Model model) {
         this.controller = menuController;
         this.model = model;
-        menuDisplay = Display.getDefault();
+        display = Display.getDefault();
 
         setMonitorCenter();
         constructGridData();
@@ -96,8 +96,8 @@ public class GameView implements View {
 
         while (!boardShell.isDisposed()) {
             updateView();
-            if (!menuDisplay.readAndDispatch()) {
-                menuDisplay.sleep();
+            if (!display.readAndDispatch()) {
+                display.sleep();
             }
         }
     }
@@ -123,7 +123,7 @@ public class GameView implements View {
     }
 
     private void setMonitorCenter() {
-        Rectangle bounds = menuDisplay.getPrimaryMonitor().getBounds();
+        Rectangle bounds = display.getPrimaryMonitor().getBounds();
         monitorCenterX = bounds.width / 2;
         monitorCenterY = bounds.height / 2;
     }
@@ -137,7 +137,7 @@ public class GameView implements View {
     }
 
     private void constructBoardShell() {
-        boardShell = new Shell(menuDisplay, SWT.TITLE | SWT.MIN);
+        boardShell = new Shell(display, SWT.TITLE | SWT.MIN);
         boardShell.setText(APPLICATION_TITLE_TEXT);
         boardShell.setMinimumSize(BOARD_SHELL_SIZE, BOARD_SHELL_SIZE);
         boardShell.setLocation(monitorCenterX - BOARD_SHELL_SIZE / 2,
@@ -227,8 +227,7 @@ public class GameView implements View {
     }
 
     private ViewCell constructCell(ModelCell modelCell, GridData gridData) {
-        ViewCell viewCell = new ViewCell(gameFieldComposite);
-        viewCell.setModelCell(modelCell);
+        ViewCell viewCell = new ViewCell(gameFieldComposite, display, modelCell);
         viewCell.setLayoutData(gridData);
         viewCell.addMouseListener(cellListener);
         return viewCell;
