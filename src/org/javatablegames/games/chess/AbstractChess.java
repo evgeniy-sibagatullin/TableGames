@@ -59,9 +59,11 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
         if (hasPlayerAnyMove()) {
             updateGameFieldForPlayer();
             isPlayerMove = true;
-        } else {
+        } else if (pieceSet.isKingUnderAttack(sidePlayer)) {
             String winnerSideName = (sidePlayer.equals(Side.WHITE)) ? "Black" : "White";
             checkWinConditionsResult = "Congratulations to winner - " + winnerSideName + " player!";
+        } else {
+            checkWinConditionsResult = "Stalemate. Draw.";
         }
     }
 

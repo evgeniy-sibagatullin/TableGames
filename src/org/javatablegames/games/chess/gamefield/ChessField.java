@@ -17,11 +17,6 @@ public class ChessField extends Gamefield {
 
     private static final String BLACK_CELL = "src/org/javatablegames/games/draughts/img/black-cell.png";
     private static final String WHITE_CELL = "src/org/javatablegames/games/draughts/img/white-cell.png";
-    private ModelCell selectedCell = null;
-
-    public ModelCell getSelectedCell() {
-        return selectedCell;
-    }
 
     @Override
     protected void initializeGamefield() {
@@ -83,6 +78,10 @@ public class ChessField extends Gamefield {
 
         pieceSet.remove(piece);
         moveToCell(modelCell);
+    }
+
+    public void setSelectedCellByPosition(Position position) {
+        selectedCell = getCell(position);
     }
 
     public boolean isCellUnderAttack(Position position, Side side) {
