@@ -154,7 +154,7 @@ public class DraughtsVsAi extends AbstractDraughts {
                 DraughtsPieceSet nextPieceSet = new DraughtsPieceSet(pieceSet);
                 DraughtsPiece pieceToCapture = (DraughtsPiece) nextPieceSet.getPieceByPosition(piece.getPosition());
 
-                gamefield.setSelectedCellByPiece(pieceToCapture);
+                gamefield.setSelectedCellByPosition(piece.getPosition());
                 gamefield.captureToCell(modelCell);
 
                 pieceToCapture = (DraughtsPiece) nextPieceSet.getPieceByPosition(pieceToCapture.getPosition());
@@ -170,8 +170,7 @@ public class DraughtsVsAi extends AbstractDraughts {
             for (ModelCell modelCell : piece.getCellsAllowedToMoveIn()) {
                 DraughtsPieceSet movePieceSet = new DraughtsPieceSet(pieceSet);
 
-                DraughtsPiece pieceToBeMoved = (DraughtsPiece) movePieceSet.getPieceByPosition(piece.getPosition());
-                gamefield.setSelectedCellByPiece(pieceToBeMoved);
+                gamefield.setSelectedCellByPosition(piece.getPosition());
                 gamefield.moveToCell(modelCell);
 
                 pieceSetList.add(movePieceSet);

@@ -4,7 +4,6 @@ import org.javatablegames.core.enums.CellState;
 import org.javatablegames.core.enums.Direction;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
-import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.position.Position;
 import org.javatablegames.games.draughts.piece.DraughtsPiece;
 import org.javatablegames.games.draughts.piece.King;
@@ -15,15 +14,6 @@ public class DraughtsField extends Gamefield {
 
     private static final String BLACK_CELL = "src/org/javatablegames/games/draughts/img/black-cell.png";
     private static final String WHITE_CELL = "src/org/javatablegames/games/draughts/img/white-cell.png";
-    private ModelCell selectedCell = null;
-
-    public void setSelectedCellByPiece(Piece piece) {
-        selectedCell = getCell(piece.getPosition());
-    }
-
-    public ModelCell getSelectedCell() {
-        return selectedCell;
-    }
 
     @Override
     protected void initializeGamefield() {
