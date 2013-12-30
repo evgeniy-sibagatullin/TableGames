@@ -13,6 +13,7 @@ public abstract class Gamefield {
     protected ModelCell[][] field;
     protected int size;
     protected PieceSet pieceSet;
+    protected ModelCell selectedCell;
 
     public Gamefield() {
         initializeGamefield();
@@ -42,6 +43,14 @@ public abstract class Gamefield {
 
     public void setPieceSet(PieceSet pieceSet) {
         this.pieceSet = pieceSet;
+    }
+
+    public ModelCell getSelectedCell() {
+        return selectedCell;
+    }
+
+    public void setSelectedCellByPosition(Position position) {
+        selectedCell = getCell(position);
     }
 
     public void removePieces() {
