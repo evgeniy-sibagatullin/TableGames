@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Knight extends ChessPiece {
 
     public Knight(Position position, Side side, Gamefield gameField) {
-        super(position, side, gameField);
+        super(position, side, 20, gameField);
     }
 
     @Override

@@ -12,7 +12,7 @@ public class Bishop extends ChessPiece {
     private static final int MOVE_LENGTH = 7;
 
     public Bishop(Position position, Side side, Gamefield gameField) {
-        super(position, side, gameField);
+        super(position, side, 25, gameField);
     }
 
     @Override

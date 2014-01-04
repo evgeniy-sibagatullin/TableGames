@@ -16,8 +16,8 @@ public abstract class ChessPiece extends Piece {
     protected Position checkPosition;
     protected boolean everMoved = false;
 
-    protected ChessPiece(Position position, Side side, Gamefield gameField) {
-        super(position, side, gameField);
+    protected ChessPiece(Position position, Side side, int power, Gamefield gameField) {
+        super(position, side, power, gameField);
     }
 
     public List<ModelCell> getCellsAllowedToMoveIn() {

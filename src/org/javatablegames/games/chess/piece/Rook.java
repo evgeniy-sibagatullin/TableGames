@@ -12,7 +12,7 @@ public class Rook extends ChessPiece {
     private static final int MOVE_LENGTH = 7;
 
     public Rook(Position position, Side side, Gamefield gameField) {
-        super(position, side, gameField);
+        super(position, side, 35, gameField);
     }
 
     @Override

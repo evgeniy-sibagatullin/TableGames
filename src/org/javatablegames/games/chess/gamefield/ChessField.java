@@ -108,6 +108,8 @@ public class ChessField extends Gamefield {
 
                     if (Arrays.asList(piece.getCaptureDirections(side)).contains(direction)) {
                         return true;
+                    } else {
+                        break;
                     }
                 } else if (!isCellEmpty(checkPosition)) {
                     break;

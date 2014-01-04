@@ -15,7 +15,7 @@ public class King extends ChessPiece {
     private List<ModelCell> cellsAllowedToCastling;
 
     public King(Position position, Side side, Gamefield gameField) {
-        super(position, side, gameField);
+        super(position, side, 1, gameField);
     }
 
     @Override
