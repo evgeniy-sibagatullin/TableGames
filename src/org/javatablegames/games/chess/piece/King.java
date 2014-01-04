@@ -38,8 +38,10 @@ public class King extends ChessPiece {
 
     private boolean isCastlingPossible() {
         cellsAllowedToCastling = new ArrayList<ModelCell>();
-        checkCastlingSide(0);
-        checkCastlingSide(7);
+        if (!gamefield.isCellUnderAttack(position, side)) {
+            checkCastlingSide(0);
+            checkCastlingSide(7);
+        }
         return !cellsAllowedToCastling.isEmpty();
     }
 
@@ -50,11 +52,12 @@ public class King extends ChessPiece {
         if (chessPiece instanceof Rook && !chessPiece.isEverMoved()) {
             checkPosition = new Position(position);
             Direction direction = Direction.getDirection(0, column - 4);
+
             checkPosition.moveInDirection(direction);
-            boolean isCastlingPossible = true;
+            boolean isCastlingPossible = !gamefield.isCellUnderAttack(checkPosition, side);
 
             do {
-                if (!gamefield.isCellEmpty(checkPosition)) {
+                if (!isCastlingPossible || !gamefield.isCellEmpty(checkPosition)) {
                     isCastlingPossible = false;
                     break;
                 }
