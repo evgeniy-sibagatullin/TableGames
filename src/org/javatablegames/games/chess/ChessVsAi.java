@@ -38,7 +38,7 @@ public class ChessVsAi extends AbstractChess {
         }
 
         while (isThreadNeeded) {
-            if (!isPlayerMove && checkWinConditionsResult.isEmpty()) {
+            if (!isPlayerMove) {
                 updateGameFieldForAI();
                 performMoveAI();
                 giveMoveToPlayer();
@@ -62,10 +62,16 @@ public class ChessVsAi extends AbstractChess {
             ChessPieceSet bestMovePieces = null;
             int bestMoveBalance = Integer.MIN_VALUE;
 
+            System.out.println("Total moves - " + nextPieceSetList.size());
+            int pieceSetNumber = 0;
+
             for (ChessPieceSet nextPieceSet : nextPieceSetList) {
+                pieceSetNumber++;
                 nextPieceSet.applyPiecesToGamefield();
 
                 int nextMoveBalance = checkNextMoveQuality(nextPieceSet);
+                System.out.println(pieceSetNumber + "move of " + nextPieceSetList.size() + " checked");
+
                 if (nextMoveBalance > bestMoveBalance) {
                     bestMoveBalance = nextMoveBalance;
                     bestMovePieces = new ChessPieceSet(nextPieceSet);
@@ -103,7 +109,9 @@ public class ChessVsAi extends AbstractChess {
             }
         } else {
             if (pieceSet.isKingUnderAttack(activeSide)) {
-                bestMoveBalance = (activeSide.equals(sidePlayer)) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+                bestMoveBalance = (activeSide.equals(sidePlayer)) ?
+                        Integer.MAX_VALUE / depth :
+                        Integer.MIN_VALUE / depth;
             }
             else {
                 bestMoveBalance = 0;
