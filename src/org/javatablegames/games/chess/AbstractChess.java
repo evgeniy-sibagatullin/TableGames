@@ -14,6 +14,8 @@ import java.util.List;
 
 public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
 
+    protected static final int DELAY_PERIOD = 500;
+
     protected Side sidePlayer;
     protected boolean isPlayerMove;
     protected String checkWinConditionsResult = "";
@@ -57,25 +59,23 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
 
     protected void giveMoveToPlayer() {
         if (hasPlayerAnyMove()) {
-            updateGameFieldForPlayer();
-            isPlayerMove = true;
-        } else if (pieceSet.isKingUnderAttack(sidePlayer)) {
-            String winnerSideName = (sidePlayer.equals(Side.WHITE)) ? "Black" : "White";
-            checkWinConditionsResult = "Congratulations to winner - " + winnerSideName + " player!";
+            gamefield.updatePiecesReadyToMove(ableToMoveList);
         } else {
-            checkWinConditionsResult = "Stalemate. Draw.";
+            if (pieceSet.isKingUnderAttack(sidePlayer)) {
+                String winnerSideName = (sidePlayer.equals(Side.WHITE)) ? "Black" : "White";
+                checkWinConditionsResult = "Congratulations to winner - " + winnerSideName + " player!";
+            } else {
+                checkWinConditionsResult = "Stalemate. Draw.";
+            }
         }
+
+        model.setChanged(true);
+        isPlayerMove = true;
     }
 
     private boolean hasPlayerAnyMove() {
         ableToMoveList = pieceSet.getPiecesAbleToMove(sidePlayer);
         return !ableToMoveList.isEmpty();
-    }
-
-    private void updateGameFieldForPlayer() {
-        gamefield.setTotalCellStateDefault();
-        gamefield.updatePiecesReadyToMove(ableToMoveList);
-        model.setChanged(true);
     }
 
 }

@@ -20,7 +20,7 @@ public class ChessDuel extends AbstractChess {
                 sidePlayer = Side.oppositeSide(sidePlayer);
                 giveMoveToPlayer();
             }
-            delay(50);
+            delay(DELAY_PERIOD);
         }
     }
 

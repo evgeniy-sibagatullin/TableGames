@@ -66,6 +66,7 @@ public class ChessField extends Gamefield {
 
         selectedCell.setPiece(null);
         selectedCell = null;
+        setTotalCellStateDefault();
     }
 
     public void captureToCell(ModelCell modelCell) {
@@ -78,6 +79,7 @@ public class ChessField extends Gamefield {
 
         pieceSet.remove(piece);
         moveToCell(modelCell);
+        setTotalCellStateDefault();
     }
 
     public void setSelectedCellByPosition(Position position) {

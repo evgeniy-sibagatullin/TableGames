@@ -17,7 +17,6 @@ import static org.javatablegames.core.enums.Side.oppositeSide;
 
 public class ChessVsAi extends AbstractChess {
 
-    private static final int DELAY_AI = 500;
     private static final int MAX_DEPTH = 4;
     private final Side sideAI;
     private Side activeSide;
@@ -44,14 +43,14 @@ public class ChessVsAi extends AbstractChess {
                 giveMoveToPlayer();
             }
 
-            delay(50);
+            delay(DELAY_PERIOD);
         }
     }
 
     private void updateGameFieldForAI() {
         gamefield.setTotalCellStateDefault();
         model.setChanged(true);
-        delay(DELAY_AI);
+        delay(DELAY_PERIOD);
     }
 
     private synchronized void performMoveAI() {
@@ -112,8 +111,7 @@ public class ChessVsAi extends AbstractChess {
                 bestMoveBalance = (activeSide.equals(sidePlayer)) ?
                         Integer.MAX_VALUE / depth :
                         Integer.MIN_VALUE / depth;
-            }
-            else {
+            } else {
                 bestMoveBalance = 0;
             }
 
@@ -194,7 +192,7 @@ public class ChessVsAi extends AbstractChess {
         }
 
         model.setChanged(true);
-        delay(numberOfChangedPieces * DELAY_AI);
+        delay(numberOfChangedPieces * DELAY_PERIOD);
     }
 
     private boolean isPieceChanged(Piece pieceOfPresentSet, PieceSet bestMovePieces) {
