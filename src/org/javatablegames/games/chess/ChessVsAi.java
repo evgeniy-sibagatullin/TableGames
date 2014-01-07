@@ -74,6 +74,10 @@ public class ChessVsAi extends AbstractChess {
                 if (nextMoveBalance > bestMoveBalance) {
                     bestMoveBalance = nextMoveBalance;
                     bestMovePieces = new ChessPieceSet(nextPieceSet);
+
+                    if (bestMoveBalance == Integer.MAX_VALUE) {
+                        break;
+                    }
                 }
             }
             showMoveAI(bestMovePieces);
@@ -95,6 +99,9 @@ public class ChessVsAi extends AbstractChess {
 
         List<ChessPieceSet> nextPieceSetList = getNextPieceSets(pieceSet);
         int bestMoveBalance = (activeSide.equals(sideAI)) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        int borderValue = (activeSide.equals(sideAI)) ?
+                Integer.MAX_VALUE / (depth + 1) :
+                Integer.MIN_VALUE / (depth + 1);
 
         if (!nextPieceSetList.isEmpty()) {
             for (ChessPieceSet nextPieceSet : nextPieceSetList) {
@@ -104,6 +111,10 @@ public class ChessVsAi extends AbstractChess {
                 if ((activeSide.equals(sideAI) && nextMoveBalance > bestMoveBalance)
                         || ((activeSide.equals(sidePlayer) && nextMoveBalance < bestMoveBalance))) {
                     bestMoveBalance = nextMoveBalance;
+
+                    if (bestMoveBalance == borderValue) {
+                        break;
+                    }
                 }
             }
         } else {
@@ -114,14 +125,12 @@ public class ChessVsAi extends AbstractChess {
             } else {
                 bestMoveBalance = 0;
             }
-
         }
 
         depth--;
         activeSide = oppositeSide(activeSide);
 
         return bestMoveBalance;
-
     }
 
     private List<ChessPieceSet> getNextPieceSets(ChessPieceSet pieceSet) {
