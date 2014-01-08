@@ -92,38 +92,37 @@ public class ChessVsAi extends AbstractChess {
 
     private int checkNextMoveQuality(ChessPieceSet pieceSet) {
         depth++;
+        int balance = checkBalance(pieceSet);
+
+        if (Math.abs(balance) > 500) {
+            depth--;
+            return (activeSide.equals(sideAI)) ?
+                    Integer.MAX_VALUE / depth :
+                    Integer.MIN_VALUE / depth;
+        }
+
         if (depth == MAX_DEPTH) {
             depth--;
-            return checkBalance(pieceSet);
+            return balance;
         }
 
         List<ChessPieceSet> nextPieceSetList = getNextPieceSets(pieceSet, false);
         int bestMoveBalance = (activeSide.equals(sideAI)) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         int borderValue = (activeSide.equals(sideAI)) ?
-                Integer.MAX_VALUE / (depth + 1) :
-                Integer.MIN_VALUE / (depth + 1);
+                Integer.MAX_VALUE / depth :
+                Integer.MIN_VALUE / depth;
 
-        if (!nextPieceSetList.isEmpty()) {
-            for (ChessPieceSet nextPieceSet : nextPieceSetList) {
-                nextPieceSet.applyPiecesToGamefield();
+        for (ChessPieceSet nextPieceSet : nextPieceSetList) {
+            nextPieceSet.applyPiecesToGamefield();
 
-                int nextMoveBalance = checkNextMoveQuality(nextPieceSet);
-                if ((activeSide.equals(sideAI) && nextMoveBalance > bestMoveBalance)
-                        || ((activeSide.equals(sidePlayer) && nextMoveBalance < bestMoveBalance))) {
-                    bestMoveBalance = nextMoveBalance;
+            int nextMoveBalance = checkNextMoveQuality(nextPieceSet);
+            if ((activeSide.equals(sideAI) && nextMoveBalance > bestMoveBalance)
+                    || ((activeSide.equals(sidePlayer) && nextMoveBalance < bestMoveBalance))) {
+                bestMoveBalance = nextMoveBalance;
 
-                    if (bestMoveBalance == borderValue) {
-                        break;
-                    }
+                if (bestMoveBalance == borderValue) {
+                    break;
                 }
-            }
-        } else {
-            if (pieceSet.isKingUnderAttack(activeSide)) {
-                bestMoveBalance = (activeSide.equals(sidePlayer)) ?
-                        Integer.MAX_VALUE / depth :
-                        Integer.MIN_VALUE / depth;
-            } else {
-                bestMoveBalance = 0;
             }
         }
 
@@ -174,10 +173,15 @@ public class ChessVsAi extends AbstractChess {
         int balance = 0;
 
         for (Piece piece : pieceSet.getPieces()) {
+            if (piece instanceof Pawn) {
+                balance += piece.getPosition().getRow() * 2;
+            }
+
+            int power = piece.getPower();
             if (piece.getSide().equals(sideAI)) {
-                balance += piece.getPower();
+                balance += power;
             } else {
-                balance -= piece.getPower();
+                balance -= power;
             }
         }
 
