@@ -79,7 +79,6 @@ public class ChessField extends Gamefield {
 
         pieceSet.remove(piece);
         moveToCell(modelCell);
-        setTotalCellStateDefault();
     }
 
     public void setSelectedCellByPosition(Position position) {
