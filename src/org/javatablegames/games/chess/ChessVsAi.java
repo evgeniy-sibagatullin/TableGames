@@ -55,7 +55,7 @@ public class ChessVsAi extends AbstractChess {
 
     private synchronized void performMoveAI() {
         activeSide = sidePlayer;
-        List<ChessPieceSet> nextPieceSetList = getNextPieceSets(pieceSet);
+        List<ChessPieceSet> nextPieceSetList = getNextPieceSets(pieceSet, true);
 
         if (!nextPieceSetList.isEmpty()) {
             ChessPieceSet bestMovePieces = null;
@@ -97,7 +97,7 @@ public class ChessVsAi extends AbstractChess {
             return checkBalance(pieceSet);
         }
 
-        List<ChessPieceSet> nextPieceSetList = getNextPieceSets(pieceSet);
+        List<ChessPieceSet> nextPieceSetList = getNextPieceSets(pieceSet, false);
         int bestMoveBalance = (activeSide.equals(sideAI)) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         int borderValue = (activeSide.equals(sideAI)) ?
                 Integer.MAX_VALUE / (depth + 1) :
@@ -133,11 +133,11 @@ public class ChessVsAi extends AbstractChess {
         return bestMoveBalance;
     }
 
-    private List<ChessPieceSet> getNextPieceSets(ChessPieceSet pieceSet) {
+    private List<ChessPieceSet> getNextPieceSets(ChessPieceSet pieceSet, boolean removeMovesCauseCheck) {
         List<ChessPieceSet> nextPieceSetList = new ArrayList<ChessPieceSet>();
         activeSide = oppositeSide(activeSide);
 
-        List<ChessPiece> ableToMoveList = pieceSet.getPiecesAbleToMove(activeSide);
+        List<ChessPiece> ableToMoveList = pieceSet.getPiecesAbleToMove(activeSide, removeMovesCauseCheck);
         if (!ableToMoveList.isEmpty()) {
             nextPieceSetList = getMovePieceSets(pieceSet, ableToMoveList);
         }

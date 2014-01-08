@@ -63,37 +63,48 @@ public class ChessPieceSet extends PieceSet {
     protected void clonePiecesToGamefield(PieceSet inputPieces) {
         pieces = new HashSet<Piece>();
         for (Piece piece : inputPieces.getPieces()) {
+            ChessPiece chessPiece;
+
             if (piece instanceof Pawn) {
-                pieces.add(new Pawn(piece.getPosition(), piece.getSide(), gamefield));
+                chessPiece = new Pawn(piece.getPosition(), piece.getSide(), gamefield);
             } else if (piece instanceof Knight) {
-                pieces.add(new Knight(piece.getPosition(), piece.getSide(), gamefield));
+                chessPiece = new Knight(piece.getPosition(), piece.getSide(), gamefield);
             } else if (piece instanceof Bishop) {
-                pieces.add(new Bishop(piece.getPosition(), piece.getSide(), gamefield));
+                chessPiece = new Bishop(piece.getPosition(), piece.getSide(), gamefield);
             } else if (piece instanceof Rook) {
-                pieces.add(new Rook(piece.getPosition(), piece.getSide(), gamefield));
+                chessPiece = new Rook(piece.getPosition(), piece.getSide(), gamefield);
             } else if (piece instanceof Queen) {
-                pieces.add(new Queen(piece.getPosition(), piece.getSide(), gamefield));
+                chessPiece = new Queen(piece.getPosition(), piece.getSide(), gamefield);
             } else {
                 if (piece.getSide().equals(Side.WHITE)) {
                     whiteKing = new King(piece.getPosition(), piece.getSide(), gamefield);
-                    pieces.add(whiteKing);
+                    chessPiece = whiteKing;
                 } else {
                     blackKing = new King(piece.getPosition(), piece.getSide(), gamefield);
-                    pieces.add(blackKing);
+                    chessPiece = blackKing;
                 }
             }
+
+            if (((ChessPiece) piece).isEverMoved()) {
+                chessPiece.setMoved();
+            }
+
+            pieces.add(chessPiece);
         }
         addPiecesToGameField();
     }
 
-    public List<ChessPiece> getPiecesAbleToMove(Side side) {
+    public List<ChessPiece> getPiecesAbleToMove(Side side, boolean removeMovesCauseCheck) {
         List<ChessPiece> pieceList = new ArrayList<ChessPiece>();
 
         for (Object piece : pieces) {
             ChessPiece chessPiece = (ChessPiece) piece;
 
             if (chessPiece.getSide() == side && chessPiece.isAbleToMove()) {
-                removeMovesCauseCheck(chessPiece);
+                if (removeMovesCauseCheck) {
+                    removeMovesCauseCheck(chessPiece);
+                }
+
                 if (!chessPiece.getCellsAllowedToMoveIn().isEmpty()) {
                     pieceList.add(chessPiece);
                 }
@@ -104,7 +115,7 @@ public class ChessPieceSet extends PieceSet {
     }
 
     public boolean isKingUnderAttack(Side side) {
-        return (gamefield != null && gamefield.isCellUnderAttack(getKingBySide(side).getPosition(), side));
+        return gamefield.isCellUnderAttack(getKingBySide(side).getPosition(), side);
     }
 
     private King getKingBySide(Side side) {

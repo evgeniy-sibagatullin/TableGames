@@ -74,7 +74,7 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
     }
 
     private boolean hasPlayerAnyMove() {
-        ableToMoveList = pieceSet.getPiecesAbleToMove(sidePlayer);
+        ableToMoveList = pieceSet.getPiecesAbleToMove(sidePlayer, true);
         return !ableToMoveList.isEmpty();
     }
 
