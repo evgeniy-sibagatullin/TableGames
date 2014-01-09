@@ -63,7 +63,7 @@ public class GameView implements View {
         @Override
         public void mouseUp(MouseEvent e) {
             ViewCell cell = (ViewCell) e.widget;
-            controller.clickCell(cell.getModelCell().getPosition());
+            controller.clickCell(cell.getPosition());
         }
 
     };
@@ -239,7 +239,7 @@ public class GameView implements View {
                 ModelCell modelCell = modelGameField.getCell(new Position(row, column));
                 if (modelCell.getChanged()) {
                     ViewCell viewCell = viewGameField[row][column];
-                    viewCell.setModelCell(modelCell);
+                    viewCell.updateViewCellData(modelCell);
                     viewCell.redraw();
                     modelCell.setChanged(false);
                 }

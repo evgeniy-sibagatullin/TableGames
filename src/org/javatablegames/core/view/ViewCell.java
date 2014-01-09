@@ -8,31 +8,40 @@ import org.eclipse.swt.widgets.*;
 import org.javatablegames.core.enums.CellState;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
 import org.javatablegames.core.model.game.piece.Piece;
+import org.javatablegames.core.model.position.Position;
 
 public class ViewCell extends Canvas {
 
     private final Display display;
     private static final int BORDER_PADDING = 5;
-    private static final int POWER_DEFAULT_FONT_SIZE = 20;
+    private static final int POWER_DEFAULT_FONT_SIZE = 30;
     private static final int PIECE_IMAGE_PADDING = (BORDER_PADDING + 5) * 2;
-    private ModelCell modelCell;
     private boolean isMouseEnterEvent;
+    private Position position;
+    private String imageName;
+    private Piece piece;
+    private CellState cellState;
+    private int power;
 
     public ViewCell(Composite parent, Display display, ModelCell modelCell) {
         super(parent, SWT.PUSH);
 
         this.display = display;
-        this.modelCell = modelCell;
+        updateViewCellData(modelCell);
 
         addListeners();
     }
 
-    public ModelCell getModelCell() {
-        return modelCell;
+    public Position getPosition() {
+        return position;
     }
 
-    public void setModelCell(ModelCell modelCell) {
-        this.modelCell = modelCell;
+    public void updateViewCellData(ModelCell modelCell) {
+        position = modelCell.getPosition();
+        imageName = modelCell.getBackgroundImage();
+        piece = modelCell.getPiece();
+        cellState = modelCell.getCellState();
+        power = modelCell.getPower();
     }
 
     private void addListeners() {
@@ -69,8 +78,6 @@ public class ViewCell extends Canvas {
     }
 
     private void drawBackgroundImage(GC gc, Rectangle rectangle) {
-        String imageName = modelCell.getBackgroundImage();
-
         if (imageName != null) {
             Image image = new Image(display, imageName);
             // image stretched
@@ -83,8 +90,6 @@ public class ViewCell extends Canvas {
     }
 
     private void drawPieceImage(GC gc, Rectangle rectangle) {
-        Piece piece = modelCell.getPiece();
-
         if (piece != null) {
             // image centered with padding
             Image image = new Image(display, piece.getImagePath());
@@ -106,7 +111,7 @@ public class ViewCell extends Canvas {
             cellState = CellState.FOCUSED;
             isMouseEnterEvent = false;
         } else {
-            cellState = modelCell.getCellState();
+            cellState = this.cellState;
         }
 
         int style = cellState.getBorderStyle();
@@ -127,13 +132,13 @@ public class ViewCell extends Canvas {
     }
 
     private void drawPowerText(GC gc, Rectangle rectangle) {
-        if (modelCell.getPower() != 0) {
+        if (power != 0) {
             Font font = new Font(display, "Georgia", POWER_DEFAULT_FONT_SIZE, SWT.BOLD);
-            Color color = new Color(display, 0, 250, 0);
+            Color color = new Color(display, 20, 20, 20);
 
             gc.setFont(font);
             gc.setForeground(color);
-            gc.drawText(Integer.toString(modelCell.getPower()), (rectangle.width - POWER_DEFAULT_FONT_SIZE) / 2,
+            gc.drawText(Integer.toString(power), (rectangle.width - POWER_DEFAULT_FONT_SIZE) / 2,
                     (rectangle.height - POWER_DEFAULT_FONT_SIZE) / 2, SWT.DRAW_TRANSPARENT);
 
             font.dispose();
