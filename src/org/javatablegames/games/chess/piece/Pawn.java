@@ -20,7 +20,7 @@ public class Pawn extends ChessPiece {
     private Set<ModelCell> elPassantCells;
 
     public Pawn(Position position, Side side, Gamefield gameField) {
-        super(position, side, 10, gameField);
+        super(position, side, 7, gameField);
     }
 
     @Override

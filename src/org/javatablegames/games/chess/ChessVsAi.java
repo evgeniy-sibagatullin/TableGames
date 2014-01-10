@@ -92,10 +92,11 @@ public class ChessVsAi extends AbstractChess {
 
     private int checkNextMoveQuality(ChessPieceSet pieceSet) {
         depth++;
+        int balance = checkBalance(pieceSet);
 
         if (depth == MAX_DEPTH) {
             depth--;
-            return checkBalance(pieceSet);
+            return balance;
         }
 
         List<ChessPieceSet> nextPieceSetList = getNextPieceSets(pieceSet);
@@ -105,7 +106,7 @@ public class ChessVsAi extends AbstractChess {
             for (ChessPieceSet nextPieceSet : nextPieceSetList) {
                 nextPieceSet.applyPiecesToGamefield();
 
-                int nextMoveBalance = checkNextMoveQuality(nextPieceSet);
+                int nextMoveBalance = checkNextMoveQuality(nextPieceSet) + balance;
 
                 if ((activeSide.equals(sideAI) && nextMoveBalance > bestMoveBalance)
                         || ((activeSide.equals(sidePlayer) && nextMoveBalance < bestMoveBalance))) {
@@ -171,19 +172,31 @@ public class ChessVsAi extends AbstractChess {
         int balance = 0;
 
         for (Piece piece : pieceSet.getPieces()) {
-            if (piece instanceof Pawn) {
-                balance += piece.getPosition().getRow() * 2;
-            }
-
             int power = piece.getPower();
             if (piece.getSide().equals(sideAI)) {
                 balance += power;
             } else {
                 balance -= power;
             }
+
+            if (piece instanceof Pawn) {
+                balance += getPawnBalanceBonus(piece);
+            }
         }
 
         return balance;
+    }
+
+    private int getPawnBalanceBonus(Piece piece) {
+        int pawnBonus;
+
+        if (piece.getSide().equals(Side.BLACK)) {
+            pawnBonus = 7 - piece.getPosition().getRow();
+        } else {
+            pawnBonus = piece.getPosition().getRow();
+        }
+
+        return (piece.getSide().equals(sideAI)) ? pawnBonus : -pawnBonus;
     }
 
     private void showMoveAI(PieceSet bestMovePieces) {
