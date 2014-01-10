@@ -94,16 +94,14 @@ public class ChessPieceSet extends PieceSet {
         addPiecesToGameField();
     }
 
-    public List<ChessPiece> getPiecesAbleToMove(Side side, boolean removeMovesCauseCheck) {
+    public List<ChessPiece> getPiecesAbleToMove(Side side) {
         List<ChessPiece> pieceList = new ArrayList<ChessPiece>();
 
         for (Object piece : pieces) {
             ChessPiece chessPiece = (ChessPiece) piece;
 
             if (chessPiece.getSide() == side && chessPiece.isAbleToMove()) {
-                if (removeMovesCauseCheck) {
-                    removeMovesCauseCheck(chessPiece);
-                }
+                removeMovesCauseCheck(chessPiece);
 
                 if (!chessPiece.getCellsAllowedToMoveIn().isEmpty()) {
                     pieceList.add(chessPiece);
