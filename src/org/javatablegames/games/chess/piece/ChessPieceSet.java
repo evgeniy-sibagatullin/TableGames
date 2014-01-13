@@ -113,7 +113,8 @@ public class ChessPieceSet extends PieceSet {
     }
 
     public boolean isKingUnderAttack(Side side) {
-        return gamefield.isCellUnderAttack(getKingBySide(side).getPosition(), side);
+        Piece king = getKingBySide(side);
+        return king != null && gamefield.isCellUnderAttack(king.getPosition(), side);
     }
 
     private King getKingBySide(Side side) {
