@@ -8,12 +8,12 @@ import org.javatablegames.core.model.position.Position;
 
 import java.util.List;
 
-public abstract class Gamefield {
+public abstract class Gamefield<T extends Piece> {
 
-    protected ModelCell[][] field;
+    protected ModelCell<T>[][] field;
     protected int size;
-    protected PieceSet pieceSet;
-    protected ModelCell selectedCell;
+    protected PieceSet<T> pieceSet;
+    protected ModelCell<T> selectedCell;
 
     public Gamefield() {
         initializeGamefield();
@@ -25,7 +25,7 @@ public abstract class Gamefield {
         return field;
     }
 
-    protected void setCell(ModelCell modelCell, Position position) {
+    protected void setCell(ModelCell<T> modelCell, Position position) {
         field[position.getRow()][position.getColumn()] = modelCell;
     }
 
@@ -33,15 +33,15 @@ public abstract class Gamefield {
         return size;
     }
 
-    public ModelCell getCell(Position position) {
+    public ModelCell<T> getCell(Position position) {
         return field[position.getRow()][position.getColumn()];
     }
 
-    public Piece getPiece(Position position) {
+    public T getPiece(Position position) {
         return field[position.getRow()][position.getColumn()].getPiece();
     }
 
-    public void setPieceSet(PieceSet pieceSet) {
+    public void setPieceSet(PieceSet<T> pieceSet) {
         this.pieceSet = pieceSet;
     }
 
@@ -75,8 +75,8 @@ public abstract class Gamefield {
 
     public boolean isCellOpponent(Position position, Side side) {
         if (position.isValid(getSize())) {
-            Piece gamePiece = getPiece(position);
-            return (gamePiece != null && gamePiece.getSide() != side);
+            T piece = getPiece(position);
+            return (piece != null && piece.getSide() != side);
         }
         return false;
     }
@@ -85,8 +85,8 @@ public abstract class Gamefield {
         return position == null;
     }
 
-    public void updatePiecesReadyToMove(List<? extends Piece> pieceList) {
-        for (Piece piece : pieceList) {
+    public void updatePiecesReadyToMove(List<T> pieceList) {
+        for (T piece : pieceList) {
             ModelCell modelCell = getCell(piece.getPosition());
             if (modelCell.getCellState() != CellState.SELECTED) {
                 modelCell.updateCellState(CellState.ALLOWED_PIECE);

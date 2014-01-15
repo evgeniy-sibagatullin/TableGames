@@ -2,7 +2,6 @@ package org.javatablegames.games.chess.piece;
 
 import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
-import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.core.model.position.Position;
 import org.javatablegames.games.chess.gamefield.ChessField;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class ChessPieceSet extends PieceSet {
+public class ChessPieceSet extends PieceSet<ChessPiece> {
 
     private King whiteKing;
     private King blackKing;
@@ -20,13 +19,13 @@ public class ChessPieceSet extends PieceSet {
         super(gamefield);
     }
 
-    public ChessPieceSet(PieceSet pieceSet) {
+    public ChessPieceSet(ChessPieceSet pieceSet) {
         super(pieceSet);
     }
 
     @Override
     protected void initializePieces() {
-        pieces = new HashSet<Piece>();
+        pieces = new HashSet<ChessPiece>();
 
         blackKing = new King(new Position(0, 4), Side.BLACK, gamefield);
         whiteKing = new King(new Position(7, 4), Side.WHITE, gamefield);
@@ -60,51 +59,52 @@ public class ChessPieceSet extends PieceSet {
     }
 
     @Override
-    protected void clonePiecesToGamefield(PieceSet inputPieces) {
-        pieces = new HashSet<Piece>();
-        for (Piece piece : inputPieces.getPieces()) {
+    protected void clonePiecesToGamefield(PieceSet<ChessPiece> inputPieces) {
+        pieces = new HashSet<ChessPiece>();
+
+        for (ChessPiece inputPiece : inputPieces.getPieces()) {
             ChessPiece chessPiece;
 
-            if (piece instanceof Pawn) {
-                chessPiece = new Pawn(piece.getPosition(), piece.getSide(), gamefield);
-            } else if (piece instanceof Knight) {
-                chessPiece = new Knight(piece.getPosition(), piece.getSide(), gamefield);
-            } else if (piece instanceof Bishop) {
-                chessPiece = new Bishop(piece.getPosition(), piece.getSide(), gamefield);
-            } else if (piece instanceof Rook) {
-                chessPiece = new Rook(piece.getPosition(), piece.getSide(), gamefield);
-            } else if (piece instanceof Queen) {
-                chessPiece = new Queen(piece.getPosition(), piece.getSide(), gamefield);
+            if (inputPiece instanceof Pawn) {
+                chessPiece = new Pawn(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
+            } else if (inputPiece instanceof Knight) {
+                chessPiece = new Knight(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
+            } else if (inputPiece instanceof Bishop) {
+                chessPiece = new Bishop(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
+            } else if (inputPiece instanceof Rook) {
+                chessPiece = new Rook(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
+            } else if (inputPiece instanceof Queen) {
+                chessPiece = new Queen(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
             } else {
-                if (piece.getSide().equals(Side.WHITE)) {
-                    whiteKing = new King(piece.getPosition(), piece.getSide(), gamefield);
+                if (inputPiece.getSide().equals(Side.WHITE)) {
+                    whiteKing = new King(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
                     chessPiece = whiteKing;
                 } else {
-                    blackKing = new King(piece.getPosition(), piece.getSide(), gamefield);
+                    blackKing = new King(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
                     chessPiece = blackKing;
                 }
             }
 
-            if (((ChessPiece) piece).isEverMoved()) {
+            if (inputPiece.isEverMoved()) {
                 chessPiece.setMoved();
             }
 
             pieces.add(chessPiece);
         }
+
         addPiecesToGameField();
     }
 
     public List<ChessPiece> getPiecesAbleToMove(Side side) {
         List<ChessPiece> pieceList = new ArrayList<ChessPiece>();
 
-        for (Object piece : pieces) {
-            ChessPiece chessPiece = (ChessPiece) piece;
+        for (ChessPiece piece : pieces) {
 
-            if (chessPiece.getSide() == side && chessPiece.isAbleToMove()) {
-                removeMovesCauseCheck(chessPiece);
+            if (piece.getSide() == side && piece.isAbleToMove()) {
+                removeMovesCauseCheck(piece);
 
-                if (!chessPiece.getCellsAllowedToMoveIn().isEmpty()) {
-                    pieceList.add(chessPiece);
+                if (!piece.getCellsAllowedToMoveIn().isEmpty()) {
+                    pieceList.add(piece);
                 }
             }
         }
@@ -113,7 +113,7 @@ public class ChessPieceSet extends PieceSet {
     }
 
     public boolean isKingUnderAttack(Side side) {
-        Piece king = getKingBySide(side);
+        ChessPiece king = getKingBySide(side);
         return king != null && gamefield.isCellUnderAttack(king.getPosition(), side);
     }
 
@@ -122,10 +122,10 @@ public class ChessPieceSet extends PieceSet {
     }
 
     private void removeMovesCauseCheck(ChessPiece chessPiece) {
-        List<ModelCell> cellsAllowedToMoveIn = chessPiece.getCellsAllowedToMoveIn();
+        List<ModelCell<ChessPiece>> cellsAllowedToMoveIn = chessPiece.getCellsAllowedToMoveIn();
         List<ModelCell> cellsToRemove = new ArrayList<ModelCell>();
 
-        for (ModelCell modelCell : cellsAllowedToMoveIn) {
+        for (ModelCell<ChessPiece> modelCell : cellsAllowedToMoveIn) {
             ChessPieceSet nextPieceSet = new ChessPieceSet(this);
             gamefield.setSelectedCellByPosition(chessPiece.getPosition());
 

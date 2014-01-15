@@ -5,7 +5,6 @@ import org.javatablegames.core.enums.Direction;
 import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
-import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.position.Position;
 import org.javatablegames.games.chess.piece.*;
 
@@ -13,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class ChessField extends Gamefield {
+public class ChessField extends Gamefield<ChessPiece> {
 
     private static final String BLACK_CELL = "src/org/javatablegames/games/draughts/img/black-cell.png";
     private static final String WHITE_CELL = "src/org/javatablegames/games/draughts/img/white-cell.png";
@@ -28,25 +27,25 @@ public class ChessField extends Gamefield {
                 String color = ((row + column) % 2 == 0) ? WHITE_CELL
                         : BLACK_CELL;
                 Position position = new Position(row, column);
-                setCell(new ModelCell(position, 0, color, CellState.DEFAULT), position);
+                setCell(new ModelCell<ChessPiece>(position, 0, color, CellState.DEFAULT), position);
             }
         }
     }
 
-    public void selectCell(ModelCell modelCell) {
+    public void selectCell(ModelCell<ChessPiece> modelCell) {
         modelCell.updateCellState(CellState.SELECTED);
         selectedCell = modelCell;
         setCellStateToAllowedCells();
     }
 
-    public void reselectCell(ModelCell modelCell) {
+    public void reselectCell(ModelCell<ChessPiece> modelCell) {
         selectedCell.updateCellState(CellState.ALLOWED_PIECE);
         setDefaultCellStateToAllowedCells();
         selectCell(modelCell);
     }
 
-    public void moveToCell(ModelCell modelCell) {
-        ChessPiece piece = (ChessPiece) selectedCell.getPiece();
+    public void moveToCell(ModelCell<ChessPiece> modelCell) {
+        ChessPiece piece = selectedCell.getPiece();
         piece.setPosition(modelCell.getPosition());
         piece.setMoved();
 
@@ -69,8 +68,8 @@ public class ChessField extends Gamefield {
         setTotalCellStateDefault();
     }
 
-    public void captureToCell(ModelCell modelCell) {
-        Piece piece = getPiece(modelCell.getPosition());
+    public void captureToCell(ModelCell<ChessPiece> modelCell) {
+        ChessPiece piece = getPiece(modelCell.getPosition());
 
         if (piece == null) { //elPassant case
             piece = getPiece(new Position(selectedCell.getPosition().getRow(), modelCell.getPosition().getColumn()));
@@ -99,7 +98,7 @@ public class ChessField extends Gamefield {
                 distance++;
 
                 if (isCellOpponent(checkPosition, side)) {
-                    ChessPiece piece = (ChessPiece) getPiece(checkPosition);
+                    ChessPiece piece = getPiece(checkPosition);
 
                     if ((piece instanceof Pawn && distance > 1)
                             || (piece instanceof King && distance > 1)
@@ -139,8 +138,8 @@ public class ChessField extends Gamefield {
     }
 
     private void setCellStateToAllowedCells() {
-        ChessPiece piece = (ChessPiece) selectedCell.getPiece();
-        List<ModelCell> cellList = piece.getCellsAllowedToMoveIn();
+        ChessPiece piece = selectedCell.getPiece();
+        List<ModelCell<ChessPiece>> cellList = piece.getCellsAllowedToMoveIn();
 
         for (ModelCell modelCell : cellList) {
             CellState cellState = (modelCell.getPiece() == null) ? CellState.ALLOWED_MOVE : CellState.ATTACKED;
@@ -163,8 +162,8 @@ public class ChessField extends Gamefield {
     }
 
     private void setDefaultCellStateToAllowedCells() {
-        ChessPiece piece = (ChessPiece) selectedCell.getPiece();
-        List<ModelCell> cellList = piece.getCellsAllowedToMoveIn();
+        ChessPiece piece = selectedCell.getPiece();
+        List<ModelCell<ChessPiece>> cellList = piece.getCellsAllowedToMoveIn();
 
         for (ModelCell modelCell : cellList) {
             modelCell.updateCellState(CellState.DEFAULT);

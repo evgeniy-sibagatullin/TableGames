@@ -34,7 +34,7 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
     @Override
     public void clickCell(Position position) {
         if (isPlayerMove) {
-            ModelCell modelCell = gamefield.getCell(position);
+            ModelCell<DraughtsPiece> modelCell = gamefield.getCell(position);
 
             if (gamefield.getSelectedCell() == null) {
                 if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {
@@ -68,7 +68,6 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
     private boolean hasPlayerAnyMove() {
         ableToCaptureList = pieceSet.getPiecesAbleToCapture(sidePlayer);
         ableToMoveList = pieceSet.getPiecesAbleToMove(sidePlayer);
-
         return !ableToCaptureList.isEmpty() || !ableToMoveList.isEmpty();
     }
 
@@ -84,13 +83,15 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
         model.setChanged(true);
     }
 
-    private void capturePlayer(ModelCell modelCell) {
+    private void capturePlayer(ModelCell<DraughtsPiece> modelCell) {
         gamefield.captureToCell(modelCell);
         boolean isAbleToCaptureAgain = gamefield.isAbleToCapture(modelCell);
+
         if (isAbleToCaptureAgain) {
             gamefield.setTotalCellStateDefault();
             gamefield.selectCell(modelCell);
         }
+
         isPlayerMove = isAbleToCaptureAgain;
     }
 

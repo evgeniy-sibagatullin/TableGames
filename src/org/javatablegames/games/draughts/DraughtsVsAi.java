@@ -4,8 +4,6 @@ import org.javatablegames.core.enums.CellState;
 import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.Model;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
-import org.javatablegames.core.model.game.piece.Piece;
-import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.games.draughts.piece.DraughtsPiece;
 import org.javatablegames.games.draughts.piece.DraughtsPieceSet;
 
@@ -66,15 +64,15 @@ public class DraughtsVsAi extends AbstractDraughts {
 
             for (DraughtsPieceSet nextPieceSet : nextPieceSetList) {
                 nextPieceSet.applyPiecesToGamefield();
-
                 int nextMoveBalance = checkNextMoveQuality(nextPieceSet);
+
                 if (nextMoveBalance > bestMoveBalance) {
                     bestMoveBalance = nextMoveBalance;
                     bestMovePieces = new DraughtsPieceSet(nextPieceSet);
                 }
             }
-            showMoveAI(bestMovePieces);
 
+            showMoveAI(bestMovePieces);
             pieceSet = new DraughtsPieceSet(bestMovePieces);
         } else {
             checkWinConditionsResult = "Congratulations! You have won this game!";
@@ -83,19 +81,20 @@ public class DraughtsVsAi extends AbstractDraughts {
 
     private int checkNextMoveQuality(DraughtsPieceSet pieceSet) {
         depth++;
+
         if (depth == MAX_DEPTH) {
             depth--;
             return checkBalance(pieceSet);
         }
 
         List<DraughtsPieceSet> nextPieceSetList = getNextPieceSets(pieceSet);
-
         int bestMoveBalance = (activeSide.equals(sideAI)) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+
         if (!nextPieceSetList.isEmpty()) {
             for (DraughtsPieceSet nextPieceSet : nextPieceSetList) {
                 nextPieceSet.applyPiecesToGamefield();
-
                 int nextMoveBalance = checkNextMoveQuality(nextPieceSet);
+
                 if ((activeSide.equals(sideAI) && nextMoveBalance > bestMoveBalance)
                         || ((activeSide.equals(sidePlayer) && nextMoveBalance < bestMoveBalance))) {
                     bestMoveBalance = nextMoveBalance;
@@ -107,15 +106,14 @@ public class DraughtsVsAi extends AbstractDraughts {
 
         depth--;
         activeSide = oppositeSide(activeSide);
-
         return bestMoveBalance;
     }
 
     private List<DraughtsPieceSet> getNextPieceSets(DraughtsPieceSet pieceSet) {
         List<DraughtsPieceSet> nextPieceSetList = new ArrayList<DraughtsPieceSet>();
         activeSide = oppositeSide(activeSide);
-
         List<DraughtsPiece> ableToCaptureList = pieceSet.getPiecesAbleToCapture(activeSide);
+
         if (!ableToCaptureList.isEmpty()) {
             nextPieceSetList = getCapturePieceSets(pieceSet, ableToCaptureList);
         } else {
@@ -131,7 +129,6 @@ public class DraughtsVsAi extends AbstractDraughts {
 
     private List<DraughtsPieceSet> getCapturePieceSets(DraughtsPieceSet pieceSet, List<DraughtsPiece> ableToCaptureList) {
         List<DraughtsPieceSet> pieceSetList = new ArrayList<DraughtsPieceSet>();
-
         tempCapturePieceSetList.clear();
 
         for (DraughtsPiece piece : ableToCaptureList) {
@@ -150,14 +147,14 @@ public class DraughtsVsAi extends AbstractDraughts {
         if (!piece.isAbleToCapture()) {
             tempCapturePieceSetList.add(pieceSet);
         } else {
-            for (ModelCell modelCell : piece.getCellsAllowedToCapture()) {
+            for (ModelCell<DraughtsPiece> modelCell : piece.getCellsAllowedToCapture()) {
                 DraughtsPieceSet nextPieceSet = new DraughtsPieceSet(pieceSet);
-                DraughtsPiece pieceToCapture = (DraughtsPiece) nextPieceSet.getPieceByPosition(piece.getPosition());
+                DraughtsPiece pieceToCapture = nextPieceSet.getPieceByPosition(piece.getPosition());
 
                 gamefield.setSelectedCellByPosition(piece.getPosition());
                 gamefield.captureToCell(modelCell);
 
-                pieceToCapture = (DraughtsPiece) nextPieceSet.getPieceByPosition(pieceToCapture.getPosition());
+                pieceToCapture = nextPieceSet.getPieceByPosition(pieceToCapture.getPosition());
                 findPossibleCapturesByPiece(nextPieceSet, pieceToCapture);
             }
         }
@@ -167,7 +164,7 @@ public class DraughtsVsAi extends AbstractDraughts {
         List<DraughtsPieceSet> pieceSetList = new ArrayList<DraughtsPieceSet>();
 
         for (DraughtsPiece piece : ableToMoveList) {
-            for (ModelCell modelCell : piece.getCellsAllowedToMoveIn()) {
+            for (ModelCell<DraughtsPiece> modelCell : piece.getCellsAllowedToMoveIn()) {
                 DraughtsPieceSet movePieceSet = new DraughtsPieceSet(pieceSet);
 
                 gamefield.setSelectedCellByPosition(piece.getPosition());
@@ -180,10 +177,10 @@ public class DraughtsVsAi extends AbstractDraughts {
         return pieceSetList;
     }
 
-    private int checkBalance(PieceSet pieceSet) {
+    private int checkBalance(DraughtsPieceSet pieceSet) {
         int balance = 0;
 
-        for (Piece piece : pieceSet.getPieces()) {
+        for (DraughtsPiece piece : pieceSet.getPieces()) {
             if (piece.getSide().equals(sideAI)) {
                 balance += piece.getPower();
             } else {
@@ -194,11 +191,11 @@ public class DraughtsVsAi extends AbstractDraughts {
         return balance - 5 + random.nextInt(10);
     }
 
-    private void showMoveAI(PieceSet bestMovePieces) {
+    private void showMoveAI(DraughtsPieceSet bestMovePieces) {
         int numberOfChangedPieces = 0;
         pieceSet.applyPiecesToGamefield();
 
-        for (Piece pieceOfPresentSet : pieceSet.getPieces()) {
+        for (DraughtsPiece pieceOfPresentSet : pieceSet.getPieces()) {
             if (isPieceChanged(pieceOfPresentSet, bestMovePieces)) {
                 numberOfChangedPieces++;
 
@@ -214,10 +211,10 @@ public class DraughtsVsAi extends AbstractDraughts {
         delay(numberOfChangedPieces * DELAY_AI);
     }
 
-    private boolean isPieceChanged(Piece pieceOfPresentSet, PieceSet bestMovePieces) {
+    private boolean isPieceChanged(DraughtsPiece pieceOfPresentSet, DraughtsPieceSet bestMovePieces) {
         boolean changed = true;
 
-        for (Piece pieceOfBestSet : bestMovePieces.getPieces()) {
+        for (DraughtsPiece pieceOfBestSet : bestMovePieces.getPieces()) {
             if (pieceOfBestSet.getPosition().equals(pieceOfPresentSet.getPosition())) {
                 changed = false;
             }

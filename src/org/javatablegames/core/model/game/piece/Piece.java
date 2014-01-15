@@ -11,10 +11,6 @@ public abstract class Piece {
     protected Gamefield gamefield;
     protected int power;
 
-    protected Piece(Position position, Side side, Gamefield gameField) {
-        this(position, side, 0, gameField);
-    }
-
     protected Piece(Position position, Side side, int power, Gamefield gameField) {
         setPosition(position);
         setSide(side);

@@ -4,14 +4,14 @@ import org.javatablegames.core.enums.CellState;
 import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.position.Position;
 
-public class ModelCell {
+public class ModelCell<T extends Piece> {
 
     private CellState cellState = CellState.DEFAULT;
     private Position position;
     private String backgroundImage;
     private int power;
     private boolean changed;
-    private Piece piece;
+    private T piece;
 
     public ModelCell(Position position, int power, String color,
                      CellState cellState) {
@@ -47,11 +47,11 @@ public class ModelCell {
         this.power = power;
     }
 
-    public Piece getPiece() {
+    public T getPiece() {
         return piece;
     }
 
-    public void setPiece(Piece piece) {
+    public void setPiece(T piece) {
         this.piece = piece;
     }
 

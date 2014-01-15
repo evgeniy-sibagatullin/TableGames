@@ -4,8 +4,6 @@ import org.javatablegames.core.enums.CellState;
 import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.Model;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
-import org.javatablegames.core.model.game.piece.Piece;
-import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.games.chess.piece.ChessPiece;
 import org.javatablegames.games.chess.piece.ChessPieceSet;
 import org.javatablegames.games.chess.piece.Pawn;
@@ -147,7 +145,7 @@ public class ChessVsAi extends AbstractChess {
         List<ChessPieceSet> pieceSetList = new ArrayList<ChessPieceSet>();
 
         for (ChessPiece piece : ableToMoveList) {
-            for (ModelCell modelCell : piece.getCellsAllowedToMoveIn()) {
+            for (ModelCell<ChessPiece> modelCell : piece.getCellsAllowedToMoveIn()) {
                 ChessPieceSet movePieceSet = new ChessPieceSet(pieceSet);
                 gamefield.setSelectedCellByPosition(piece.getPosition());
 
@@ -168,11 +166,12 @@ public class ChessVsAi extends AbstractChess {
         return pieceSetList;
     }
 
-    private int checkBalance(PieceSet pieceSet) {
+    private int checkBalance(ChessPieceSet pieceSet) {
         int balance = 0;
 
-        for (Piece piece : pieceSet.getPieces()) {
+        for (ChessPiece piece : pieceSet.getPieces()) {
             int power = piece.getPower();
+
             if (piece.getSide().equals(sideAI)) {
                 balance += power;
             } else {
@@ -187,7 +186,7 @@ public class ChessVsAi extends AbstractChess {
         return balance;
     }
 
-    private int getPawnBalanceBonus(Piece piece) {
+    private int getPawnBalanceBonus(ChessPiece piece) {
         int pawnBonus;
 
         if (piece.getSide().equals(Side.BLACK)) {
@@ -199,11 +198,11 @@ public class ChessVsAi extends AbstractChess {
         return (piece.getSide().equals(sideAI)) ? pawnBonus : -pawnBonus;
     }
 
-    private void showMoveAI(PieceSet bestMovePieces) {
+    private void showMoveAI(ChessPieceSet bestMovePieces) {
         int numberOfChangedPieces = 0;
         pieceSet.applyPiecesToGamefield();
 
-        for (Piece pieceOfPresentSet : pieceSet.getPieces()) {
+        for (ChessPiece pieceOfPresentSet : pieceSet.getPieces()) {
             if (isPieceChanged(pieceOfPresentSet, bestMovePieces)) {
                 numberOfChangedPieces++;
 
@@ -219,10 +218,10 @@ public class ChessVsAi extends AbstractChess {
         delay(numberOfChangedPieces * DELAY_PERIOD);
     }
 
-    private boolean isPieceChanged(Piece pieceOfPresentSet, PieceSet bestMovePieces) {
+    private boolean isPieceChanged(ChessPiece pieceOfPresentSet, ChessPieceSet bestMovePieces) {
         boolean changed = true;
 
-        for (Piece pieceOfBestSet : bestMovePieces.getPieces()) {
+        for (ChessPiece pieceOfBestSet : bestMovePieces.getPieces()) {
             if (pieceOfBestSet.getPosition().equals(pieceOfPresentSet.getPosition())) {
                 changed = false;
             }

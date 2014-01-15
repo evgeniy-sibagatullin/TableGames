@@ -1,27 +1,26 @@
 package org.javatablegames.games.draughts.piece;
 
 import org.javatablegames.core.enums.Side;
-import org.javatablegames.core.model.game.gamefield.Gamefield;
-import org.javatablegames.core.model.game.piece.Piece;
 import org.javatablegames.core.model.game.piece.PieceSet;
 import org.javatablegames.core.model.position.Position;
+import org.javatablegames.games.draughts.gamefield.DraughtsField;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class DraughtsPieceSet extends PieceSet {
+public class DraughtsPieceSet extends PieceSet<DraughtsPiece> {
 
-    public DraughtsPieceSet(Gamefield gamefield) {
+    public DraughtsPieceSet(DraughtsField gamefield) {
         super(gamefield);
     }
 
-    public DraughtsPieceSet(PieceSet pieceSet) {
+    public DraughtsPieceSet(DraughtsPieceSet pieceSet) {
         super(pieceSet);
     }
 
     protected void initializePieces() {
-        pieces = new HashSet<Piece>();
+        pieces = new HashSet<DraughtsPiece>();
         int size = gamefield.getSize();
 
         for (int row = 0; row < size; row++) {
@@ -41,37 +40,41 @@ public class DraughtsPieceSet extends PieceSet {
         addPiecesToGameField();
     }
 
-    protected void clonePiecesToGamefield(PieceSet inputPieces) {
-        pieces = new HashSet<Piece>();
-        for (Piece piece : inputPieces.getPieces()) {
-            if (piece instanceof Man) {
-                pieces.add(new Man(piece.getPosition(), piece.getSide(), gamefield));
+    protected void clonePiecesToGamefield(PieceSet<DraughtsPiece> inputPieces) {
+        pieces = new HashSet<DraughtsPiece>();
+
+        for (DraughtsPiece inputPiece : inputPieces.getPieces()) {
+            if (inputPiece instanceof Man) {
+                pieces.add(new Man(inputPiece.getPosition(), inputPiece.getSide(), gamefield));
             } else {
-                pieces.add(new King(piece.getPosition(), piece.getSide(), gamefield));
+                pieces.add(new King(inputPiece.getPosition(), inputPiece.getSide(), gamefield));
             }
         }
+
         addPiecesToGameField();
     }
 
     public List<DraughtsPiece> getPiecesAbleToCapture(Side side) {
         List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
-        for (Piece piece : pieces) {
-            DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
-            if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToCapture()) {
-                pieceList.add(draughtsPiece);
+
+        for (DraughtsPiece piece : pieces) {
+            if (piece.getSide() == side && piece.isAbleToCapture()) {
+                pieceList.add(piece);
             }
         }
+
         return pieceList;
     }
 
     public List<DraughtsPiece> getPiecesAbleToMove(Side side) {
         List<DraughtsPiece> pieceList = new ArrayList<DraughtsPiece>();
-        for (Piece piece : pieces) {
-            DraughtsPiece draughtsPiece = (DraughtsPiece) piece;
-            if (draughtsPiece.getSide() == side && draughtsPiece.isAbleToMove()) {
-                pieceList.add(draughtsPiece);
+
+        for (DraughtsPiece piece : pieces) {
+            if (piece.getSide() == side && piece.isAbleToMove()) {
+                pieceList.add(piece);
             }
         }
+
         return pieceList;
     }
 

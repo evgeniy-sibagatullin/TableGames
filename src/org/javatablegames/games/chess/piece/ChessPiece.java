@@ -12,7 +12,7 @@ import java.util.List;
 
 public abstract class ChessPiece extends Piece {
 
-    protected List<ModelCell> cellsAllowedToMoveIn;
+    protected List<ModelCell<ChessPiece>> cellsAllowedToMoveIn;
     protected Position checkPosition;
     protected boolean everMoved = false;
 
@@ -20,7 +20,7 @@ public abstract class ChessPiece extends Piece {
         super(position, side, power, gameField);
     }
 
-    public List<ModelCell> getCellsAllowedToMoveIn() {
+    public List<ModelCell<ChessPiece>> getCellsAllowedToMoveIn() {
         return cellsAllowedToMoveIn;
     }
 
@@ -31,7 +31,7 @@ public abstract class ChessPiece extends Piece {
     }
 
     protected void searchCellsAllowedToMoveIn(Direction[] directions, int moveLength) {
-        cellsAllowedToMoveIn = new ArrayList<ModelCell>();
+        cellsAllowedToMoveIn = new ArrayList<ModelCell<ChessPiece>>();
 
         for (Direction direction : directions) {
             checkPosition = new Position(position);
