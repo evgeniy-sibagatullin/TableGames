@@ -23,8 +23,9 @@ public class GameView implements View {
     private static final String APPLICATION_TITLE_TEXT = "Table Games";
     private static final String SELECT_MENU_HEADER_TEXT = "Select Game";
     private static final String MANAGE_MENU_HEADER_TEXT = "Manage Game";
-    private static final String RESTART_MENUITEM_TEXT = "Restart game";
-    private static final String ANOTHER_MENUITEM_TEXT = "Choose another game";
+    private static final String UNDO_MOVE_MENUITEM_TEXT = "Undo Move";
+    private static final String RESTART_MENUITEM_TEXT = "Restart Game";
+    private static final String ANOTHER_MENUITEM_TEXT = "Choose Another Game";
     private static final String MENUITEM_KEY_GAMETYPE = "gameName";
     private final Controller controller;
     private final Model model;
@@ -48,7 +49,9 @@ public class GameView implements View {
             String buttonText = ((MenuItem) e.widget).getText();
             String gameClass = (String) (e.widget).getData(MENUITEM_KEY_GAMETYPE);
 
-            if (buttonText.equals(RESTART_MENUITEM_TEXT)) {
+            if (buttonText.equals(UNDO_MOVE_MENUITEM_TEXT)) {
+                controller.startDefaultGame();
+            } else if (buttonText.equals(RESTART_MENUITEM_TEXT)) {
                 controller.restartGame();
             } else if (buttonText.equals(ANOTHER_MENUITEM_TEXT)) {
                 controller.startDefaultGame();
@@ -194,6 +197,7 @@ public class GameView implements View {
         Menu manageGameMenu = new Menu(boardShell, SWT.DROP_DOWN);
         manageGameMenuHeader.setMenu(manageGameMenu);
 
+        constructManageGameMenuItem(manageGameMenu, UNDO_MOVE_MENUITEM_TEXT);
         constructManageGameMenuItem(manageGameMenu, RESTART_MENUITEM_TEXT);
         constructManageGameMenuItem(manageGameMenu, ANOTHER_MENUITEM_TEXT);
     }
