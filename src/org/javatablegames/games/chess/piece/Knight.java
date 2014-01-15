@@ -27,7 +27,7 @@ public class Knight extends ChessPiece {
     }
 
     private void searchCellsAllowedToMoveIn() {
-        cellsAllowedToMoveIn = new ArrayList<ModelCell>();
+        cellsAllowedToMoveIn = new ArrayList<ModelCell<ChessPiece>>();
 
         for (int deltaX = -2; deltaX <= 2; deltaX++) {
             for (int deltaY = -2; deltaY <= 2; deltaY++) {
