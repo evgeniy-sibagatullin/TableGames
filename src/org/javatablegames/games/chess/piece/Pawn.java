@@ -54,7 +54,7 @@ public class Pawn extends ChessPiece {
     }
 
     private void searchCellsAllowedToMoveIn() {
-        cellsAllowedToMoveIn = new ArrayList<ModelCell<ChessPiece>>();
+        cellsAllowedToMoveIn = new ArrayList<ModelCell>();
         Direction moveDirection = (side.equals(Side.WHITE)) ?
                 WHITE_PAWN_MOVE_DIRECTION : BLACK_PAWN_MOVE_DIRECTION;
 

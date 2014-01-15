@@ -12,8 +12,8 @@ import java.util.List;
 
 public abstract class DraughtsPiece extends Piece {
 
-    protected List<ModelCell<DraughtsPiece>> cellsAllowedToMoveIn;
-    protected List<ModelCell<DraughtsPiece>> cellsAllowedToCaptureIn;
+    protected List<ModelCell> cellsAllowedToMoveIn;
+    protected List<ModelCell> cellsAllowedToCaptureIn;
     private Position checkPosition;
 
     public DraughtsPiece(Position position, Side side, int power, Gamefield gameField) {
@@ -25,11 +25,11 @@ public abstract class DraughtsPiece extends Piece {
                 ((side == Side.WHITE && position.getRow() == 0) || (side == Side.BLACK && position.getRow() == 7)));
     }
 
-    public List<ModelCell<DraughtsPiece>> getCellsAllowedToCapture() {
+    public List<ModelCell> getCellsAllowedToCapture() {
         return cellsAllowedToCaptureIn;
     }
 
-    public List<ModelCell<DraughtsPiece>> getCellsAllowedToMoveIn() {
+    public List<ModelCell> getCellsAllowedToMoveIn() {
         return cellsAllowedToMoveIn;
     }
 
@@ -38,7 +38,7 @@ public abstract class DraughtsPiece extends Piece {
     public abstract boolean isAbleToMove();
 
     protected void searchCellsAllowedToCapture(Direction[] directions, int moveLength) {
-        cellsAllowedToCaptureIn = new ArrayList<ModelCell<DraughtsPiece>>();
+        cellsAllowedToCaptureIn = new ArrayList<ModelCell>();
 
         for (Direction direction : directions) {
             checkPosition = new Position(position);
@@ -68,7 +68,7 @@ public abstract class DraughtsPiece extends Piece {
     }
 
     protected void searchCellsAllowedToMoveIn(Direction[] directions, int moveLength) {
-        cellsAllowedToMoveIn = new ArrayList<ModelCell<DraughtsPiece>>();
+        cellsAllowedToMoveIn = new ArrayList<ModelCell>();
 
         for (Direction direction : directions) {
             checkPosition = new Position(position);

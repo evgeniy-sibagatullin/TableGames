@@ -25,30 +25,30 @@ public class DraughtsField extends Gamefield<DraughtsPiece> {
                 String color = ((row + column) % 2 == 0) ? WHITE_CELL
                         : BLACK_CELL;
                 Position position = new Position(row, column);
-                setCell(new ModelCell<DraughtsPiece>(position, 0, color, CellState.DEFAULT), position);
+                setCell(new ModelCell(position, 0, color, CellState.DEFAULT), position);
             }
         }
     }
 
-    public void selectCell(ModelCell<DraughtsPiece> modelCell) {
+    public void selectCell(ModelCell modelCell) {
         modelCell.updateCellState(CellState.SELECTED);
         selectedCell = modelCell;
 
-        if (isAbleToCapture(modelCell)) {
+        if (isAbleToCapture(modelCell.getPosition())) {
             setCellStateToAllowedCells(CellState.ATTACKED);
         } else {
             setCellStateToAllowedCells(CellState.ALLOWED_MOVE);
         }
     }
 
-    public void reselectCell(ModelCell<DraughtsPiece> modelCell) {
+    public void reselectCell(ModelCell modelCell) {
         selectedCell.updateCellState(CellState.ALLOWED_PIECE);
         setCellStateToAllowedCells(CellState.DEFAULT);
         selectCell(modelCell);
     }
 
-    public void moveToCell(ModelCell<DraughtsPiece> modelCell) {
-        DraughtsPiece piece = selectedCell.getPiece();
+    public void moveToCell(ModelCell modelCell) {
+        DraughtsPiece piece = getSelectedPiece();
         piece.setPosition(modelCell.getPosition());
 
         if (piece.isAbleToBecomeKing()) {
@@ -60,32 +60,32 @@ public class DraughtsField extends Gamefield<DraughtsPiece> {
         selectedCell = null;
     }
 
-    public boolean isAbleToCapture(ModelCell<DraughtsPiece> modelCell) {
-        return (modelCell.getPiece()).isAbleToCapture();
+    public boolean isAbleToCapture(Position position) {
+        return (getPiece(position)).isAbleToCapture();
     }
 
-    public void captureToCell(ModelCell<DraughtsPiece> modelCell) {
+    public void captureToCell(ModelCell modelCell) {
         Position targetPosition = new Position(modelCell.getPosition());
         Position selectedPosition = new Position(selectedCell.getPosition());
         Direction captureDirection = Direction.getDirection(
                 targetPosition.getRow() - selectedPosition.getRow(),
                 targetPosition.getColumn() - selectedPosition.getColumn());
 
-        ModelCell<DraughtsPiece> checkCell;
+        ModelCell checkCell;
         do {
             selectedPosition.moveInDirection(captureDirection);
             checkCell = getCell(selectedPosition);
         } while (checkCell.getPiece() == null);
 
-        pieceSet.remove(checkCell.getPiece());
+        pieceSet.remove(getPiece(selectedPosition));
         checkCell.setPiece(null);
 
         moveToCell(modelCell);
     }
 
     private void setCellStateToAllowedCells(CellState cellState) {
-        DraughtsPiece piece = selectedCell.getPiece();
-        List<ModelCell<DraughtsPiece>> cellList = piece.getCellsAllowedToCapture();
+        DraughtsPiece piece = getSelectedPiece();
+        List<ModelCell> cellList = piece.getCellsAllowedToCapture();
 
         if (cellList.isEmpty()) {
             cellList = piece.getCellsAllowedToMoveIn();

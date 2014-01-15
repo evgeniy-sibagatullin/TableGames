@@ -122,10 +122,10 @@ public class ChessPieceSet extends PieceSet<ChessPiece> {
     }
 
     private void removeMovesCauseCheck(ChessPiece chessPiece) {
-        List<ModelCell<ChessPiece>> cellsAllowedToMoveIn = chessPiece.getCellsAllowedToMoveIn();
+        List<ModelCell> cellsAllowedToMoveIn = chessPiece.getCellsAllowedToMoveIn();
         List<ModelCell> cellsToRemove = new ArrayList<ModelCell>();
 
-        for (ModelCell<ChessPiece> modelCell : cellsAllowedToMoveIn) {
+        for (ModelCell modelCell : cellsAllowedToMoveIn) {
             ChessPieceSet nextPieceSet = new ChessPieceSet(this);
             gamefield.setSelectedCellByPosition(chessPiece.getPosition());
 

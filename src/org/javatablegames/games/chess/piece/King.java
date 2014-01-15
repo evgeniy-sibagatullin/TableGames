@@ -12,7 +12,7 @@ import java.util.List;
 public class King extends ChessPiece {
 
     private static final int MOVE_LENGTH = 1;
-    private List<ModelCell<ChessPiece>> cellsAllowedToCastling;
+    private List<ModelCell> cellsAllowedToCastling;
 
     public King(Position position, Side side, Gamefield gameField) {
         super(position, side, 1000, gameField);
@@ -37,7 +37,7 @@ public class King extends ChessPiece {
     }
 
     private boolean isCastlingPossible() {
-        cellsAllowedToCastling = new ArrayList<ModelCell<ChessPiece>>();
+        cellsAllowedToCastling = new ArrayList<ModelCell>();
         if (!gamefield.isCellUnderAttack(position, side)) {
             checkCastlingSide(0);
             checkCastlingSide(7);

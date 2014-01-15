@@ -10,10 +10,10 @@ import java.util.List;
 
 public abstract class Gamefield<T extends Piece> {
 
-    protected ModelCell<T>[][] field;
+    protected ModelCell[][] field;
     protected int size;
     protected PieceSet<T> pieceSet;
-    protected ModelCell<T> selectedCell;
+    protected ModelCell selectedCell;
 
     public Gamefield() {
         initializeGamefield();
@@ -25,7 +25,7 @@ public abstract class Gamefield<T extends Piece> {
         return field;
     }
 
-    protected void setCell(ModelCell<T> modelCell, Position position) {
+    protected void setCell(ModelCell modelCell, Position position) {
         field[position.getRow()][position.getColumn()] = modelCell;
     }
 
@@ -33,12 +33,17 @@ public abstract class Gamefield<T extends Piece> {
         return size;
     }
 
-    public ModelCell<T> getCell(Position position) {
+    public ModelCell getCell(Position position) {
         return field[position.getRow()][position.getColumn()];
     }
 
     public T getPiece(Position position) {
-        return field[position.getRow()][position.getColumn()].getPiece();
+        return (T) field[position.getRow()][position.getColumn()].getPiece();
+    }
+
+    public T getSelectedPiece() {
+        Position position = selectedCell.getPosition();
+        return (T) field[position.getRow()][position.getColumn()].getPiece();
     }
 
     public void setPieceSet(PieceSet<T> pieceSet) {
@@ -75,7 +80,7 @@ public abstract class Gamefield<T extends Piece> {
 
     public boolean isCellOpponent(Position position, Side side) {
         if (position.isValid(getSize())) {
-            T piece = getPiece(position);
+            Piece piece = getPiece(position);
             return (piece != null && piece.getSide() != side);
         }
         return false;

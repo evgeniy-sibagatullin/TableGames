@@ -145,7 +145,7 @@ public class ChessVsAi extends AbstractChess {
         List<ChessPieceSet> pieceSetList = new ArrayList<ChessPieceSet>();
 
         for (ChessPiece piece : ableToMoveList) {
-            for (ModelCell<ChessPiece> modelCell : piece.getCellsAllowedToMoveIn()) {
+            for (ModelCell modelCell : piece.getCellsAllowedToMoveIn()) {
                 ChessPieceSet movePieceSet = new ChessPieceSet(pieceSet);
                 gamefield.setSelectedCellByPosition(piece.getPosition());
 

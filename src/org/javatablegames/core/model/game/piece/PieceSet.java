@@ -66,7 +66,7 @@ public abstract class PieceSet<T extends Piece> {
 
     protected void addPiecesToGameField() {
         for (T piece : pieces) {
-            ModelCell<T> cell = gamefield.getCell(piece.getPosition());
+            ModelCell cell = gamefield.getCell(piece.getPosition());
             cell.setPiece(piece);
         }
     }

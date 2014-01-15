@@ -27,25 +27,25 @@ public class ChessField extends Gamefield<ChessPiece> {
                 String color = ((row + column) % 2 == 0) ? WHITE_CELL
                         : BLACK_CELL;
                 Position position = new Position(row, column);
-                setCell(new ModelCell<ChessPiece>(position, 0, color, CellState.DEFAULT), position);
+                setCell(new ModelCell(position, 0, color, CellState.DEFAULT), position);
             }
         }
     }
 
-    public void selectCell(ModelCell<ChessPiece> modelCell) {
+    public void selectCell(ModelCell modelCell) {
         modelCell.updateCellState(CellState.SELECTED);
         selectedCell = modelCell;
         setCellStateToAllowedCells();
     }
 
-    public void reselectCell(ModelCell<ChessPiece> modelCell) {
+    public void reselectCell(ModelCell modelCell) {
         selectedCell.updateCellState(CellState.ALLOWED_PIECE);
         setDefaultCellStateToAllowedCells();
         selectCell(modelCell);
     }
 
-    public void moveToCell(ModelCell<ChessPiece> modelCell) {
-        ChessPiece piece = selectedCell.getPiece();
+    public void moveToCell(ModelCell modelCell) {
+        ChessPiece piece = getSelectedPiece();
         piece.setPosition(modelCell.getPosition());
         piece.setMoved();
 
@@ -68,7 +68,7 @@ public class ChessField extends Gamefield<ChessPiece> {
         setTotalCellStateDefault();
     }
 
-    public void captureToCell(ModelCell<ChessPiece> modelCell) {
+    public void captureToCell(ModelCell modelCell) {
         ChessPiece piece = getPiece(modelCell.getPosition());
 
         if (piece == null) { //elPassant case
@@ -138,8 +138,8 @@ public class ChessField extends Gamefield<ChessPiece> {
     }
 
     private void setCellStateToAllowedCells() {
-        ChessPiece piece = selectedCell.getPiece();
-        List<ModelCell<ChessPiece>> cellList = piece.getCellsAllowedToMoveIn();
+        ChessPiece piece = getSelectedPiece();
+        List<ModelCell> cellList = piece.getCellsAllowedToMoveIn();
 
         for (ModelCell modelCell : cellList) {
             CellState cellState = (modelCell.getPiece() == null) ? CellState.ALLOWED_MOVE : CellState.ATTACKED;
@@ -162,8 +162,8 @@ public class ChessField extends Gamefield<ChessPiece> {
     }
 
     private void setDefaultCellStateToAllowedCells() {
-        ChessPiece piece = selectedCell.getPiece();
-        List<ModelCell<ChessPiece>> cellList = piece.getCellsAllowedToMoveIn();
+        ChessPiece piece = getSelectedPiece();
+        List<ModelCell> cellList = piece.getCellsAllowedToMoveIn();
 
         for (ModelCell modelCell : cellList) {
             modelCell.updateCellState(CellState.DEFAULT);

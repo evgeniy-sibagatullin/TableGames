@@ -35,7 +35,7 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
     @Override
     public void clickCell(Position position) {
         if (isPlayerMove) {
-            ModelCell<ChessPiece> modelCell = gamefield.getCell(position);
+            ModelCell modelCell = gamefield.getCell(position);
 
             if (gamefield.getSelectedCell() == null) {
                 if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {

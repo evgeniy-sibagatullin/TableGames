@@ -147,7 +147,7 @@ public class DraughtsVsAi extends AbstractDraughts {
         if (!piece.isAbleToCapture()) {
             tempCapturePieceSetList.add(pieceSet);
         } else {
-            for (ModelCell<DraughtsPiece> modelCell : piece.getCellsAllowedToCapture()) {
+            for (ModelCell modelCell : piece.getCellsAllowedToCapture()) {
                 DraughtsPieceSet nextPieceSet = new DraughtsPieceSet(pieceSet);
                 DraughtsPiece pieceToCapture = nextPieceSet.getPieceByPosition(piece.getPosition());
 
@@ -164,7 +164,7 @@ public class DraughtsVsAi extends AbstractDraughts {
         List<DraughtsPieceSet> pieceSetList = new ArrayList<DraughtsPieceSet>();
 
         for (DraughtsPiece piece : ableToMoveList) {
-            for (ModelCell<DraughtsPiece> modelCell : piece.getCellsAllowedToMoveIn()) {
+            for (ModelCell modelCell : piece.getCellsAllowedToMoveIn()) {
                 DraughtsPieceSet movePieceSet = new DraughtsPieceSet(pieceSet);
 
                 gamefield.setSelectedCellByPosition(piece.getPosition());
