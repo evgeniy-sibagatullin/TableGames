@@ -131,9 +131,9 @@ public class ChessPieceSet extends PieceSet<ChessPiece> {
 
             Position position = modelCell.getPosition();
             if (gamefield.isCellEmpty(position)) {
-                ((ChessField) gamefield).moveToCell(modelCell);
+                gamefield.moveToCell(modelCell);
             } else {
-                ((ChessField) gamefield).captureToCell(modelCell);
+                gamefield.captureToCell(modelCell);
             }
 
             if (nextPieceSet.isKingUnderAttack(chessPiece.getSide())) {

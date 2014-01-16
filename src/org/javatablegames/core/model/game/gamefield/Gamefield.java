@@ -87,7 +87,13 @@ public abstract class Gamefield<T extends Piece> {
     }
 
     public boolean isCellUnderAttack(Position position, Side side) {
-        return position == null;
+        return false;
+    }
+
+    public void moveToCell(ModelCell modelCell) {
+    }
+
+    public void captureToCell(ModelCell modelCell) {
     }
 
     public void updatePiecesReadyToMove(List<T> pieceList) {
