@@ -59,34 +59,18 @@ public class ChessPieceSet extends PieceSet<ChessPiece> {
     }
 
     @Override
-    protected void clonePiecesToGamefield(PieceSet<ChessPiece> inputPieces) {
+    protected void clonePiecesToGamefield(PieceSet<ChessPiece> inputPieces) throws CloneNotSupportedException {
         pieces = new HashSet<ChessPiece>();
 
         for (ChessPiece inputPiece : inputPieces.getPieces()) {
-            ChessPiece chessPiece;
+            ChessPiece chessPiece = (ChessPiece) inputPiece.clone();
 
-            if (inputPiece instanceof Pawn) {
-                chessPiece = new Pawn(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
-            } else if (inputPiece instanceof Knight) {
-                chessPiece = new Knight(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
-            } else if (inputPiece instanceof Bishop) {
-                chessPiece = new Bishop(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
-            } else if (inputPiece instanceof Rook) {
-                chessPiece = new Rook(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
-            } else if (inputPiece instanceof Queen) {
-                chessPiece = new Queen(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
-            } else {
+            if (inputPiece instanceof King) {
                 if (inputPiece.getSide().equals(Side.WHITE)) {
-                    whiteKing = new King(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
-                    chessPiece = whiteKing;
+                    whiteKing = (King) chessPiece;
                 } else {
-                    blackKing = new King(inputPiece.getPosition(), inputPiece.getSide(), gamefield);
-                    chessPiece = blackKing;
+                    blackKing = (King) chessPiece;
                 }
-            }
-
-            if (inputPiece.isEverMoved()) {
-                chessPiece.setMoved();
             }
 
             pieces.add(chessPiece);

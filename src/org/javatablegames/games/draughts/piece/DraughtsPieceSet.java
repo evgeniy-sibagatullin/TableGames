@@ -40,15 +40,11 @@ public class DraughtsPieceSet extends PieceSet<DraughtsPiece> {
         addPiecesToGameField();
     }
 
-    protected void clonePiecesToGamefield(PieceSet<DraughtsPiece> inputPieces) {
+    protected void clonePiecesToGamefield(PieceSet<DraughtsPiece> inputPieces) throws CloneNotSupportedException {
         pieces = new HashSet<DraughtsPiece>();
 
         for (DraughtsPiece inputPiece : inputPieces.getPieces()) {
-            if (inputPiece instanceof Man) {
-                pieces.add(new Man(inputPiece.getPosition(), inputPiece.getSide(), gamefield));
-            } else {
-                pieces.add(new King(inputPiece.getPosition(), inputPiece.getSide(), gamefield));
-            }
+            pieces.add((DraughtsPiece) inputPiece.clone());
         }
 
         addPiecesToGameField();
