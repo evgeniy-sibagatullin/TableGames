@@ -189,7 +189,7 @@ public class ChessVsAi extends AbstractChess {
     private int getPawnBalanceBonus(ChessPiece piece) {
         int pawnBonus;
 
-        if (piece.getSide().equals(Side.BLACK)) {
+        if (piece.getSide().equals(Side.WHITE)) {
             pawnBonus = 7 - piece.getPosition().getRow();
         } else {
             pawnBonus = piece.getPosition().getRow();
@@ -222,7 +222,8 @@ public class ChessVsAi extends AbstractChess {
         boolean changed = true;
 
         for (ChessPiece pieceOfBestSet : bestMovePieces.getPieces()) {
-            if (pieceOfBestSet.getPosition().equals(pieceOfPresentSet.getPosition())) {
+            if (pieceOfBestSet.getPosition().equals(pieceOfPresentSet.getPosition())
+                    && pieceOfBestSet.getSide().equals(pieceOfPresentSet.getSide())) {
                 changed = false;
             }
         }
