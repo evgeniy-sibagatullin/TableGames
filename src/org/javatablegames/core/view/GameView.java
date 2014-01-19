@@ -99,9 +99,7 @@ public class GameView implements View {
 
         while (!boardShell.isDisposed()) {
             updateView();
-            if (!display.readAndDispatch()) {
-                display.sleep();
-            }
+            display.readAndDispatch();
         }
     }
 
