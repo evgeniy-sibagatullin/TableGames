@@ -20,7 +20,13 @@ public abstract class PieceSet<T extends Piece> {
     protected PieceSet(PieceSet<T> pieceSet) {
         setGamefield(pieceSet.getGamefield());
         gamefield.removePieces();
-        clonePiecesToGamefield(pieceSet);
+
+        try {
+            clonePiecesToGamefield(pieceSet);
+        } catch (CloneNotSupportedException ex) {
+            throw new RuntimeException(ex);
+        }
+
         gamefield.setPieceSet(this);
     }
 
@@ -62,7 +68,7 @@ public abstract class PieceSet<T extends Piece> {
 
     protected abstract void initializePieces();
 
-    protected abstract void clonePiecesToGamefield(PieceSet<T> pieceSet);
+    protected abstract void clonePiecesToGamefield(PieceSet<T> pieceSet) throws CloneNotSupportedException;
 
     protected void addPiecesToGameField() {
         for (T piece : pieces) {

@@ -4,7 +4,7 @@ import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.position.Position;
 
-public abstract class Piece {
+public abstract class Piece implements Cloneable {
 
     protected Position position;
     protected Side side;
@@ -17,6 +17,8 @@ public abstract class Piece {
         setPower(power);
         setGameField(gameField);
     }
+
+    public abstract String getImagePath();
 
     public Position getPosition() {
         return position;
@@ -38,6 +40,11 @@ public abstract class Piece {
         return power;
     }
 
+    @Override
+    public Piece clone() throws CloneNotSupportedException {
+        return (Piece) super.clone();
+    }
+
     protected void setPower(int power) {
         this.power = power;
     }
@@ -45,7 +52,5 @@ public abstract class Piece {
     private void setGameField(Gamefield gameField) {
         this.gamefield = gameField;
     }
-
-    public abstract String getImagePath();
 
 }
