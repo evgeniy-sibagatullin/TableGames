@@ -12,6 +12,10 @@ public interface Controller {
 
     void startDefaultGame();
 
+    void undoMove();
+
+    void redoMove();
+
     void clickCell(Position position);
 
     void checkWinConditions();

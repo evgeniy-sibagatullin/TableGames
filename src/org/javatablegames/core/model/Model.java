@@ -11,6 +11,10 @@ public interface Model {
 
     void restartGame();
 
+    void undoMove();
+
+    void redoMove();
+
     void clickCell(Position position);
 
     void setChanged(boolean changed);

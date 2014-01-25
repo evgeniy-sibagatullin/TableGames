@@ -43,6 +43,16 @@ public class GameController implements Controller {
     }
 
     @Override
+    public void undoMove() {
+        model.undoMove();
+    }
+
+    @Override
+    public void redoMove() {
+        model.redoMove();
+    }
+
+    @Override
     public void clickCell(Position position) {
         model.clickCell(position);
     }

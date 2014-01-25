@@ -24,6 +24,7 @@ public class GameView implements View {
     private static final String SELECT_MENU_HEADER_TEXT = "Select Game";
     private static final String MANAGE_MENU_HEADER_TEXT = "Manage Game";
     private static final String UNDO_MOVE_MENUITEM_TEXT = "Undo Move";
+    private static final String REDO_MOVE_MENUITEM_TEXT = "Redo Move";
     private static final String RESTART_MENUITEM_TEXT = "Restart Game";
     private static final String ANOTHER_MENUITEM_TEXT = "Choose Another Game";
     private static final String MENUITEM_KEY_GAMETYPE = "gameName";
@@ -50,7 +51,9 @@ public class GameView implements View {
             String gameClass = (String) (e.widget).getData(MENUITEM_KEY_GAMETYPE);
 
             if (buttonText.equals(UNDO_MOVE_MENUITEM_TEXT)) {
-                controller.startDefaultGame();
+                controller.undoMove();
+            } else if (buttonText.equals(REDO_MOVE_MENUITEM_TEXT)) {
+                controller.redoMove();
             } else if (buttonText.equals(RESTART_MENUITEM_TEXT)) {
                 controller.restartGame();
             } else if (buttonText.equals(ANOTHER_MENUITEM_TEXT)) {
@@ -196,6 +199,7 @@ public class GameView implements View {
         manageGameMenuHeader.setMenu(manageGameMenu);
 
         constructManageGameMenuItem(manageGameMenu, UNDO_MOVE_MENUITEM_TEXT);
+        constructManageGameMenuItem(manageGameMenu, REDO_MOVE_MENUITEM_TEXT);
         constructManageGameMenuItem(manageGameMenu, RESTART_MENUITEM_TEXT);
         constructManageGameMenuItem(manageGameMenu, ANOTHER_MENUITEM_TEXT);
     }

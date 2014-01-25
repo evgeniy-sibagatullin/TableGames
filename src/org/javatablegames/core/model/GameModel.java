@@ -45,6 +45,16 @@ public class GameModel implements Model {
     }
 
     @Override
+    public void undoMove() {
+        game.undoMove();
+    }
+
+    @Override
+    public void redoMove() {
+        game.redoMove();
+    }
+
+    @Override
     public void clickCell(Position position) {
         game.clickCell(position);
     }
