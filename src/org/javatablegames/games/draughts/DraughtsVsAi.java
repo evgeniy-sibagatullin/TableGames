@@ -48,6 +48,27 @@ public class DraughtsVsAi extends AbstractDraughts {
         }
     }
 
+
+    @Override
+    public void undoMove() {
+        if (moveHistory.containsKey(moveIndex - 2)) {
+            moveHistory.put(moveIndex, new DraughtsPieceSet(pieceSet));
+            moveIndex -= 2;
+            pieceSet = new DraughtsPieceSet(moveHistory.get(moveIndex));
+
+            giveMoveToPlayer();
+        }
+    }
+
+    @Override
+    public void redoMove() {
+        if (moveHistory.containsKey(moveIndex + 1)) {
+            pieceSet = new DraughtsPieceSet(moveHistory.get(moveIndex + 1));
+
+            giveMoveToPlayer();
+        }
+    }
+
     private void updateGameFieldForAI() {
         gamefield.setTotalCellStateDefault();
         model.setChanged(true);

@@ -19,6 +19,7 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
     protected String checkWinConditionsResult = "";
     protected List<DraughtsPiece> ableToCaptureList;
     protected List<DraughtsPiece> ableToMoveList;
+    protected Integer moveIndex = 1;
 
     protected AbstractDraughts(Model model) {
         super(model);
@@ -45,9 +46,11 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
                     gamefield.reselectCell(modelCell);
                 } else if (modelCell.getCellState() == CellState.ALLOWED_MOVE) {
                     gamefield.moveToCell(modelCell);
+                    cleanFurtherHistory();
                     isPlayerMove = false;
                 } else if (modelCell.getCellState() == CellState.ATTACKED) {
                     capturePlayer(modelCell);
+                    cleanFurtherHistory();
                 }
             }
 
@@ -56,6 +59,8 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
     }
 
     protected void giveMoveToPlayer() {
+        updateMoveHistory();
+
         if (hasPlayerAnyMove()) {
             updateGameFieldForPlayer();
             isPlayerMove = true;
@@ -63,6 +68,23 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
             String winnerSideName = (sidePlayer.equals(Side.WHITE)) ? "Black" : "White";
             checkWinConditionsResult = "Congratulations to winner - " + winnerSideName + " player!";
         }
+    }
+
+    private void cleanFurtherHistory() {
+        if (moveHistory.containsKey(moveIndex + 1)) {
+            int index = moveIndex + 1;
+
+            while (moveHistory.containsKey(index)) {
+                moveHistory.remove(index++);
+            }
+        }
+    }
+
+    private void updateMoveHistory() {
+        moveHistory.put(moveIndex, new DraughtsPieceSet(pieceSet));
+        pieceSet.applyPiecesToGamefield();
+
+        moveIndex++;
     }
 
     private boolean hasPlayerAnyMove() {
