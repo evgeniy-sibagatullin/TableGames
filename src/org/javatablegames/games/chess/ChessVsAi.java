@@ -45,6 +45,25 @@ public class ChessVsAi extends AbstractChess {
         }
     }
 
+    @Override
+    public void undoMove() {
+        if (moveHistory.containsKey(moveIndex - 1)) {
+            moveHistory.put(moveIndex, new ChessPieceSet(pieceSet));
+            pieceSet = new ChessPieceSet(moveHistory.get(--moveIndex));
+
+            giveMoveToPlayer();
+        }
+    }
+
+    @Override
+    public void redoMove() {
+        if (moveHistory.containsKey(moveIndex + 1)) {
+            pieceSet = new ChessPieceSet(moveHistory.get(++moveIndex));
+
+            giveMoveToPlayer();
+        }
+    }
+
     private void updateGameFieldForAI() {
         gamefield.setTotalCellStateDefault();
         model.setChanged(true);

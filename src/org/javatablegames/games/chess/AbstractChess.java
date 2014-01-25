@@ -20,6 +20,7 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
     protected boolean isPlayerMove;
     protected String checkWinConditionsResult = "";
     protected List<ChessPiece> ableToMoveList;
+    protected Integer moveIndex = 1;
 
     public AbstractChess(Model model) {
         super(model);
@@ -45,9 +46,11 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
                 if (modelCell.getCellState() == CellState.ALLOWED_PIECE) {
                     gamefield.reselectCell(modelCell);
                 } else if (modelCell.getCellState() == CellState.ALLOWED_MOVE) {
+                    updateMoveHistory();
                     gamefield.moveToCell(modelCell);
                     isPlayerMove = false;
                 } else if (modelCell.getCellState() == CellState.ATTACKED) {
+                    updateMoveHistory();
                     gamefield.captureToCell(modelCell);
                     isPlayerMove = false;
                 }
@@ -71,6 +74,23 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
 
         model.setChanged(true);
         isPlayerMove = true;
+    }
+
+    private void updateMoveHistory() {
+        moveHistory.put(moveIndex, new ChessPieceSet(pieceSet));
+        pieceSet.applyPiecesToGamefield();
+
+        if (moveHistory.containsKey(++moveIndex)) {
+            cleanFurtherHistory();
+        }
+    }
+
+    private void cleanFurtherHistory() {
+        int index = moveIndex;
+
+        while (moveHistory.containsKey(index)) {
+            moveHistory.remove(index++);
+        }
     }
 
     private boolean hasPlayerAnyMove() {
