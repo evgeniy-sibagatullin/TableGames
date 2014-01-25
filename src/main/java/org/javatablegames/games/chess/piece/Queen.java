@@ -15,9 +15,9 @@ public class Queen extends ChessPiece {
 
     @Override
     public String getImagePath() {
-        return (getSide() == Side.WHITE) ?
-                "src/org/javatablegames/games/chess/img/Chess-QueenW.png" :
-                "src/org/javatablegames/games/chess/img/Chess-QueenB.png";
+        return PIECE_IMAGE_PATH + ((getSide() == Side.WHITE) ?
+                "Chess-QueenW.png" :
+                "Chess-QueenB.png");
     }
 
     @Override

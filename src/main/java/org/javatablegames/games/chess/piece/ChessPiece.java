@@ -14,6 +14,7 @@ public abstract class ChessPiece extends Piece {
 
     protected List<ModelCell> cellsAllowedToMoveIn;
     protected Position checkPosition;
+    protected static final String PIECE_IMAGE_PATH = "org/javatablegames/games/chess/";
     protected boolean everMoved = false;
 
     protected ChessPiece(Position position, Side side, int power, Gamefield gameField) {

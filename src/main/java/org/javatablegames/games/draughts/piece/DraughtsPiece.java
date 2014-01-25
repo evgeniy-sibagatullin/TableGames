@@ -14,6 +14,7 @@ public abstract class DraughtsPiece extends Piece {
 
     protected List<ModelCell> cellsAllowedToMoveIn;
     protected List<ModelCell> cellsAllowedToCaptureIn;
+    protected static final String PIECE_IMAGE_PATH = "org/javatablegames/games/draughts/";
     private Position checkPosition;
 
     public DraughtsPiece(Position position, Side side, int power, Gamefield gameField) {

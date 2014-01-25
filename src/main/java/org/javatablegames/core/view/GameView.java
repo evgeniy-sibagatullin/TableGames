@@ -189,9 +189,7 @@ public class GameView implements View {
 
     private Properties readProperties() throws IOException {
         Properties properties = new Properties();
-//        InputStream inputStream = new FileInputStream("src/org/javatablegames/core/");
         properties.loadFromXML(this.getClass().getClassLoader().getResourceAsStream("org/javatablegames/core/tablegames.xml"));
-//        inputStream.close();
         return properties;
     }
 

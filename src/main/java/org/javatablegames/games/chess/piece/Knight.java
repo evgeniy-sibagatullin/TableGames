@@ -15,9 +15,9 @@ public class Knight extends ChessPiece {
 
     @Override
     public String getImagePath() {
-        return (getSide() == Side.WHITE) ?
-                "src/org/javatablegames/games/chess/img/Chess-KnightW.png" :
-                "src/org/javatablegames/games/chess/img/Chess-KnightB.png";
+        return PIECE_IMAGE_PATH + ((getSide() == Side.WHITE) ?
+                "Chess-KnightW.png" :
+                "Chess-KnightB.png");
     }
 
     @Override

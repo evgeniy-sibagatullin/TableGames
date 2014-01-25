@@ -1,4 +1,4 @@
-package org.javatablegames.core;
+package org.javatablegames;
 
 import org.javatablegames.core.controller.Controller;
 import org.javatablegames.core.controller.GameController;

@@ -12,8 +12,8 @@ import java.util.List;
 
 public class DraughtsField extends Gamefield<DraughtsPiece> {
 
-    private static final String BLACK_CELL = "src/org/javatablegames/games/draughts/img/black-cell.png";
-    private static final String WHITE_CELL = "src/org/javatablegames/games/draughts/img/white-cell.png";
+    private static final String BLACK_CELL = "org/javatablegames/games/draughts/black-cell.png";
+    private static final String WHITE_CELL = "org/javatablegames/games/draughts/white-cell.png";
 
     @Override
     protected void initializeGamefield() {

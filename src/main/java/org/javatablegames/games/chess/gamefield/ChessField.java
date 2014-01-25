@@ -14,8 +14,8 @@ import java.util.Set;
 
 public class ChessField extends Gamefield<ChessPiece> {
 
-    private static final String BLACK_CELL = "src/org/javatablegames/games/draughts/img/black-cell.png";
-    private static final String WHITE_CELL = "src/org/javatablegames/games/draughts/img/white-cell.png";
+    private static final String BLACK_CELL = "org/javatablegames/games/chess/black-cell.png";
+    private static final String WHITE_CELL = "org/javatablegames/games/chess/white-cell.png";
 
     @Override
     protected void initializeGamefield() {

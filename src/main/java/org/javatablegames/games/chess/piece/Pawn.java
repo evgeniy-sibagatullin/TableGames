@@ -25,9 +25,9 @@ public class Pawn extends ChessPiece {
 
     @Override
     public String getImagePath() {
-        return (getSide() == Side.WHITE) ?
-                "src/org/javatablegames/games/chess/img/Chess-PawnW.png" :
-                "src/org/javatablegames/games/chess/img/Chess-PawnB.png";
+        return PIECE_IMAGE_PATH + ((getSide() == Side.WHITE) ?
+                "Chess-PawnW.png" :
+                "Chess-PawnB.png");
     }
 
     @Override

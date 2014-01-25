@@ -20,9 +20,9 @@ public class King extends ChessPiece {
 
     @Override
     public String getImagePath() {
-        return (getSide() == Side.WHITE) ?
-                "src/org/javatablegames/games/chess/img/Chess-KingW.png" :
-                "src/org/javatablegames/games/chess/img/Chess-KingB.png";
+        return PIECE_IMAGE_PATH + ((getSide() == Side.WHITE) ?
+                "Chess-KingW.png" :
+                "Chess-KingB.png");
     }
 
     @Override

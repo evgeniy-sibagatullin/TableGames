@@ -21,9 +21,9 @@ public class King extends DraughtsPiece {
 
     @Override
     public String getImagePath() {
-        return (side == Side.WHITE) ?
-                "src/org/javatablegames/games/draughts/img/Draughts-KingB.png" :
-                "src/org/javatablegames/games/draughts/img/Draughts-KingR.png";
+        return PIECE_IMAGE_PATH + ((side == Side.WHITE) ?
+                "Draughts-KingB.png" :
+                "Draughts-KingR.png");
     }
 
     @Override

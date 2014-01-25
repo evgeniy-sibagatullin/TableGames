@@ -79,7 +79,7 @@ public class ViewCell extends Canvas {
 
     private void drawBackgroundImage(GC gc, Rectangle rectangle) {
         if (imageName != null) {
-            Image image = new Image(display, imageName);
+            Image image = new Image(display, this.getClass().getClassLoader().getResourceAsStream(imageName));
             // image stretched
             Rectangle bounds = image.getBounds();
             gc.drawImage(image, 0, 0, bounds.width, bounds.height,
@@ -92,7 +92,7 @@ public class ViewCell extends Canvas {
     private void drawPieceImage(GC gc, Rectangle rectangle) {
         if (piece != null) {
             // image centered with padding
-            Image image = new Image(display, piece.getImagePath());
+            Image image = new Image(display, this.getClass().getClassLoader().getResourceAsStream(piece.getImagePath()));
             Rectangle bounds = image.getBounds();
             gc.drawImage(image, 0, 0, bounds.width, bounds.height,
                     rectangle.x + PIECE_IMAGE_PADDING, rectangle.y

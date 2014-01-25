@@ -17,9 +17,9 @@ public class Rook extends ChessPiece {
 
     @Override
     public String getImagePath() {
-        return (getSide() == Side.WHITE) ?
-                "src/org/javatablegames/games/chess/img/Chess-RookW.png" :
-                "src/org/javatablegames/games/chess/img/Chess-RookB.png";
+        return PIECE_IMAGE_PATH + ((getSide() == Side.WHITE) ?
+                "Chess-RookW.png" :
+                "Chess-RookB.png");
     }
 
     @Override

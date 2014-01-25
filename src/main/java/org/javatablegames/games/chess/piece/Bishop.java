@@ -17,9 +17,9 @@ public class Bishop extends ChessPiece {
 
     @Override
     public String getImagePath() {
-        return (getSide() == Side.WHITE) ?
-                "src/org/javatablegames/games/chess/img/Chess-BishopW.png" :
-                "src/org/javatablegames/games/chess/img/Chess-BishopB.png";
+        return PIECE_IMAGE_PATH + ((getSide() == Side.WHITE) ?
+                "Chess-BishopW.png" :
+                "Chess-BishopB.png");
     }
 
     @Override

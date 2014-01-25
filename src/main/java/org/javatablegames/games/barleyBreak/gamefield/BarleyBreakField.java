@@ -14,7 +14,7 @@ public class BarleyBreakField extends Gamefield {
 
     private final Random random = new Random();
 
-    private static final String COLOR_CELL = "src/org/javatablegames/games/barleyBreak/img/SolidGreen.bmp";
+    private static final String COLOR_CELL = "org/javatablegames/games/barleyBreak/SolidGreen.bmp";
     private ModelCell emptyCell;
 
     @Override

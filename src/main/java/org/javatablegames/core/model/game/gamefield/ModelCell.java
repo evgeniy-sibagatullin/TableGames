@@ -16,8 +16,8 @@ public class ModelCell {
     public ModelCell(Position position, int power, String color,
                      CellState cellState) {
         setPosition(position);
-        setBackgroundImage(color);
         setPower(power);
+        setBackgroundImage(color);
         setPiece(null);
         setCellState(cellState);
         setChanged(true);
