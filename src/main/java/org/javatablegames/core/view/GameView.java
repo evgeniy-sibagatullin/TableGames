@@ -1,21 +1,32 @@
 package org.javatablegames.core.view;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.javatablegames.core.controller.Controller;
 import org.javatablegames.core.model.Model;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
 import org.javatablegames.core.model.position.Position;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 public class GameView implements View {
 
@@ -178,9 +189,9 @@ public class GameView implements View {
 
     private Properties readProperties() throws IOException {
         Properties properties = new Properties();
-        InputStream inputStream = new FileInputStream("src/org/javatablegames/core/tablegames.xml");
-        properties.loadFromXML(inputStream);
-        inputStream.close();
+//        InputStream inputStream = new FileInputStream("src/org/javatablegames/core/");
+        properties.loadFromXML(this.getClass().getClassLoader().getResourceAsStream("org/javatablegames/core/tablegames.xml"));
+//        inputStream.close();
         return properties;
     }
 
