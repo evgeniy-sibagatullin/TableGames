@@ -1,32 +1,19 @@
 package org.javatablegames.core.view;
 
-import java.io.IOException;
-import java.util.Properties;
-
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 import org.javatablegames.core.controller.Controller;
 import org.javatablegames.core.model.Model;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.game.gamefield.ModelCell;
 import org.javatablegames.core.model.position.Position;
+
+import java.io.IOException;
+import java.util.Properties;
 
 public class GameView implements View {
 
@@ -40,7 +27,6 @@ public class GameView implements View {
     private static final String ANOTHER_MENUITEM_TEXT = "Choose Another Game";
     private static final String MENUITEM_KEY_GAMETYPE = "gameName";
     private final Controller controller;
-    private final Model model;
     private final Display display;
     private final ShellListener shellListener = new ShellAdapter() {
 
@@ -96,9 +82,8 @@ public class GameView implements View {
     private Gamefield modelGameField;
     private ViewCell[][] viewGameField;
 
-    public GameView(Controller menuController, Model model) {
+    public GameView(Controller menuController) {
         this.controller = menuController;
-        this.model = model;
         display = Display.getDefault();
 
         setMonitorCenter();
@@ -118,15 +103,15 @@ public class GameView implements View {
     }
 
     private void updateView() {
-        modelGameField = model.getGame().getGameField();
-        if (!model.getGame().getGameClassName().equals(gameClassName)) {
+        modelGameField = Model.INSTANCE.getGame().getGameField();
+        if (!Model.INSTANCE.getGame().getGameClassName().equals(gameClassName)) {
             disposeAndCreateNewGameField();
-            gameClassName = model.getGame().getGameClassName();
+            gameClassName = Model.INSTANCE.getGame().getGameClassName();
         }
-        if (model.isChanged()) {
+        if (Model.INSTANCE.isChanged()) {
             redrawChangedCellsOnGameField();
             deliverView();
-            model.setChanged(false);
+            Model.INSTANCE.setChanged(false);
             controller.checkWinConditions();
         }
     }
@@ -223,7 +208,7 @@ public class GameView implements View {
         if (gameFieldComposite != null) {
             gameFieldComposite.dispose();
         }
-        gameFieldSize = model.getGame().getFieldSize();
+        gameFieldSize = Model.INSTANCE.getGame().getFieldSize();
         gameFieldComposite = new Composite(boardShell, SWT.NONE);
         gameFieldComposite.setLayoutData(gridData);
         gameFieldComposite.setLayout(new GridLayout(gameFieldSize, true));

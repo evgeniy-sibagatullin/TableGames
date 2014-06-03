@@ -23,8 +23,7 @@ public class DraughtsVsAi extends AbstractDraughts {
     private Side activeSide;
     private int depth = 0;
 
-    public DraughtsVsAi(Model model) {
-        super(model);
+    public DraughtsVsAi() {
         sidePlayer = Side.WHITE;
 
         sideAI = oppositeSide(sidePlayer);
@@ -71,7 +70,7 @@ public class DraughtsVsAi extends AbstractDraughts {
 
     private void updateGameFieldForAI() {
         gamefield.setTotalCellStateDefault();
-        model.setChanged(true);
+        Model.INSTANCE.setChanged(true);
         delay(DELAY_AI);
     }
 
@@ -228,7 +227,7 @@ public class DraughtsVsAi extends AbstractDraughts {
             }
         }
 
-        model.setChanged(true);
+        Model.INSTANCE.setChanged(true);
         delay(numberOfChangedPieces * DELAY_AI);
     }
 

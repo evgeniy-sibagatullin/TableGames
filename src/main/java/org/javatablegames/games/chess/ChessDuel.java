@@ -1,15 +1,13 @@
 package org.javatablegames.games.chess;
 
 import org.javatablegames.core.enums.Side;
-import org.javatablegames.core.model.Model;
 import org.javatablegames.games.chess.piece.ChessPieceSet;
 
 import static org.javatablegames.core.enums.Side.oppositeSide;
 
 public class ChessDuel extends AbstractChess {
 
-    public ChessDuel(Model model) {
-        super(model);
+    public ChessDuel() {
         sidePlayer = Side.WHITE;
         isPlayerMove = true;
     }

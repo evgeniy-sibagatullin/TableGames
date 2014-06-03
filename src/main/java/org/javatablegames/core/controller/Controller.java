@@ -20,6 +20,4 @@ public interface Controller {
 
     void checkWinConditions();
 
-    void showMessage(String message);
-
 }

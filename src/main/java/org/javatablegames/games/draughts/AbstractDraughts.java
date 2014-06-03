@@ -21,8 +21,7 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
     protected List<DraughtsPiece> ableToMoveList;
     protected Integer moveIndex = 1;
 
-    protected AbstractDraughts(Model model) {
-        super(model);
+    protected AbstractDraughts() {
         gamefield = new DraughtsField();
         pieceSet = new DraughtsPieceSet(gamefield);
     }
@@ -54,7 +53,7 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
                 }
             }
 
-            model.setChanged(true);
+            Model.INSTANCE.setChanged(true);
         }
     }
 
@@ -102,7 +101,7 @@ public abstract class AbstractDraughts extends Game<DraughtsField, DraughtsPiece
             gamefield.updatePiecesReadyToMove(ableToMoveList);
         }
 
-        model.setChanged(true);
+        Model.INSTANCE.setChanged(true);
     }
 
     private void capturePlayer(ModelCell modelCell) {

@@ -3,24 +3,68 @@ package org.javatablegames.core.model;
 import org.javatablegames.core.model.game.Game;
 import org.javatablegames.core.model.position.Position;
 
-public interface Model {
+import java.lang.reflect.Constructor;
 
-    Game<?, ?> getGame();
+public enum Model {
 
-    void startGame(String gameClassName);
+    INSTANCE;
 
-    void restartGame();
+    private Game<?, ?> game;
+    private boolean isChanged;
 
-    void undoMove();
+    public Game<?, ?> getGame() {
+        return game;
+    }
 
-    void redoMove();
+    private void setGame(Game<?, ?> game) {
+        this.game = game;
+    }
 
-    void clickCell(Position position);
+    public void startGame(String gameClassName) {
+        if (game != null) {
+            game.terminateThread();
+        }
 
-    void setChanged(boolean changed);
+        try {
+            Class gameClass = Class.forName(gameClassName);
+            Constructor constructor = gameClass.getDeclaredConstructor();
+            game = (Game<?, ?>) constructor.newInstance();
+            setGame(game);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-    boolean isChanged();
+        setChanged(true);
+        Thread thread = new Thread(game);
+        thread.start();
+    }
 
-    String checkWinConditions();
+    public void restartGame() {
+        startGame(game.getGameClassName());
+    }
+
+    public void undoMove() {
+        game.undoMove();
+    }
+
+    public void redoMove() {
+        game.redoMove();
+    }
+
+    public void clickCell(Position position) {
+        game.clickCell(position);
+    }
+
+    public void setChanged(boolean changed) {
+        isChanged = changed;
+    }
+
+    public boolean isChanged() {
+        return isChanged;
+    }
+
+    public String checkWinConditions() {
+        return game.checkWinConditions();
+    }
 
 }

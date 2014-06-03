@@ -22,8 +22,7 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
     protected List<ChessPiece> ableToMoveList;
     protected Integer moveIndex = 1;
 
-    public AbstractChess(Model model) {
-        super(model);
+    public AbstractChess() {
         gamefield = new ChessField();
         pieceSet = new ChessPieceSet(gamefield);
     }
@@ -56,7 +55,7 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
                 }
             }
 
-            model.setChanged(true);
+            Model.INSTANCE.setChanged(true);
         }
     }
 
@@ -72,7 +71,7 @@ public abstract class AbstractChess extends Game<ChessField, ChessPieceSet> {
             }
         }
 
-        model.setChanged(true);
+        Model.INSTANCE.setChanged(true);
         isPlayerMove = true;
     }
 

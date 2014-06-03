@@ -14,8 +14,7 @@ public class BarleyBreak extends Game<BarleyBreakField, PieceSet> {
     private boolean isFieldPrepared = false;
     private int randomMovesCount = 0;
 
-    public BarleyBreak(Model model) {
-        super(model);
+    public BarleyBreak() {
         gamefield = new BarleyBreakField();
     }
 
@@ -23,7 +22,7 @@ public class BarleyBreak extends Game<BarleyBreakField, PieceSet> {
     public void clickCell(Position position) {
         if (gamefield.getCell(position).getCellState() == CellState.ALLOWED_PIECE) {
             gamefield.moveEmptyCellToPosition(position);
-            model.setChanged(true);
+            Model.INSTANCE.setChanged(true);
         }
     }
 
@@ -65,7 +64,7 @@ public class BarleyBreak extends Game<BarleyBreakField, PieceSet> {
     private void performRandomMove() {
         gamefield.performRandomMove(randomMovesCount);
         randomMovesCount++;
-        model.setChanged(true);
+        Model.INSTANCE.setChanged(true);
     }
 
 }

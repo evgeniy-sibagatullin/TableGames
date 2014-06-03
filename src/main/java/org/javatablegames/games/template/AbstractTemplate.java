@@ -1,7 +1,6 @@
 package org.javatablegames.games.template;
 
 import org.javatablegames.core.enums.Side;
-import org.javatablegames.core.model.Model;
 import org.javatablegames.core.model.game.Game;
 import org.javatablegames.core.model.position.Position;
 import org.javatablegames.games.template.gamefield.TemplateField;
@@ -13,8 +12,7 @@ public abstract class AbstractTemplate extends Game<TemplateField, TemplatePiece
     protected boolean isPlayerMove;
     protected String checkWinConditionsResult = "";
 
-    public AbstractTemplate(Model model) {
-        super(model);
+    public AbstractTemplate() {
         gamefield = new TemplateField();
         pieceSet = new TemplatePieceSet(gamefield);
     }

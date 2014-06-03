@@ -1,15 +1,13 @@
 package org.javatablegames.games.draughts;
 
 import org.javatablegames.core.enums.Side;
-import org.javatablegames.core.model.Model;
 import org.javatablegames.games.draughts.piece.DraughtsPieceSet;
 
 import static org.javatablegames.core.enums.Side.oppositeSide;
 
 public class DraughtsDuel extends AbstractDraughts {
 
-    public DraughtsDuel(Model model) {
-        super(model);
+    public DraughtsDuel() {
         sidePlayer = Side.WHITE;
         isPlayerMove = true;
     }

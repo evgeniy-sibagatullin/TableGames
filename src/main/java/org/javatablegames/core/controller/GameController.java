@@ -9,12 +9,10 @@ public class GameController implements Controller {
 
     public final static String DEFAULT_GAME_CLASS = "org.javatablegames.games.barleyBreak.BarleyBreak";
 
-    private final Model model;
     private final View view;
 
-    public GameController(Model model) {
-        this.model = model;
-        view = new GameView(this, model);
+    public GameController() {
+        view = new GameView(this);
     }
 
     @Override
@@ -25,50 +23,45 @@ public class GameController implements Controller {
 
     @Override
     public void startGame(String gameClassName) {
-        model.startGame(gameClassName);
+        Model.INSTANCE.startGame(gameClassName);
         view.enableManageGameMenu();
         view.disableSelectGameMenu();
     }
 
     @Override
     public void restartGame() {
-        model.restartGame();
+        Model.INSTANCE.restartGame();
     }
 
     @Override
     public void startDefaultGame() {
         view.enableSelectGameMenu();
         view.disableManageGameMenu();
-        model.startGame(DEFAULT_GAME_CLASS);
+        Model.INSTANCE.startGame(DEFAULT_GAME_CLASS);
     }
 
     @Override
     public void undoMove() {
-        model.undoMove();
+        Model.INSTANCE.undoMove();
     }
 
     @Override
     public void redoMove() {
-        model.redoMove();
+        Model.INSTANCE.redoMove();
     }
 
     @Override
     public void clickCell(Position position) {
-        model.clickCell(position);
+        Model.INSTANCE.clickCell(position);
     }
 
     @Override
     public void checkWinConditions() {
-        String checkWinConditionsResult = model.checkWinConditions();
+        String checkWinConditionsResult = Model.INSTANCE.checkWinConditions();
         if (!checkWinConditionsResult.isEmpty()) {
-            showMessage(checkWinConditionsResult);
-            model.restartGame();
+            view.showMessage(checkWinConditionsResult);
+            Model.INSTANCE.restartGame();
         }
-    }
-
-    @Override
-    public void showMessage(String message) {
-        view.showMessage(message);
     }
 
 }

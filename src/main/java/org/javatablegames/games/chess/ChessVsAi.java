@@ -20,8 +20,7 @@ public class ChessVsAi extends AbstractChess {
     private Side activeSide;
     private int depth = 0;
 
-    public ChessVsAi(Model model) {
-        super(model);
+    public ChessVsAi() {
         sidePlayer = Side.WHITE;
 
         sideAI = oppositeSide(sidePlayer);
@@ -66,7 +65,7 @@ public class ChessVsAi extends AbstractChess {
 
     private void updateGameFieldForAI() {
         gamefield.setTotalCellStateDefault();
-        model.setChanged(true);
+        Model.INSTANCE.setChanged(true);
         delay(DELAY_PERIOD);
     }
 
@@ -233,7 +232,7 @@ public class ChessVsAi extends AbstractChess {
             }
         }
 
-        model.setChanged(true);
+        Model.INSTANCE.setChanged(true);
         delay(numberOfChangedPieces * DELAY_PERIOD);
     }
 
