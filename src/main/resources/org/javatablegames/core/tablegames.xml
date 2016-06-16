@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-    <entry key="Chess Duel">org.javatablegames.games.chess.ChessDuel</entry>
-    <entry key="Chess vs AI">org.javatablegames.games.chess.ChessVsAi</entry>
-    <entry key="Draughts Duel">org.javatablegames.games.draughts.DraughtsDuel</entry>
-    <entry key="Draughts vs AI">org.javatablegames.games.draughts.DraughtsVsAi</entry>
+    <entry key="0 Chess Duel">org.javatablegames.games.chess.ChessDuel</entry>
+    <entry key="1 Chess vs AI">org.javatablegames.games.chess.ChessVsAi</entry>
+    <entry key="2 SuperChess Duel">org.javatablegames.games.chess.SuperChessDuel</entry>
+    <!--<entry key="3 SuperChess vs AI White Queen">org.javatablegames.games.chess.ChessVsAi</entry>-->
+    <!--<entry key="4 SuperChess vs AI Black Gang">org.javatablegames.games.chess.ChessVsAi</entry>-->
+    <entry key="5 Draughts Duel">org.javatablegames.games.draughts.DraughtsDuel</entry>
+    <entry key="6 Draughts vs AI">org.javatablegames.games.draughts.DraughtsVsAi</entry>
 </properties>

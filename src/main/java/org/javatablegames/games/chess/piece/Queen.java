@@ -7,10 +7,11 @@ import org.javatablegames.core.model.position.Position;
 
 public class Queen extends ChessPiece {
 
-    private static final int MOVE_LENGTH = 7;
+    protected static final int MOVE_LENGTH = 7;
+    public static final int POWER = 70;
 
-    public Queen(Position position, Side side, Gamefield gameField) {
-        super(position, side, 70, gameField);
+    public Queen(Position position, Side side, int power, Gamefield gameField) {
+        super(position, side, power, gameField);
     }
 
     @Override

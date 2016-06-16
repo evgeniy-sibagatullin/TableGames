@@ -12,8 +12,8 @@ import java.util.List;
 
 public class ChessPieceSet extends PieceSet<ChessPiece> {
 
-    private King whiteKing;
-    private King blackKing;
+    protected King whiteKing;
+    protected King blackKing;
 
     public ChessPieceSet(ChessField gamefield) {
         super(gamefield);
@@ -25,42 +25,42 @@ public class ChessPieceSet extends PieceSet<ChessPiece> {
 
     @Override
     protected void initializePieces() {
-        pieces = new HashSet<ChessPiece>();
+        pieces = new HashSet<>();
 
-        blackKing = new King(new Position(0, 4), Side.BLACK, gamefield);
-        whiteKing = new King(new Position(7, 4), Side.WHITE, gamefield);
+        blackKing = new King(new Position(0, 4), Side.BLACK, King.POWER, gamefield);
+        whiteKing = new King(new Position(7, 4), Side.WHITE, King.POWER, gamefield);
         pieces.add(blackKing);
         pieces.add(whiteKing);
 
         for (int i = 0; i < gamefield.getSize(); i++) {
-            pieces.add(new Pawn(new Position(1, i), Side.BLACK, gamefield));
-            pieces.add(new Pawn(new Position(6, i), Side.WHITE, gamefield));
+            pieces.add(new Pawn(new Position(1, i), Side.BLACK, Pawn.POWER, gamefield));
+            pieces.add(new Pawn(new Position(6, i), Side.WHITE, Pawn.POWER, gamefield));
         }
 
-        pieces.add(new Rook(new Position(0, 0), Side.BLACK, gamefield));
-        pieces.add(new Rook(new Position(0, 7), Side.BLACK, gamefield));
-        pieces.add(new Rook(new Position(7, 0), Side.WHITE, gamefield));
-        pieces.add(new Rook(new Position(7, 7), Side.WHITE, gamefield));
+        pieces.add(new Rook(new Position(0, 0), Side.BLACK, Rook.POWER, gamefield));
+        pieces.add(new Rook(new Position(0, 7), Side.BLACK, Rook.POWER, gamefield));
+        pieces.add(new Rook(new Position(7, 0), Side.WHITE, Rook.POWER, gamefield));
+        pieces.add(new Rook(new Position(7, 7), Side.WHITE, Rook.POWER, gamefield));
 
-        pieces.add(new Knight(new Position(0, 1), Side.BLACK, gamefield));
-        pieces.add(new Knight(new Position(0, 6), Side.BLACK, gamefield));
-        pieces.add(new Knight(new Position(7, 1), Side.WHITE, gamefield));
-        pieces.add(new Knight(new Position(7, 6), Side.WHITE, gamefield));
+        pieces.add(new Knight(new Position(0, 1), Side.BLACK, Knight.POWER, gamefield));
+        pieces.add(new Knight(new Position(0, 6), Side.BLACK, Knight.POWER, gamefield));
+        pieces.add(new Knight(new Position(7, 1), Side.WHITE, Knight.POWER, gamefield));
+        pieces.add(new Knight(new Position(7, 6), Side.WHITE, Knight.POWER, gamefield));
 
-        pieces.add(new Bishop(new Position(0, 2), Side.BLACK, gamefield));
-        pieces.add(new Bishop(new Position(0, 5), Side.BLACK, gamefield));
-        pieces.add(new Bishop(new Position(7, 2), Side.WHITE, gamefield));
-        pieces.add(new Bishop(new Position(7, 5), Side.WHITE, gamefield));
+        pieces.add(new Bishop(new Position(0, 2), Side.BLACK, Bishop.POWER, gamefield));
+        pieces.add(new Bishop(new Position(0, 5), Side.BLACK, Bishop.POWER, gamefield));
+        pieces.add(new Bishop(new Position(7, 2), Side.WHITE, Bishop.POWER, gamefield));
+        pieces.add(new Bishop(new Position(7, 5), Side.WHITE, Bishop.POWER, gamefield));
 
-        pieces.add(new Queen(new Position(0, 3), Side.BLACK, gamefield));
-        pieces.add(new Queen(new Position(7, 3), Side.WHITE, gamefield));
+        pieces.add(new Queen(new Position(0, 3), Side.BLACK, Queen.POWER, gamefield));
+        pieces.add(new Queen(new Position(7, 3), Side.WHITE, Queen.POWER, gamefield));
 
         addPiecesToGameField();
     }
 
     @Override
     protected void clonePiecesToGamefield(PieceSet<ChessPiece> inputPieces) throws CloneNotSupportedException {
-        pieces = new HashSet<ChessPiece>();
+        pieces = new HashSet<>();
 
         for (ChessPiece inputPiece : inputPieces.getPieces()) {
             ChessPiece chessPiece = (ChessPiece) inputPiece.clone();
@@ -80,7 +80,7 @@ public class ChessPieceSet extends PieceSet<ChessPiece> {
     }
 
     public List<ChessPiece> getPiecesAbleToMove(Side side) {
-        List<ChessPiece> pieceList = new ArrayList<ChessPiece>();
+        List<ChessPiece> pieceList = new ArrayList<>();
 
         for (ChessPiece piece : pieces) {
 
@@ -107,7 +107,7 @@ public class ChessPieceSet extends PieceSet<ChessPiece> {
 
     private void removeMovesCauseCheck(ChessPiece chessPiece) {
         List<ModelCell> cellsAllowedToMoveIn = chessPiece.getCellsAllowedToMoveIn();
-        List<ModelCell> cellsToRemove = new ArrayList<ModelCell>();
+        List<ModelCell> cellsToRemove = new ArrayList<>();
 
         for (ModelCell modelCell : cellsAllowedToMoveIn) {
             ChessPieceSet nextPieceSet = new ChessPieceSet(this);

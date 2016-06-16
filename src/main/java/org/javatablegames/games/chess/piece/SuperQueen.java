@@ -1,35 +1,26 @@
 package org.javatablegames.games.chess.piece;
 
+import org.javatablegames.core.enums.Direction;
 import org.javatablegames.core.enums.Side;
 import org.javatablegames.core.model.game.gamefield.Gamefield;
 import org.javatablegames.core.model.position.Position;
 
-import java.util.ArrayList;
+public class SuperQueen extends Queen {
 
-public class Knight extends ChessPiece {
+    public static final int SUPER_POWER = 700;
 
-    public static final int POWER = 20;
-
-    public Knight(Position position, Side side, int power, Gamefield gameField) {
+    public SuperQueen(Position position, Side side, int power, Gamefield gameField) {
         super(position, side, power, gameField);
     }
 
     @Override
-    public String getImagePath() {
-        return PIECE_IMAGE_PATH + ((getSide() == Side.WHITE) ?
-                "Chess-KnightW.png" :
-                "Chess-KnightB.png");
-    }
-
-    @Override
     public boolean isAbleToMove() {
-        searchCellsAllowedToMoveIn();
+        searchCellsAllowedToMoveIn(Direction.directions, MOVE_LENGTH);
+        searchCellsAllowedToMoveInAsKnight();
         return !cellsAllowedToMoveIn.isEmpty();
     }
 
-    private void searchCellsAllowedToMoveIn() {
-        cellsAllowedToMoveIn = new ArrayList<>();
-
+    private void searchCellsAllowedToMoveInAsKnight() {
         for (int deltaX = -2; deltaX <= 2; deltaX++) {
             for (int deltaY = -2; deltaY <= 2; deltaY++) {
                 int row = getPosition().getRow() + deltaY;
@@ -45,5 +36,4 @@ public class Knight extends ChessPiece {
             }
         }
     }
-
 }

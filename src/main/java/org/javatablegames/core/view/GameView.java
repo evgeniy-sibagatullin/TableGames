@@ -13,7 +13,9 @@ import org.javatablegames.core.model.game.gamefield.ModelCell;
 import org.javatablegames.core.model.position.Position;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 public class GameView implements View {
 
@@ -47,16 +49,22 @@ public class GameView implements View {
             String buttonText = ((MenuItem) e.widget).getText();
             String gameClass = (String) (e.widget).getData(MENUITEM_KEY_GAMETYPE);
 
-            if (buttonText.equals(UNDO_MOVE_MENUITEM_TEXT)) {
-                controller.undoMove();
-            } else if (buttonText.equals(REDO_MOVE_MENUITEM_TEXT)) {
-                controller.redoMove();
-            } else if (buttonText.equals(RESTART_MENUITEM_TEXT)) {
-                controller.restartGame();
-            } else if (buttonText.equals(ANOTHER_MENUITEM_TEXT)) {
-                controller.startDefaultGame();
-            } else {
-                controller.startGame(gameClass);
+            switch (buttonText) {
+                case UNDO_MOVE_MENUITEM_TEXT:
+                    controller.undoMove();
+                    break;
+                case REDO_MOVE_MENUITEM_TEXT:
+                    controller.redoMove();
+                    break;
+                case RESTART_MENUITEM_TEXT:
+                    controller.restartGame();
+                    break;
+                case ANOTHER_MENUITEM_TEXT:
+                    controller.startDefaultGame();
+                    break;
+                default:
+                    controller.startGame(gameClass);
+                    break;
             }
         }
 
@@ -161,15 +169,26 @@ public class GameView implements View {
         Menu selectGameMenu = new Menu(boardShell, SWT.DROP_DOWN);
         selectGameMenuHeader.setMenu(selectGameMenu);
 
+        Map<String, String> gamesTitlesClasses = getGamesTitlesClasses();
+        for (String gameTitle : gamesTitlesClasses.keySet()) {
+            constructSelectGameMenuItem(selectGameMenu, gameTitle.substring(2), gamesTitlesClasses.get(gameTitle));
+        }
+    }
+
+    private Map<String, String> getGamesTitlesClasses() {
+        Map<String, String> gamesTitlesClasses = new TreeMap<>();
+
         try {
             Properties properties = readProperties();
             for (Object key : properties.keySet()) {
-                String gameName = (String) key;
-                constructSelectGameMenuItem(selectGameMenu, gameName, properties.getProperty(gameName));
+                String gameTitle = (String) key;
+                gamesTitlesClasses.put(gameTitle, properties.getProperty(gameTitle));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return gamesTitlesClasses;
     }
 
     private Properties readProperties() throws IOException {

@@ -129,7 +129,8 @@ public class ChessField extends Gamefield<ChessPiece> {
 
                 if (((Math.abs(deltaX) + Math.abs(deltaY)) == 3) && checkPosition.isValid(size)
                         && isCellOpponent(checkPosition, side)) {
-                    return getPiece(checkPosition) instanceof Knight;
+                    return (getPiece(checkPosition) instanceof Knight
+                            || getPiece(checkPosition) instanceof SuperQueen);
                 }
             }
         }
@@ -172,7 +173,7 @@ public class ChessField extends Gamefield<ChessPiece> {
 
     private void promoteToQueen(ChessPiece piece) {
         pieceSet.remove(piece);
-        piece = new Queen(piece.getPosition(), piece.getSide(), this);
+        piece = new Queen(piece.getPosition(), piece.getSide(), Queen.POWER, this);
         pieceSet.add(piece);
         selectedCell.setPiece(piece);
     }

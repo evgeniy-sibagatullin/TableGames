@@ -32,7 +32,7 @@ public abstract class ChessPiece extends Piece {
     }
 
     protected void searchCellsAllowedToMoveIn(Direction[] directions, int moveLength) {
-        cellsAllowedToMoveIn = new ArrayList<ModelCell>();
+        cellsAllowedToMoveIn = new ArrayList<>();
 
         for (Direction direction : directions) {
             checkPosition = new Position(position);

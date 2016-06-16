@@ -7,12 +7,14 @@ import org.javatablegames.core.model.position.Position;
 
 public class Rook extends ChessPiece {
 
+    public static final int POWER = 35;
+
     private static final Direction[] MOVE_DIRECTIONS =
             {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
     private static final int MOVE_LENGTH = 7;
 
-    public Rook(Position position, Side side, Gamefield gameField) {
-        super(position, side, 35, gameField);
+    public Rook(Position position, Side side, int power, Gamefield gameField) {
+        super(position, side, power, gameField);
     }
 
     @Override

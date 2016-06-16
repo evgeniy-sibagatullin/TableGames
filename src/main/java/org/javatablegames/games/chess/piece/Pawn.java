@@ -12,6 +12,7 @@ import java.util.Set;
 
 public class Pawn extends ChessPiece {
 
+    public static final int POWER = 7;
     private static final Direction WHITE_PAWN_MOVE_DIRECTION = Direction.NORTH;
     private static final Direction[] WHITE_PAWN_CAPTURE_DIRECTIONS = {Direction.NORTHEAST, Direction.NORTHWEST};
     private static final Direction BLACK_PAWN_MOVE_DIRECTION = Direction.SOUTH;
@@ -19,8 +20,8 @@ public class Pawn extends ChessPiece {
     private boolean isJumped;
     private Set<ModelCell> elPassantCells;
 
-    public Pawn(Position position, Side side, Gamefield gameField) {
-        super(position, side, 7, gameField);
+    public Pawn(Position position, Side side, int power, Gamefield gameField) {
+        super(position, side, power, gameField);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class Pawn extends ChessPiece {
     @Override
     public boolean isAbleToMove() {
         isJumped = false;
-        elPassantCells = new HashSet<ModelCell>();
+        elPassantCells = new HashSet<>();
 
         searchCellsAllowedToMoveIn();
         return !cellsAllowedToMoveIn.isEmpty();
@@ -54,7 +55,7 @@ public class Pawn extends ChessPiece {
     }
 
     private void searchCellsAllowedToMoveIn() {
-        cellsAllowedToMoveIn = new ArrayList<ModelCell>();
+        cellsAllowedToMoveIn = new ArrayList<>();
         Direction moveDirection = (side.equals(Side.WHITE)) ?
                 WHITE_PAWN_MOVE_DIRECTION : BLACK_PAWN_MOVE_DIRECTION;
 
